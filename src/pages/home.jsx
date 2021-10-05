@@ -9,7 +9,8 @@ import {
   Button,
   Card,
   Row,
-  Col
+  Col,
+  Form
 } from 'react-bootstrap'
 
 // URL API
@@ -22,13 +23,15 @@ class HomePage extends React.Component {
       products: [],
       page: 1,
       maxPage: null,
+      next: null,
+      prev: null,
     }
   }
 
   fetchData = () => {
     Axios.post(`${URL_API}/product/get-product`, { page: 1 })
       .then(res => {
-        this.setState({ products: res.data.slice(0,10), maxPage: res.data[10] })
+        this.setState({ products: res.data.slice(0, res.data.length - 1), maxPage: res.data[res.data.length - 1] })
       })
       .catch(err => {
         console.log(err)
@@ -40,19 +43,82 @@ class HomePage extends React.Component {
   }
 
   onNext = () => {
-    Axios.post(`${URL_API}/product/get-product`, { page: this.state.page + 1 })
-      .then(res => {
-        this.setState({ products: res.data.slice(0,10), maxPage: res.data[10], page: this.state.page + 1})
-      })
-      .catch(err => {
-        console.log(err)
-      })
+    if (this.state.next === null) {
+      Axios.post(`${URL_API}/product/get-product`, { page: this.state.page + 1 })
+        .then(res => {
+          this.setState({ products: res.data.slice(0, res.data.length - 1), maxPage: res.data[res.data.length - 1], page: this.state.page + 1})
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    } else if (this.state.next === 'filter') {
+      let name = this.refs.name.value
+      let category = this.refs.category.value
+      let page = this.state.page + 1
+
+      let data = {
+        name,
+        category,
+        page
+      }
+
+      Axios.post(`${URL_API}/product/filter-product`, data)
+        .then(res => {
+          this.setState({ products: res.data.slice(0, res.data.length - 1), maxPage: res.data[res.data.length - 1], page: this.state.page + 1})
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    }
   }
 
   onPrev = () => {
-    Axios.post(`${URL_API}/product/get-product`, { page: this.state.page - 1 })
+    if (this.state.prev === null) {
+      Axios.post(`${URL_API}/product/get-product`, { page: this.state.page - 1 })
+        .then(res => {
+          this.setState({ products: res.data.slice(0, res.data.length - 1), maxPage: res.data[res.data.length - 1], page: this.state.page - 1})
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    } else if (this.state.prev === 'filter') {
+      let name = this.refs.name.value
+      let category = this.refs.category.value
+      let page = this.state.page - 1
+
+      let data = {
+        name,
+        category,
+        page
+      }
+
+      Axios.post(`${URL_API}/product/filter-product`, data)
+        .then(res => {
+          this.setState({ products: res.data.slice(0, res.data.length - 1), maxPage: res.data[res.data.length - 1], page: this.state.page - 1})
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    }
+  }
+
+  onSearchFilter = () => {
+    let name = this.refs.name.value
+    let category = this.refs.category.value
+
+    let data = {
+      name,
+      category,
+      page: 1
+    }
+
+    console.log(data)
+
+    Axios.post(`${URL_API}/product/filter-product`, data)
       .then(res => {
-        this.setState({ products: res.data.slice(0,10), maxPage: res.data[10], page: this.state.page - 1})
+        this.setState({ products: res.data.slice(0, res.data.length - 1), maxPage: res.data[res.data.length - 1] })
+        this.setState({ page: 1 })
+        this.setState({ next: 'filter', prev: 'filter' })
       })
       .catch(err => {
         console.log(err)
@@ -68,10 +134,24 @@ class HomePage extends React.Component {
           <p style={{ margin: 0 }}>Page {this.state.page} of {this.state.maxPage}</p>
           <Button style={{ marginLeft: '10px' }} variant="primary" disabled={this.state.page === this.state.maxPage ? true : false} onClick={this.onNext}>Next</Button>
         </div>
+        <div style={styles.divForm}>
+          <p style={{ margin: 0 }}>Filter By :</p>
+          <Form.Control style={styles.filterForm} type="text" placeholder="Name" ref="name" />
+          <Form.Select style={styles.filterForm} ref="category">
+            <option value="">Category</option>
+            <option value="Asma">Asma</option>
+            <option value="Diabetes">Diabetes</option>
+            <option value="Jantung">Jantung</option>
+            <option value="Kulit">Kulit</option>
+            <option value="Mata">Mata</option>
+            <option value="Saluran Pencernaan">Saluran Pencernaan</option>
+          </Form.Select>
+          <Button variant="outline-primary" onClick={this.onSearchFilter}>Search</Button>
+        </div>
         <Row style={{ margin: '20px' }} xs={1} md={5} className="g-4">
           {this.state.products.map((item, index) => (
-            <Col>
-              <Card style={styles.card}>
+            <Col key={index}>
+              <Card style={styles.card} key={index+1000}>
                 <Card.Img variant="top" src={item.link_foto} />
                 <Card.Body style={styles.cardBody}>
                   <Card.Title style={{ textAlign: 'center', marginBottom: '15px' }}>{item.nama}</Card.Title>
@@ -104,6 +184,17 @@ const styles = {
     alignItems: 'center',
     marginTop: '44px',
     justifyContent: 'center'
+  },
+  divForm: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    width: '60vw',
+    margin: '44px auto 0 auto',
+  },
+  filterForm: {
+    width: "20vw",
   }
 }
 
