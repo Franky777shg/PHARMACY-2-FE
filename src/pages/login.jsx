@@ -76,7 +76,7 @@ class LoginPage extends React.Component {
                     </InputGroup>
                     <label>Password</label>
                     <InputGroup className="mb-3">
-                        <InputGroup.Text id="basic-addon1" id="myInput" onClick={() => this.setState({ visibility: !visibility })}>
+                        <InputGroup.Text id="basic-addon1 myInput" onClick={() => this.setState({ visibility: !visibility })}>
                             {visibility ? <i className="fas fa-eye"></i> : <i className="fas fa-eye-slash"></i>}
                         </InputGroup.Text>
                         <FormControl
