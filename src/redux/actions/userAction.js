@@ -63,10 +63,25 @@ export const forgotpw = (body) => {
             .catch(err => {
                 console.log(err)
                 dispatch({
-                    type: 'FORGOTPW_NO',
-                    payload: 'User with this email does not exists'
-                })
+                        type: 'FORGOTPW_NO',
+                        payload: 'User with this email does not exists'
+                    })
             })
+    }
+}
+
+export const changepw = (token) => {
+    return (dispatch) => {
+        Axios.post(`${URL_API}/changepw/`,{}, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        })
+        .then(res => {
+            console.log(res.data)
+        })
+        .catch(err => {
+            console.log(err)})
     }
 }
 
