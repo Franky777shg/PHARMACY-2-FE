@@ -45,6 +45,31 @@ export const closeModal = () => {
     }
 }
 
+export const forgotpw = (body) => {
+    return (dispatch) => {
+        Axios.post(`${URL_API}/forgotpw`, body)
+            .then(res => {
+                console.log(res.data)
+                if (res.data.length !== 0) {
+                    dispatch({
+                        type: 'FORGOTPW_OK',
+                        payload: 'Email has been sent, kindly follow the instructions'
+                    })
+                }
+                // else {
+                    
+                // }
+            })
+            .catch(err => {
+                console.log(err)
+                dispatch({
+                    type: 'FORGOTPW_NO',
+                    payload: 'User with this email does not exists'
+                })
+            })
+    }
+}
+
 // export const logout = () => {
 //     return (dispatch) => {
 //         //menghapus data idUser di localStorage
