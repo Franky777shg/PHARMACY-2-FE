@@ -4,17 +4,21 @@ import React from 'react'
 import {
     Navbar,
     Container,
+    Image
 } from 'react-bootstrap'
 
 // React Router DOM
 import { Link } from 'react-router-dom'
+
+// Import LOGO
+import { LOGO } from '../assets'
 
 class NavBar extends React.Component {
     render () {
         return (
         <Navbar style={styles.navbar}>
             <Container style={styles.container}>
-            <h3 style={{ margin: '0', cursor: 'pointer' }} as={Link} to="/">Pharmacy</h3>
+            <Link to="/"><Image style={styles.logo} src={LOGO.default} /></Link>
             <div style={styles.navbarDiv}>
                 <Link style={styles.navbarText} to="/login">Login</Link>
                 <Link style={styles.navbarText} to="/register">Register</Link>
@@ -51,6 +55,9 @@ const styles = {
         padding: '5px 30px 5px',
         margin: '0',
         cursor: 'pointer'
+    },
+    logo: {
+        width: '20vw'
     }
 }
 

@@ -13,6 +13,9 @@ import {
   Form
 } from 'react-bootstrap'
 
+// React Router Dom
+import { Link } from 'react-router-dom';
+
 // URL API
 const URL_API = "http://localhost:2000"
 
@@ -327,7 +330,7 @@ class HomePage extends React.Component {
                   <Card.Title style={{ textAlign: 'center', marginBottom: '15px' }}>{item.nama}</Card.Title>
                   <Card.Text>{item.satuan}</Card.Text>
                   <Card.Text>Rp {(item.harga).toLocaleString()}</Card.Text>
-                  <Button style={{ position: 'absolute', bottom: '25px'}}>Detail</Button>
+                  <Button style={{ position: 'absolute', bottom: '25px'}} as={Link} to={`/detail-product/${item.idproduk}`}>Detail</Button>
                 </Card.Body>
               </Card>
             </Col>
@@ -379,4 +382,4 @@ const styles = {
   }
 }
 
-export default HomePage;
+export default HomePage
