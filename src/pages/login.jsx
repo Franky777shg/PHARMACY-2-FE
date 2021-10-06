@@ -98,11 +98,8 @@ class LoginPage extends React.Component {
                     </div>
                     <p style={styles.gotoregis}>Don't have an account yet? </p>
                     <p style={styles.gotoregis}><Link style={{ color: '#303f9f' }} to="/register">Register to create one now.</Link></p>
-
-                   
-
+                </div>
                 
-            </div>
             <Modal show={this.state.error}>
                 
                 <Modal.Header>
@@ -193,4 +190,5 @@ const mapStateToProps = (state) => {
         msgFailedLogin: state.userReducer.msgFailedLogin
     }
 }
+
 export default connect(mapStateToProps,{login, closeModal})(LoginPage)
