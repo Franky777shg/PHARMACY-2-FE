@@ -62,6 +62,8 @@ class DetailProductPage extends React.Component {
                             <h4 style={styles.h4}>{this.state.product ? `Rp ${(this.state.product.harga).toLocaleString()}` : ""}</h4>
                             <h4 style={styles.h4}>{this.state.product ? this.state.product.satuan : ""}</h4>
                             <h4 style={styles.h4}>{this.state.product ? `Stok: ${this.state.product.stok}` : ""}</h4>
+                            {this.props.username 
+                            ?
                             <div style={styles.controlDiv}>
                                 <div style={styles.inputJumlahStokDiv}>
                                     <Button variant="primary" disabled={this.state.qty === 1 ? true : false} onClick={() => this.setState({ qty: this.state.qty - 1 })}>-</Button>
@@ -75,6 +77,10 @@ class DetailProductPage extends React.Component {
                                 </div>
                                 <Button style={{ width: '10vw', marginBottom: '30px' }} variant="success">Add to Cart</Button>
                             </div>
+                            :
+                            <div></div>
+                            }
+                            
                         </div>
                         <div style={styles.textDiv}>
                             <div style={styles.textDescription}>
