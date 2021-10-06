@@ -98,17 +98,33 @@ export const forgotpw = (body) => {
 //                     })
 //             })
 //         }
-    //     const idUser = localStorage.getItem('idUser')
-    //     if (idUser) {
-    //         Axios.get(`${URL_API}/keeplogin/${idUser}`)
-    //             .then(res => {
-    //                 return dispatch({
-    //                     type: 'LOGIN', //dia sama returnnya sm login jd drpd bkin case baru mending pake case ud ad
-    //                     payload: res.data[0]
-    //                 })
-    //             })
-    //     }
+//     const idUser = localStorage.getItem('idUser')
+//     if (idUser) {
+//         Axios.get(`${URL_API}/keeplogin/${idUser}`)
+//             .then(res => {
+//                 return dispatch({
+//                     type: 'LOGIN', //dia sama returnnya sm login jd drpd bkin case baru mending pake case ud ad
+//                     payload: res.data[0]
+//                 })
+//             })
+//     }
 //     }
 
 // }
 
+
+export const verification = (token) => {
+    return (dispatch) => {
+        Axios.post(`${URL_API}/verification`, {}, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        })
+        .then(res => {
+            console.log(res.data)
+        })
+        .catch(err => {
+            console.log(err)
+        })
+    }
+}
