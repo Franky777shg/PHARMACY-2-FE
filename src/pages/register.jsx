@@ -3,7 +3,7 @@ import {
   FormControl,
   InputGroup,
   Button,
-  Form
+  Form,
 } from 'react-bootstrap'
 import { Link, Redirect } from 'react-router-dom'
 import Axios from 'axios'
@@ -20,7 +20,8 @@ class RegisterPage extends React.Component {
       regisErorr: [false, ""],
       ageErorr: [false, ""],
       users: [],
-      successRegister : false
+      successRegister: false,
+      show : true,
     }
   }
 
@@ -90,25 +91,29 @@ class RegisterPage extends React.Component {
       age,
       role: 'user',
       profile_picture: 'picture',
-      verify: 'verified'
+      verify: 'unverified'
     }
     console.log(newData)
 
     Axios.post(`http://localhost:2000/user/addUser`, newData)
       .then(res => {
         console.log(res.data)
-        this.setState({users : res.data})
-        this.setState({successRegister: true})
+        this.setState({ users: res.data })
+        this.setState({ successRegister: true })
       })
       .catch(err => {
         console.log(err)
       })
+
+    
+    this.setState({regisErorr: [false, ""]})
   }
 
   render() {
     if (this.state.successRegister) {
-      return <Redirect to="/login"/>
+      return <Redirect to="/email" />
     }
+
     const { visibility1, visibility2 } = this.state
     return (
       <div style={styles.cont}>
@@ -230,6 +235,7 @@ class RegisterPage extends React.Component {
           </Form.Text>
           <p style={styles.goToRegis}>Already Have an Account ? <Link style={{ color: '#00BCD4', fontWeight: 'bold' }} to="/login">Login Here</Link></p>
           <p style={styles.goToRegis}>Go to <Link style={{ color: '#00BCD4', fontWeight: 'bold' }} to="/">Home</Link></p>
+
         </div>
       </div>
     )
@@ -246,11 +252,11 @@ const styles = {
   },
   contForm: {
     width: '40vw',
-    marginLeft: 'auto',
+    marginLeft: '32vw',
     borderRadius: '10px',
     backgroundColor: 'rgba(255, 255, 255, .8)',
     padding: '1% 2%',
-    zIndex: '- 1',
+    boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)',
   },
   contButton: {
     display: 'flex',
