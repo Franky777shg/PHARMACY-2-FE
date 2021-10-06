@@ -15,7 +15,7 @@ import {connect} from 'react-redux'
 import { login, closeModal } from '../redux/actions'
 
 
-class LoginPage extends React.Component {
+class ChangePage extends React.Component {
     constructor(props){
         super(props)
         this.state = {
@@ -32,7 +32,13 @@ class LoginPage extends React.Component {
         }
     }
 
-    onLogin = () => {
+    // componentDidMount(){
+    //     console.log(this.props.match.params.token)
+    //     this.props.verification(this.props.match.params.token)
+    //     this.setState({text: 'Verification Success'})
+    // }
+
+    onSubmit = () => {
         //ambil data dari input username dan password
         let username = this.refs.username.value
         let password = this.refs.password.value
@@ -63,24 +69,14 @@ class LoginPage extends React.Component {
                    <div style={{justifyContent:'center',display:'flex',paddingBottom:'20px',paddingTop:'10px'}}> <Image src={LOGO.default} style={styles.logo} /> </div>
                         <h4 style={{ color: '#343892', textAlign:'center' }}>Sign in</h4>
                     <h6 className="mb-4" style={{ color: '#343892', textAlign:'center' }}>to continue</h6>
-                    <label>Username/Email</label>
+                    <label>New Password</label>
                     <InputGroup className="mb-3">
                         <InputGroup.Text id="basic-addon1"><i className="fas fa-user-circle"></i></InputGroup.Text>
-                        <FormControl
-                            placeholder="Input Your Username/Email Here"
-                            ref="username"
-                            onKeyDown={(e) => this.clickEnter(e)}
-                            style={{color:'#012EA9'}}
-
-                        />
-                    </InputGroup>
-                    <label>Password</label>
-                    <InputGroup className="mb-3">
-                        <InputGroup.Text id="basic-addon1 myInput" onClick={() => this.setState({ visibility: !visibility })}>
+                        <InputGroup.Text id="basic-addon1" id="myInput" onClick={() => this.setState({ visibility: !visibility })}>
                             {visibility ? <i className="fas fa-eye"></i> : <i className="fas fa-eye-slash"></i>}
                         </InputGroup.Text>
                         <FormControl
-                            placeholder="Input Your Password Here"
+                            placeholder="Input Your New Password Here"
                             type={visibility ? "text" : "password"}
                             ref="password"
                             onKeyDown={(e) => this.clickEnter(e)}
@@ -91,15 +87,37 @@ class LoginPage extends React.Component {
                     <Form.Text style={styles.textErrb} >
                         {this.state.caps[0] ? this.state.caps[1] : ""}
                     </Form.Text>
-                    <p style={styles.forgot}><Link style={{color:'#137985'}} to="/forgot">Forgot Password</Link></p>
+                    <label>Confirm Password</label>
+                    <InputGroup className="mb-3">
+                        <InputGroup.Text id="basic-addon1" id="myInput" onClick={() => this.setState({ visibility: !visibility })}>
+                            {visibility ? <i className="fas fa-eye"></i> : <i className="fas fa-eye-slash"></i>}
+                        </InputGroup.Text>
+                        <FormControl
+                            placeholder="Confirm Your New Password Here"
+                            type={visibility ? "text" : "password"}
+                            ref="password"
+                            onKeyDown={(e) => this.clickEnter(e)}
+                            onKeyUp={(e) => this.onCaps(e)}
+                            style={{color:'#012EA9'}}
+                        />
+                    </InputGroup>
+                    <Form.Text style={styles.textErrb} >
+                        {this.state.caps[0] ? this.state.caps[1] : ""}
+                    </Form.Text>
+
+
+                    {/* <p style={styles.forgot}><Link style={{color:'#137985'}}>Forgot Password</Link></p> */}
                     <div style={styles.contButton}>
-                        <Button variant="primary" style={styles.button} onClick={this.onLogin}>Login</Button>
+                        <Button variant="primary" style={styles.button} onClick={this.onSubmit}>Submit</Button>
 
                     </div>
                     <p style={styles.gotoregis}>Don't have an account yet? </p>
-                    <p style={styles.gotoregis}><Link style={{ color: '#303f9f' }} to="/register">Register to create one now.</Link></p>
-                </div>
+                    <p style={styles.gotoregis}><Link style={{ color: '#303f9f' }} to="/login">Login</Link></p>
+
+                   
+
                 
+            </div>
             <Modal show={this.state.error}>
                 
                 <Modal.Header>
@@ -190,5 +208,4 @@ const mapStateToProps = (state) => {
         msgFailedLogin: state.userReducer.msgFailedLogin
     }
 }
-
-export default connect(mapStateToProps,{login, closeModal})(LoginPage)
+export default connect(mapStateToProps,{login, closeModal})(ChangePage)

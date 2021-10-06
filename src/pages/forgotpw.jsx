@@ -12,37 +12,40 @@ import {
 import { LOGO } from '../assets'
 import {Link, Redirect} from 'react-router-dom'
 import {connect} from 'react-redux'
-import { login, closeModal } from '../redux/actions'
+import { forgotpw, closeModal } from '../redux/actions'
 
 
-class LoginPage extends React.Component {
+    
+    
+class ForgotPage extends React.Component {
     constructor(props){
         super(props)
         this.state = {
             visibility: false,
             error: false,
-            caps: [false,""]
-            // errorLogin: false dpindah k action
+            caps: [false,""],
+            text:"Loading ...",
+            tru: true
         }
     }
+    
 
-    clickEnter = (e) => {
-        if (e.key === 'Enter') {
-            this.onLogin()
-        }
-    }
+    // clickEnter = (e) => {
+    //     if (e.key === 'Enter') {
+    //         this.onProcess()
+    //     }
+    // }
 
-    onLogin = () => {
+    onProcess = () => {
         //ambil data dari input username dan password
-        let username = this.refs.username.value
-        let password = this.refs.password.value
+        let email = this.refs.email.value
+        // let password = this.refs.password.value
         
-        if (!username || !password) {
-            return this.setState({ error: true })
+        let body = {
+            email
         }
-
-        this.props.login({ username, password })
-
+        this.props.forgotpw(body)
+        this.setState({tru: false})
     }
 
     onCaps = (e) => {
@@ -61,45 +64,44 @@ class LoginPage extends React.Component {
             <div style={styles.cont}>
                 <div style={styles.contForm} className="conForm">
                    <div style={{justifyContent:'center',display:'flex',paddingBottom:'20px',paddingTop:'10px'}}> <Image src={LOGO.default} style={styles.logo} /> </div>
-                        <h4 style={{ color: '#343892', textAlign:'center' }}>Sign in</h4>
-                    <h6 className="mb-4" style={{ color: '#343892', textAlign:'center' }}>to continue</h6>
-                    <label>Username/Email</label>
+                        <h4 style={{ color: '#343892', textAlign:'center',paddingBottom:'20px' }}>Forgot Password</h4>
+                    <label style={styles.label}>Enter your email and we'll send you a link to reset your password</label>
+                    {/* <label style={this.state.tru ? {fontSize:'13.5px',paddingBottom:'18px',justifyContent:'center',textAlign:'center'} : {display:'none'}}>Enter your email and we'll send you a link to reset your password</label> */}
                     <InputGroup className="mb-3">
+                    {/* <InputGroup className="mb-3" show={this.state.tru} style={this.state.tru ? null : {display:'none'}}> */}
                         <InputGroup.Text id="basic-addon1"><i className="fas fa-user-circle"></i></InputGroup.Text>
                         <FormControl
-                            placeholder="Input Your Username/Email Here"
-                            ref="username"
-                            onKeyDown={(e) => this.clickEnter(e)}
+                            placeholder="Input Your Email Here"
+                            ref="email"
+                            
                             style={{color:'#012EA9'}}
 
                         />
                     </InputGroup>
-                    <label>Password</label>
-                    <InputGroup className="mb-3">
-                        <InputGroup.Text id="basic-addon1 myInput" onClick={() => this.setState({ visibility: !visibility })}>
-                            {visibility ? <i className="fas fa-eye"></i> : <i className="fas fa-eye-slash"></i>}
-                        </InputGroup.Text>
-                        <FormControl
-                            placeholder="Input Your Password Here"
-                            type={visibility ? "text" : "password"}
-                            ref="password"
-                            onKeyDown={(e) => this.clickEnter(e)}
-                            onKeyUp={(e) => this.onCaps(e)}
-                            style={{color:'#012EA9'}}
-                        />
-                    </InputGroup>
-                    <Form.Text style={styles.textErrb} >
-                        {this.state.caps[0] ? this.state.caps[1] : ""}
-                    </Form.Text>
-                    <p style={styles.forgot}><Link style={{color:'#137985'}} to="/forgot">Forgot Password</Link></p>
-                    <div style={styles.contButton}>
-                        <Button variant="primary" style={styles.button} onClick={this.onLogin}>Login</Button>
+                    
+                    <div style={styles.contButton} display={this.state.tru} >
+                        <Button variant="primary" style={styles.button} onClick={this.onProcess}>Process</Button>
+                        {/* <Button variant="primary" style={this.state.tru ? {backgroundColor: '#343892',border:'none', marginLeft:'auto', marginRight:'auto', fontWeight:'bold',width:'400px'} : {display:'none'}} onClick={this.onProcess}>Process</Button> */}
 
                     </div>
+
+                    <Form.Text style={styles.textErrb} >
+                    <p style={{justifyContent:'center',marginTop:'10px'}}>{this.props.forgotpw_ok}</p>
+                    </Form.Text>
+                    
+                    <Form.Text style={styles.textErrb} >
+                    <p style={{justifyContent:'center',marginTop:'10px'}}>{this.props.forgotpw_no}</p>
+                    </Form.Text>
+
                     <p style={styles.gotoregis}>Don't have an account yet? </p>
                     <p style={styles.gotoregis}><Link style={{ color: '#303f9f' }} to="/register">Register to create one now.</Link></p>
-                </div>
+
+                    <p style={styles.gotologin}><Link style={{ textDecoration: 'none', color:'#8E8E8E' }} to="/login"><i class="fas fa-chevron-left"></i>     Back to Login</Link></p>
+
+                   
+
                 
+            </div>
             <Modal show={this.state.error}>
                 
                 <Modal.Header>
@@ -107,7 +109,7 @@ class LoginPage extends React.Component {
                 </Modal.Header>
 
                 <Modal.Body>
-                    <p>Please input all of the data!</p>
+                    <p>{this.props.forgotpw_ok}</p>
                 </Modal.Body>
 
                 <Modal.Footer>
@@ -116,14 +118,14 @@ class LoginPage extends React.Component {
                 
                 </Modal>
            
-                <Modal show={this.props.failedLogin}>
+                <Modal show={this.state.tru}>
                 
                 <Modal.Header>
                     <Modal.Title>Error</Modal.Title>
                 </Modal.Header>
 
                 <Modal.Body>
-                    <p>{this.props.msgFailedLogin}</p>
+                    <p>{this.props.forgotpw_no}</p>
                 </Modal.Body>
 
                 <Modal.Footer>
@@ -156,15 +158,18 @@ const styles = {
     logo: {
         height:'25px'
     },
+    label: {
+        fontSize:'13.5px',paddingBottom:'18px',justifyContent:'center',textAlign:'center'
+    },
     textErrb: {
         color:'#343892',
-        fontWeight: 'bold',
-        marginBottom: '15px'
+       textAlign:'center',
+       justifyContent:'center'
     },
     contButton: {
         display:'flex',
         justifyContent: 'center',
-        marginBottom: '20px'        
+                paddingTop:'13px'        
     },
     button:{
         backgroundColor: '#343892',
@@ -176,10 +181,16 @@ const styles = {
     },
     gotoregis: {
         fontWeight: 'bold',
-        textAlign:'center'
+        textAlign:'center',marginTop: '25px'
     },
     forgot:{
         fontWeight: 'bold', fontSize:'12px'
+    },
+    gotologin:{
+        fontSize:'12px',
+        color:'#303f9f',
+        textAlign:'center',
+        paddingTop:'10px'
     }
 }
 
@@ -187,8 +198,9 @@ const mapStateToProps = (state) => {
     return {
         username: state.userReducer.username,
         failedLogin: state.userReducer.failedLogin,
-        msgFailedLogin: state.userReducer.msgFailedLogin
+        msgFailedLogin: state.userReducer.msgFailedLogin,
+        forgotpw_ok: state.userReducer.forgotpw_ok,
+        forgotpw_no: state.userReducer.forgotpw_no
     }
 }
-
-export default connect(mapStateToProps,{login, closeModal})(LoginPage)
+export default connect(mapStateToProps,{forgotpw,closeModal})(ForgotPage)
