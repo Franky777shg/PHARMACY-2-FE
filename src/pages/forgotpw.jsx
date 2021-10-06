@@ -38,11 +38,11 @@ class ForgotPage extends React.Component {
 
     onProcess = () => {
         //ambil data dari input username dan password
-        let email = this.refs.email.value
+        let emailuser = this.refs.email.value
         // let password = this.refs.password.value
         
         let body = {
-            email
+            emailuser
         }
         this.props.forgotpw(body)
         this.setState({tru: false})
@@ -102,7 +102,7 @@ class ForgotPage extends React.Component {
 
                 
             </div>
-            <Modal show={this.state.error}>
+            {/* <Modal show={this.state.error}>
                 
                 <Modal.Header>
                     <Modal.Title>Error</Modal.Title>
@@ -133,7 +133,7 @@ class ForgotPage extends React.Component {
                     
                 </Modal.Footer>
                 
-                </Modal>
+                </Modal> */}
             </div >
         )
     }
