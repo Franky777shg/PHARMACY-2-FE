@@ -14,7 +14,7 @@ export const login = (data) => {
             // })
             .then(res => {
                 console.log(res.data)
-                
+
                 if (res.data.length !== 0) {
                     localStorage.setItem('idUser', res.data[0].iduser)
                     dispatch({
@@ -27,11 +27,11 @@ export const login = (data) => {
                         type: 'FAILED_LOGIN',
                         payload: 'Username/Password is Invalid'
                     })
-                   
+
                 }
             })
             .catch(err => {
-               
+
                 console.log(err)
             })
     }
@@ -73,17 +73,33 @@ export const closeModal = () => {
 //                     })
 //             })
 //         }
-    //     const idUser = localStorage.getItem('idUser')
-    //     if (idUser) {
-    //         Axios.get(`${URL_API}/keeplogin/${idUser}`)
-    //             .then(res => {
-    //                 return dispatch({
-    //                     type: 'LOGIN', //dia sama returnnya sm login jd drpd bkin case baru mending pake case ud ad
-    //                     payload: res.data[0]
-    //                 })
-    //             })
-    //     }
+//     const idUser = localStorage.getItem('idUser')
+//     if (idUser) {
+//         Axios.get(`${URL_API}/keeplogin/${idUser}`)
+//             .then(res => {
+//                 return dispatch({
+//                     type: 'LOGIN', //dia sama returnnya sm login jd drpd bkin case baru mending pake case ud ad
+//                     payload: res.data[0]
+//                 })
+//             })
+//     }
 //     }
 
 // }
 
+
+export const verification = (token) => {
+    return (dispatch) => {
+        Axios.post(`${URL_API}/verification`, {}, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        })
+        .then(res => {
+            console.log(res.data)
+        })
+        .catch(err => {
+            console.log(err)
+        })
+    }
+}
