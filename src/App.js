@@ -28,7 +28,6 @@ class App extends React.Component {
         <Route path="/detail-product" component={DetailProductPage} />
         <Route path="/verification/:token" component={VerifyPage} />
         <Route path="/email" component={SendingEmail} />
-        <Route path="/change" component={ChangePage} />
         <Route path="/forgot" component={ForgotPage} />
       </Switch>
     )

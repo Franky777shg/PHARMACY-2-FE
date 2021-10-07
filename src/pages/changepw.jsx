@@ -4,63 +4,54 @@ import {
     FormControl,
     InputGroup,
     Button,
-    Modal,
     Form,
-    Image
+    Image,
+    Alert
 } from 'react-bootstrap'
 
 import { LOGO } from '../assets'
-import {Link, Redirect} from 'react-router-dom'
-import {connect} from 'react-redux'
-import { changepw, closeModal } from '../redux/actions'
+import { Link, Redirect } from 'react-router-dom'
+import { connect } from 'react-redux'
+import { changepw } from '../redux/actions'
 
 
 class ChangePage extends React.Component {
-    constructor(props){
+    constructor(props) {
         super(props)
         this.state = {
             visibility: false,
-            error: false,
-            caps: [false,""]
-            // errorLogin: false dpindah k action
-        }
-    }
-
-    clickEnter = (e) => {
-        if (e.key === 'Enter') {
-            this.onLogin()
+            error: false
         }
     }
 
     // componentDidMount(){
     //     console.log(this.props.match.params.token)
-    //     this.props.verification(this.props.match.params.token)
-    //     this.setState({text: 'Verification Success'})
+    //     this.props.changepw(this.props.match.params.token)
+    //     // this.setState({text: 'Verification Success'})
     // }
 
     onSubmit = () => {
         let newPass = this.refs.newPass.value
         let confPass = this.refs.confPass.value
-        this.props.changepw({ newPass, confPass })
-    }
-
-    onCaps = (e) => {
-        if (e.getModifierState('CapsLock')) {
-            return this.setState({ caps: [true, "WARNING! Caps lock is ON."] })
-        }
-        this.setState({ caps: [false, ""] })
+        let tk = this.props.match.params.token
+        // let passingdata = {
+        //     tk,newPass, confPass
+        // }
+        // this.props.changepw(passingdata)
+        // this.props.changepw([[this.props.match.params.token],[{ newPass, confPass }]])
+        this.props.changepw({ tk, newPass, confPass })
     }
 
     render() {
-        if(this.props.username){
+        if (this.props.username) {
             return <Redirect to="/" />
         }
-        const {visibility} = this.state
+        const { visibility } = this.state
         return (
             <div style={styles.cont}>
-                 <div style={styles.contForm} className="conForm">
-                   <div style={{justifyContent:'center',display:'flex',paddingBottom:'20px',paddingTop:'10px'}}> <Image src={LOGO.default} style={styles.logo} /> </div>
-                        <h4 style={{ color: '#343892', textAlign:'center',paddingBottom:'20px' }}>Reset Password</h4>
+                <div style={styles.contForm} className="conForm">
+                    <div style={{ justifyContent: 'center', display: 'flex', paddingBottom: '20px', paddingTop: '10px' }}> <Image src={LOGO.default} style={styles.logo} /> </div>
+                    <h4 style={{ color: '#343892', textAlign: 'center', paddingBottom: '20px' }}>Reset Password</h4>
                     <p style={styles.label}>Please enter your new password</p>
                     <label>New Password</label>
                     <InputGroup className="mb-3">
@@ -71,14 +62,9 @@ class ChangePage extends React.Component {
                             placeholder="Input Your New Password Here"
                             type={visibility ? "text" : "password"}
                             ref="newPass"
-                            onKeyDown={(e) => this.clickEnter(e)}
-                            onKeyUp={(e) => this.onCaps(e)}
-                            style={{color:'#012EA9'}}
+                            style={{ color: '#012EA9' }}
                         />
                     </InputGroup>
-                    <Form.Text style={styles.textErrb} >
-                        {this.state.caps[0] ? this.state.caps[1] : ""}
-                    </Form.Text>
                     <label>Confirm Password</label>
                     <InputGroup className="mb-3">
                         <InputGroup.Text id="basic-addon1" id="myInput" onClick={() => this.setState({ visibility: !visibility })}>
@@ -88,62 +74,24 @@ class ChangePage extends React.Component {
                             placeholder="Confirm Your New Password Here"
                             type={visibility ? "text" : "password"}
                             ref="confPass"
-                            onKeyDown={(e) => this.clickEnter(e)}
-                            onKeyUp={(e) => this.onCaps(e)}
-                            style={{color:'#012EA9'}}
+                            style={{ color: '#012EA9' }}
                         />
                     </InputGroup>
-                    <Form.Text style={styles.textErrb} >
-                        {this.state.caps[0] ? this.state.caps[1] : ""}
-                    </Form.Text>
 
-
-                    {/* <p style={styles.forgot}><Link style={{color:'#137985'}}>Forgot Password</Link></p> */}
                     <div style={styles.contButton}>
                         <Button variant="primary" style={styles.button} onClick={this.onSubmit}>Submit</Button>
-
-                    </div>               
+                    </div>
                     {/* <Form.Text style={styles.textErrb} >
-                    <p style={{justifyContent:'center',marginTop:'10px'}}>{this.props.forgotpw_ok}</p>
-                    </Form.Text>
-                    
-                    <Form.Text style={styles.textErrb} >
-                    <p style={{justifyContent:'center',marginTop:'10px'}}>{this.props.forgotpw_no}</p>
+                        <p style={{ justifyContent: 'center', marginTop: '10px' }}>{this.props.forgotpw_ok}</p>
                     </Form.Text> */}
-                
-            </div>
-            <Modal show={this.state.error}>
-                
-                <Modal.Header>
-                    <Modal.Title>Error</Modal.Title>
-                </Modal.Header>
+                    <Alert variant="success" show={this.props.changed} className="mt-3">
+                        <p style={{ justifyContent: 'center' }} className="mb-0">{this.props.successpw}</p>
+                    </Alert>
 
-                <Modal.Body>
-                    <p>Please input all of the data!</p>
-                </Modal.Body>
+                    <p style={styles.gotologin}><Link style={{ textDecoration: 'none', color: '#8E8E8E' }} to="/login">Back to Login</Link></p>
 
-                <Modal.Footer>
-                    <Button variant="secondary" onClick={()=> this.setState({error:false})}>OK</Button>
-                </Modal.Footer>
-                
-                </Modal>
-           
-                <Modal show={this.props.failedLogin}>
-                
-                <Modal.Header>
-                    <Modal.Title>Error</Modal.Title>
-                </Modal.Header>
+                </div>
 
-                <Modal.Body>
-                    <p>{this.props.msgFailedLogin}</p>
-                </Modal.Body>
-
-                <Modal.Footer>
-                    <Button variant="secondary" onClick={this.props.closeModal}>OK</Button>
-                    
-                </Modal.Footer>
-                
-                </Modal>
             </div >
         )
     }
@@ -151,9 +99,9 @@ class ChangePage extends React.Component {
 
 const styles = {
     cont: {
-        backgroundColor:'#ffffff',
+        backgroundColor: '#ffffff',
         height: '100vh',
-        display:'flex',
+        display: 'flex',
         justifyContent: 'center'
     },
     contForm: {
@@ -163,38 +111,44 @@ const styles = {
         border: '1px solid #80F1B2',
         padding: '2%',
         borderRadius: '10px',
-        justifyContent: 'center',backgroundColor:'#ffffff'
+        justifyContent: 'center', backgroundColor: '#ffffff'
     },
     logo: {
-        height:'25px'
+        height: '25px'
     },
     label: {
-        fontSize:'13.5px',paddingBottom:'18px',justifyContent:'center',textAlign:'center'
+        fontSize: '13.5px', paddingBottom: '18px', justifyContent: 'center', textAlign: 'center'
     },
     textErrb: {
-        color:'#343892',
+        color: '#343892',
         fontWeight: 'bold',
         marginBottom: '15px'
     },
     contButton: {
-        display:'flex',
+        display: 'flex',
         justifyContent: 'center',
-        marginBottom: '20px'        
+        marginBottom: '20px'
     },
-    button:{
+    button: {
         backgroundColor: '#343892',
-        border:'none',
-        marginLeft:'auto',
-        marginRight:'auto',
-        fontWeight:'bold',
-        width:'400px',
+        border: 'none',
+        marginLeft: 'auto',
+        marginRight: 'auto',
+        fontWeight: 'bold',
+        width: '400px',
     },
     gotoregis: {
         fontWeight: 'bold',
-        textAlign:'center'
+        textAlign: 'center'
     },
-    forgot:{
-        fontWeight: 'bold', fontSize:'12px'
+    forgot: {
+        fontWeight: 'bold', fontSize: '12px'
+    },
+    gotologin: {
+        fontSize: '12px',
+        color: '#303f9f',
+        textAlign: 'center',
+        paddingTop: '10px'
     }
 }
 
@@ -202,7 +156,9 @@ const mapStateToProps = (state) => {
     return {
         username: state.userReducer.username,
         failedLogin: state.userReducer.failedLogin,
-        msgFailedLogin: state.userReducer.msgFailedLogin
+        msgFailedLogin: state.userReducer.msgFailedLogin,
+        successpw: state.userReducer.successpw,
+        changed: state.userReducer.changed
     }
 }
-export default connect(mapStateToProps,{changepw, closeModal})(ChangePage)
+export default connect(mapStateToProps, { changepw })(ChangePage)

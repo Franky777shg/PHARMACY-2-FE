@@ -290,7 +290,7 @@ class HomePage extends React.Component {
 
   render () {
     return (
-      <div>
+      <div >
         <NavBar />
         <div style={styles.paginationDiv}>
           <Button style={{ marginRight: '10px' }} variant="primary" disabled={this.state.page === 1 ? true : false} onClick={this.onPrev}>Prev</Button>
@@ -355,7 +355,7 @@ const styles = {
     width: '100vw',
     display: 'flex',
     alignItems: 'center',
-    marginTop: '44px',
+    marginTop: '124px',
     justifyContent: 'center'
   },
   divForm: {
