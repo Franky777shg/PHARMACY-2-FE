@@ -7,6 +7,9 @@ import NavBar from '../components/navbar'
 // Redux
 import { connect } from 'react-redux'
 
+// React Router DOM
+import { Link, Redirect } from 'react-router-dom'
+
 // React Bootstrap
 import {
     Image,
@@ -51,6 +54,9 @@ class DetailProductPage extends React.Component {
     }
 
     render () {
+        if (this.props.role === "admin") {
+            return <Redirect to="/" />
+        }
         return (
             <div>
                 <NavBar />
@@ -195,7 +201,8 @@ const styles = {
 
 const mapStateToProps = (state) => {
     return {
-        username: state.userReducer.username
+        username: state.userReducer.username,
+        role: state.userReducer.role
     }
 }
 

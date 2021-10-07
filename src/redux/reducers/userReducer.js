@@ -3,6 +3,7 @@ const INITIAL_STATE = {
     username: "",
     password: "",
     email: "",
+    role: "",
     failedLogin: false,
     msgFailedLogin: "",
     forgotpw_ok: "",
@@ -19,6 +20,7 @@ const userReducer = (state = INITIAL_STATE, action) => {
                 username: action.payload.username,
                 password: action.payload.password,
                 email: action.payload.email,
+                role: action.payload.role,
                 profilePic: action.payload.profile_pic
             }
         case 'FAILED_LOGIN':
