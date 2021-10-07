@@ -10,6 +10,7 @@ import SendingEmail from './pages/sendingEmail';
 import VerifyPage from './pages/verivication';
 import ChangePage from './pages/changepw';
 import ForgotPage from './pages/forgotpw';
+import ProfilePage from './pages/profileUser';
 
 class App extends React.Component {
   render () {
@@ -23,6 +24,7 @@ class App extends React.Component {
         <Route path="/email" component={SendingEmail} />
         <Route path="/change" component={ChangePage} />
         <Route path="/forgot" component={ForgotPage} />
+        <Route path="/profile/:id" component={ProfilePage} />
       </Switch>
     )
   }
