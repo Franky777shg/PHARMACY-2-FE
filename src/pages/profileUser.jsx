@@ -5,8 +5,9 @@ import {
     Button
 } from 'react-bootstrap'
 import Axios from 'axios'
+import { connect } from 'react-redux'
 
-// const idUser = this.props.location.pathname.slice(9)
+const URL_API = 'http://localhost:2000/'
 
 class ProfilePage extends React.Component {
     constructor(props) {
@@ -15,7 +16,8 @@ class ProfilePage extends React.Component {
             visibility1: false,
             users: [],
             editUser: [],
-            idEdit: null
+            idEdit: null,
+            images: ''
 
         }
     }
@@ -33,7 +35,7 @@ class ProfilePage extends React.Component {
                 console.log(err)
             })
     }
-    
+
     componentDidMount() {
         this.fetchData()
     }
@@ -168,17 +170,17 @@ class ProfilePage extends React.Component {
         const addressEdit = this.refs.addressedit.value
         const ageEdit = +this.refs.ageedit.value
         const genderEdit = this.refs.genderedit.value
-    
+
         const body = {
-          fullname : fullnameEdit,
-          email: emailEdit,
-          address: addressEdit,
-          age : ageEdit,
-          gender : genderEdit
+            fullname: fullnameEdit,
+            email: emailEdit,
+            address: addressEdit,
+            age: ageEdit,
+            gender: genderEdit
         }
         console.log(body)
-        
-        
+
+
         let idUser = this.props.location.pathname.slice(9)
         Axios.patch(`http://localhost:2000/user/edituser/${idUser}`, body)
             .then(res => {
@@ -189,35 +191,84 @@ class ProfilePage extends React.Component {
             .catch(err => {
                 console.log(err)
             })
-    
+
+    }
+
+    handleChoose = (e) => {
+        console.log('e.target.files', e.target.files)
+        this.setState({ images: e.target.files[0] })
+    }
+
+    handleUpload = () => {
+        const data = new FormData()
+        console.log(data) //siapin form data untuk image
+
+        data.append('IMG', this.state.images)
+        console.log(data.get('IMG')) // masukin data Image ke formData
+
+        let idUser = this.props.location.pathname.slice(9)
+        // console.log(idUser)
+        Axios.post(`http://localhost:2000/profile/upload/${idUser}`, data, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        })
+            .then(res => {
+                this.setState({ images: res.data })
+                this.fetchData()
+                console.log(res.data)
+            })
+            .catch(err => {
+                console.log(err)
+            })
+
+        // this.setState({ images: '' })
     }
 
     render() {
-        // console.log(this.state.users)
-        // console.log(this.state.users[0].username)
+        const { profilePic } = this.props
+        console.log(profilePic)
         return (
             <div style={styles.cont}>
                 <div style={styles.contForm}>
                     <div style={{ display: 'flex', flexDirection: 'column', marginLeft: '10vw' }}>
                         <h1>My Profile</h1>
-                        <img style={styles.imgProf} src={'https://media.istockphoto.com/photos/young-hispanic-nurse-in-pink-scrubs-with-clipboard-picture-id157743225?b=1&k=20&m=157743225&s=170667a&w=0&h=y3dCPBIXD4JZ8R3ehQxj0Dy-BS_4PydxqQ3opW5rqKM='} alt="Girl in a jacket" />
+                        <img style={styles.imgProf} src={`url(${profilePic ? URL_API + profilePic : null})`} alt="Girl in a jacket" />
                     </div>
-                    <div style={{ display: 'flex', justifyContent: 'space-around' }}>
-                        <div style={styles.contButton}>
-                            <Button variant="primary" style={styles.button}>
-                                <i class="fas fa-file-upload" style={{ marginRight: '10px' }}></i>
-                                Upload
-                            </Button>
+                    <div >
+                        <div style={{ margin:'3vh', marginLeft:'13vw'}}>
+                            <form encType="multipart/form-data">
+                                <input
+                                    type="file"
+                                    accept="image/*"
+                                    name="IMG"
+                                    onChange={(e) => this.handleChoose(e)}
+                                />
+                            </form>
                         </div>
-                        <div style={styles.contButton}>
-                            <Button variant="primary" style={{ background: '#DF2E2E', border: 'none' }}>
-                                <i class="fas fa-trash" style={{ marginRight: '10px' }}></i>
-                                Remove
-                            </Button>
+                        <div style={{ display: 'flex', justifyContent: 'space-around', margin:'3vh' }}>
+                            <div>
+                                <Button
+                                    variant="primary" style={styles.button}
+                                    className="button"
+                                    variant="success"
+                                    onClick={this.handleUpload}
+                                >
+                                    <i class="fas fa-file-upload" style={{ marginRight: '10px' }}></i>
+                                    Upload
+                                </Button>
+                            </div>
+                            <div style={styles.contButton}>
+                                <Button variant="primary" style={{ background: '#DF2E2E', border: 'none' }}>
+                                    <i class="fas fa-trash" style={{ marginRight: '10px' }}></i>
+                                    Remove
+                                </Button>
+                            </div>
                         </div>
+
                     </div>
                     {this.renderDataUser()}
-                    <div style={{ display: 'flex', justifyContent: 'space-around' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-around', marginTop:'3vh' }}>
                         <div style={styles.contButton}>
                             <Button variant="primary" style={styles.button} onClick={() => this.setState({ idEdit: this.state.idUser })}>
                                 <i class="fas fa-user-edit" style={{ marginRight: '10px' }}></i>
@@ -286,4 +337,10 @@ const styles = {
     }
 }
 
-export default ProfilePage
+const mapStatetoProps = (state) => {
+    return {
+        profilePic: state.userReducer.profilePic
+    }
+}
+
+export default connect(mapStatetoProps)(ProfilePage);

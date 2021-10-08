@@ -9,6 +9,7 @@ const INITIAL_STATE = {
     forgotpw_ok: "",
     forgotpw_no: "",
     forgot:false,
+    profilePic: '',
     forgot1:false,
     successpw:"",
     changed:false,
@@ -64,5 +65,6 @@ const userReducer = (state = INITIAL_STATE, action) => {
     }
 
 }
+
 
 export default userReducer
