@@ -7,11 +7,11 @@ const INITIAL_STATE = {
     msgFailedLogin: "",
     forgotpw_ok: "",
     forgotpw_no: "",
-    forgot:false,
-    forgot1:false,
-    successpw:"",
-    changed:false,
-    role:""
+    forgot: false,
+    forgot1: false,
+    successpw: "",
+    changed: false,
+    role: ""
 }
 
 const userReducer = (state = INITIAL_STATE, action) => {
@@ -24,7 +24,7 @@ const userReducer = (state = INITIAL_STATE, action) => {
                 password: action.payload.password,
                 email: action.payload.email,
                 profilePic: action.payload.profile_pic,
-                role:action.payload.role
+                role: action.payload.role
             }
         case 'FAILED_LOGIN':
             return {
@@ -41,23 +41,25 @@ const userReducer = (state = INITIAL_STATE, action) => {
         case 'FORGOTPW_OK':
             return {
                 ...state,
-                forgot:true,
-                forgot1:false,
+                forgot: true,
+                forgot1: false,
                 forgotpw_ok: action.payload
             }
         case 'FORGOTPW_NO':
             return {
                 ...state,
-                forgot1:true,
-                forgot:false,
+                forgot1: true,
+                forgot: false,
                 forgotpw_no: action.payload
             }
         case 'SUCCESSPW':
-            return{
+            return {
                 ...state,
                 successpw: action.payload,
-                changed:true
+                changed: true
             }
+        case 'LOG_OUT':
+            return INITIAL_STATE
         default:
             return state
     }

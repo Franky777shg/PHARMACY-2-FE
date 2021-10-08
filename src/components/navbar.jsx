@@ -14,7 +14,7 @@ import {
 // React Router DOM
 import { Link } from 'react-router-dom'
 
-// Import LOGO
+import { logout } from '../redux/actions'
 import { LOGO } from '../assets'
 
 class NavBar extends React.Component {
@@ -62,7 +62,7 @@ class NavBar extends React.Component {
                                                     <Dropdown.Menu>
                                                         <Dropdown.Item as={Link} to="#">Financial</Dropdown.Item>
                                                         <Dropdown.Item as={Link} to="#">Transaction</Dropdown.Item>
-                                                        <Dropdown.Item>Logout</Dropdown.Item>
+                                                        <Dropdown.Item onClick={this.props.logout}>Logout</Dropdown.Item>
                                                         {/* <Dropdown.Item onClick={this.props.logout}>Logout</Dropdown.Item> */}
                                                     </Dropdown.Menu>
                                                 </>
@@ -75,7 +75,7 @@ class NavBar extends React.Component {
                                                         <Dropdown.Item >Profile</Dropdown.Item>
                                                         {/* <Dropdown.Item as={Link} to="/profile/:id">My Profile</Dropdown.Item> */}
                                                         <Dropdown.Item as={Link} to="#">My Transaction</Dropdown.Item>
-                                                        <Dropdown.Item>Logout</Dropdown.Item>
+                                                        <Dropdown.Item onClick={this.props.logout} to="/">Logout</Dropdown.Item>
                                                         {/* <Dropdown.Item onClick={this.props.logout}>Logout</Dropdown.Item> */}
                                                     </Dropdown.Menu>
                                                 </>
@@ -148,5 +148,5 @@ const mapStateToProps = (state) => {
         role: state.userReducer.role
     }
 }
-// export default connect (mapStateToProps, { logout })(NavBar)
-export default connect(mapStateToProps)(NavBar)
+export default connect (mapStateToProps, { logout })(NavBar)
+// export default connect(mapStateToProps)(NavBar)
