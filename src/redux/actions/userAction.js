@@ -70,20 +70,27 @@ export const forgotpw = (body) => {
     }
 }
 
-export const changepw = (token) => {
+export const changepw = (data) => {
+    console.log(data)
+    // console.log(`Bearer ${data.tk}`)
     return (dispatch) => {
-        Axios.post(`${URL_API}/changepw/`,{}, {
+        Axios.post(`${URL_API}/changepw`,data, {
             headers: {
-                'Authorization': `Bearer ${token}`
+                'Authorization': `Bearer ${data.tk}`
             }
         })
         .then(res => {
-            console.log(res.data)
+            console.log(res.data,", Success!")
+            dispatch({
+                type:'SUCCESSPW',
+                payload:'Your Password Has Been Changed'
+            })
         })
         .catch(err => {
             console.log(err)})
     }
 }
+
 
 // export const logout = () => {
 //     return (dispatch) => {
@@ -113,16 +120,16 @@ export const changepw = (token) => {
 //                     })
 //             })
 //         }
-//     const idUser = localStorage.getItem('idUser')
-//     if (idUser) {
-//         Axios.get(`${URL_API}/keeplogin/${idUser}`)
-//             .then(res => {
-//                 return dispatch({
-//                     type: 'LOGIN', //dia sama returnnya sm login jd drpd bkin case baru mending pake case ud ad
-//                     payload: res.data[0]
-//                 })
-//             })
-//     }
+    //     const idUser = localStorage.getItem('idUser')
+    //     if (idUser) {
+    //         Axios.get(`${URL_API}/keeplogin/${idUser}`)
+    //             .then(res => {
+    //                 return dispatch({
+    //                     type: 'LOGIN', //dia sama returnnya sm login jd drpd bkin case baru mending pake case ud ad
+    //                     payload: res.data[0]
+    //                 })
+    //             })
+    //     }
 //     }
 
 // }

@@ -4,6 +4,9 @@ import Axios from 'axios'
 // Import Components
 import NavBar from '../components/navbar';
 
+// Redux
+import { connect } from 'react-redux'
+
 // React Bootstrap
 import {
   Button,
@@ -28,11 +31,24 @@ class HomePage extends React.Component {
       maxPage: null,
       next: null,
       prev: null,
+      nextResep: null,
+      prevResep: null,
+      show: "satuan",
     }
   }
 
   fetchData = () => {
     Axios.post(`${URL_API}/product/get-product`, { page: 1 })
+      .then(res => {
+        this.setState({ products: res.data.slice(0, res.data.length - 1), maxPage: res.data[res.data.length - 1] })
+      })
+      .catch(err => {
+        console.log(err)
+      })
+  }
+
+  fetchDataResep = () => {
+    Axios.post(`${URL_API}/product/get-productresep`, { page: 1 })
       .then(res => {
         this.setState({ products: res.data.slice(0, res.data.length - 1), maxPage: res.data[res.data.length - 1] })
       })
@@ -116,9 +132,88 @@ class HomePage extends React.Component {
         return
       }
 
-      console.log(data)
-
       Axios.post(`${URL_API}/product/sort-product`, data)
+        .then(res => {
+          this.setState({ products: res.data.slice(0, res.data.length - 1), maxPage: res.data[res.data.length - 1], page: this.state.page + 1})
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    }
+  }
+
+  onNextResep = () => {
+    if (this.state.nextResep === null) {
+      Axios.post(`${URL_API}/product/get-productresep`, { page: this.state.page + 1 })
+        .then(res => {
+          this.setState({ products: res.data.slice(0, res.data.length - 1), maxPage: res.data[res.data.length - 1], page: this.state.page + 1})
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    } else if (this.state.nextResep === 'filter') {
+      let name = this.refs.nameResep.value
+      let category = this.refs.categoryResep.value
+      let page = this.state.page + 1
+
+      let data = {
+        name,
+        category,
+        page
+      }
+
+      Axios.post(`${URL_API}/product/filter-productresep`, data)
+        .then(res => {
+          this.setState({ products: res.data.slice(0, res.data.length - 1), maxPage: res.data[res.data.length - 1], page: this.state.page + 1})
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    } else if (this.state.nextResep === 'sort') {
+      let name = this.refs.nameResep.value
+      let category = this.refs.categoryResep.value
+      let sort = this.refs.sortResep.value
+      let page = this.state.page + 1
+
+      let data
+
+      if (sort === "nama asc") {
+        data = {
+          name,
+          category,
+          page,
+          order: "nama",
+          sort: "asc"
+        }
+      } else if (sort === "nama desc") {
+        data = {
+          name,
+          category,
+          page,
+          order: "nama",
+          sort: "desc"
+        }
+      } else if (sort === "harga asc") {
+        data = {
+          name,
+          category,
+          page,
+          order: "harga",
+          sort: "asc"
+        }
+      } else if (sort === "harga desc") {
+        data = {
+          name,
+          category,
+          page,
+          order: "harga",
+          sort: "desc"
+        }
+      } else {
+        return
+      }
+
+      Axios.post(`${URL_API}/product/sort-productresep`, data)
         .then(res => {
           this.setState({ products: res.data.slice(0, res.data.length - 1), maxPage: res.data[res.data.length - 1], page: this.state.page + 1})
         })
@@ -209,6 +304,87 @@ class HomePage extends React.Component {
     }
   }
 
+  onPrevResep = () => {
+    if (this.state.prevResep === null) {
+      Axios.post(`${URL_API}/product/get-productresep`, { page: this.state.page - 1 })
+        .then(res => {
+          this.setState({ products: res.data.slice(0, res.data.length - 1), maxPage: res.data[res.data.length - 1], page: this.state.page - 1})
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    } else if (this.state.prevResep === 'filter') {
+      let name = this.refs.nameResep.value
+      let category = this.refs.categoryResep.value
+      let page = this.state.page - 1
+
+      let data = {
+        name,
+        category,
+        page
+      }
+
+      Axios.post(`${URL_API}/product/filter-productresep`, data)
+        .then(res => {
+          this.setState({ products: res.data.slice(0, res.data.length - 1), maxPage: res.data[res.data.length - 1], page: this.state.page - 1})
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    } else if (this.state.prevResep === 'sort') {
+      let name = this.refs.nameResep.value
+      let category = this.refs.categoryResep.value
+      let sort = this.refs.sortResep.value
+      let page = this.state.page - 1
+
+      let data
+
+      if (sort === "nama asc") {
+        data = {
+          name,
+          category,
+          page,
+          order: "nama",
+          sort: "asc"
+        }
+      } else if (sort === "nama desc") {
+        data = {
+          name,
+          category,
+          page,
+          order: "nama",
+          sort: "desc"
+        }
+      } else if (sort === "harga asc") {
+        data = {
+          name,
+          category,
+          page,
+          order: "harga",
+          sort: "asc"
+        }
+      } else if (sort === "harga desc") {
+        data = {
+          name,
+          category,
+          page,
+          order: "harga",
+          sort: "desc"
+        }
+      } else {
+        return
+      }
+
+      Axios.post(`${URL_API}/product/sort-productresep`, data)
+        .then(res => {
+          this.setState({ products: res.data.slice(0, res.data.length - 1), maxPage: res.data[res.data.length - 1], page: this.state.page - 1})
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    }
+  }
+
   onSearchFilter = () => {
     let name = this.refs.name.value
     let category = this.refs.category.value
@@ -230,6 +406,29 @@ class HomePage extends React.Component {
       })
 
     this.refs.sort.value = ""
+  }
+
+  onSearchFilterResep = () => {
+    let name = this.refs.nameResep.value
+    let category = this.refs.categoryResep.value
+
+    let data = {
+      name,
+      category,
+      page: 1
+    }
+
+    Axios.post(`${URL_API}/product/filter-productresep`, data)
+      .then(res => {
+        this.setState({ products: res.data.slice(0, res.data.length - 1), maxPage: res.data[res.data.length - 1] })
+        this.setState({ page: 1 })
+        this.setState({ nextResep: 'filter', prevResep: 'filter' })
+      })
+      .catch(err => {
+        console.log(err)
+      })
+
+    this.refs.sortResep.value = ""
   }
 
   onSort = () => {
@@ -288,62 +487,243 @@ class HomePage extends React.Component {
       })
   }
 
+  onSortResep = () => {
+    let name = this.refs.nameResep.value
+    let category = this.refs.categoryResep.value
+    let sort = this.refs.sortResep.value
+
+    let data
+
+    if (sort === "nama asc") {
+      data = {
+        name,
+        category,
+        page: 1,
+        order: "nama",
+        sort: "asc"
+      }
+    } else if (sort === "nama desc") {
+      data = {
+        name,
+        category,
+        page: 1,
+        order: "nama",
+        sort: "desc"
+      }
+    } else if (sort === "harga asc") {
+      data = {
+        name,
+        category,
+        page: 1,
+        order: "harga",
+        sort: "asc"
+      }
+    } else if (sort === "harga desc") {
+      data = {
+        name,
+        category,
+        page: 1,
+        order: "harga",
+        sort: "desc"
+      }
+    } else {
+      return
+    }
+
+    console.log(data)
+
+    Axios.post(`${URL_API}/product/sort-productResep`, data)
+      .then(res => {
+        this.setState({ products: res.data.slice(0, res.data.length - 1), maxPage: res.data[res.data.length - 1] })
+        this.setState({ page: 1 })
+        this.setState({ nextResep: 'sort', prevResep: 'sort' })
+      })
+      .catch(err => {
+        console.log(err)
+      })
+  }
+
+  onObatSatuan = () => {
+    this.setState({ show: "satuan", page: 1 })
+    this.fetchData()
+  }
+
+  onObatResep = () => {
+    this.setState({ show: "resep", page: 1 })
+    this.fetchDataResep()
+  }
+
   render () {
-    return (
-      <div>
-        <NavBar />
-        <div style={styles.paginationDiv}>
-          <Button style={{ marginRight: '10px' }} variant="primary" disabled={this.state.page === 1 ? true : false} onClick={this.onPrev}>Prev</Button>
-          <p style={{ margin: 0 }}>Page {this.state.page} of {this.state.maxPage}</p>
-          <Button style={{ marginLeft: '10px' }} variant="primary" disabled={this.state.page === this.state.maxPage ? true : false} onClick={this.onNext}>Next</Button>
+    if (this.props.role === "admin") {
+      return (
+        <div>
+          <NavBar />
+          <div style={styles.divAdminPilihProduct}>
+            <div>
+              <Button variant="primary" disabled={this.state.show === "satuan" ? true : false} onClick={this.onObatSatuan}>Obat Satuan</Button>
+              <Button style={{ marginLeft: '10px' }}variant="primary" disabled={this.state.show === "resep" ? true : false} onClick={this.onObatResep}>Obat Resep</Button>
+            </div>
+            {
+              this.state.show === "satuan"
+              ?
+              <Button variant="success" onClick={this.onAddObatSatuan}>Add Obat Satuan</Button> 
+              :
+              <Button variant="success" onClick={this.onAddObatResep}>Add Obat Resep</Button>
+            }
+          </div>
+          {
+            this.state.show === "satuan"
+            ?
+            <div>
+              <div style={styles.paginationDiv}>
+                <Button style={{ marginRight: '10px' }} variant="primary" disabled={this.state.page === 1 ? true : false} onClick={this.onPrev}>Prev</Button>
+                <p style={{ margin: 0 }}>Page {this.state.page} of {this.state.maxPage}</p>
+                <Button style={{ marginLeft: '10px' }} variant="primary" disabled={this.state.page === this.state.maxPage ? true : false} onClick={this.onNext}>Next</Button>
+              </div>
+              <div style={styles.divForm}>
+                <p style={{ margin: 0 }}>Filter By :</p>
+                <Form.Control style={styles.filterForm} type="text" placeholder="Name" ref="name" />
+                <Form.Select style={styles.filterForm} ref="category">
+                  <option value="">Category</option>
+                  <option value="Asma">Asma</option>
+                  <option value="Diabetes">Diabetes</option>
+                  <option value="Jantung">Jantung</option>
+                  <option value="Kulit">Kulit</option>
+                  <option value="Mata">Mata</option>
+                  <option value="Saluran Pencernaan">Saluran Pencernaan</option>
+                </Form.Select>
+                <Button variant="outline-primary" onClick={this.onSearchFilter}>Search</Button>
+              </div>
+              <div style={styles.divSort}>
+                <p style={{ margin: 0 }}>Sort By :</p>
+                <Form.Select style={styles.filterSort} ref="sort">
+                  <option value="nama asc">Name (Asc)</option>
+                  <option value="nama desc">Name (Desc)</option>
+                  <option value="harga asc">Price (Asc)</option>
+                  <option value="harga desc">Price (Desc)</option>
+                </Form.Select>
+                <Button variant="outline-primary" onClick={this.onSort}>Sort</Button>
+              </div>
+              <Row style={{ margin: '20px' }} xs={1} md={5} className="g-4">
+                {this.state.products.map((item, index) => (
+                  <Col key={index}>
+                    <Card style={styles.card} key={index+1000}>
+                      <Card.Img variant="top" src={item.link_foto} />
+                      <Card.Body style={styles.cardBody}>
+                        <Card.Title style={{ textAlign: 'center', marginBottom: '15px' }}>{item.nama}</Card.Title>
+                        <Card.Text>{item.satuan}</Card.Text>
+                        <Card.Text>Rp {(item.harga).toLocaleString()}</Card.Text>
+                        <Button variant="warning" style={{ position: 'absolute', bottom: '25px'}}>Edit</Button>
+                      </Card.Body>
+                    </Card>
+                  </Col>
+                ))}
+              </Row>
+            </div>
+            :
+            <div>
+              <div style={styles.paginationDiv}>
+                <Button style={{ marginRight: '10px' }} variant="primary" disabled={this.state.page === 1 ? true : false} onClick={this.onPrevResep}>Prev</Button>
+                <p style={{ margin: 0 }}>Page {this.state.page} of {this.state.maxPage}</p>
+                <Button style={{ marginLeft: '10px' }} variant="primary" disabled={this.state.page === this.state.maxPage ? true : false} onClick={this.onNextResep}>Next</Button>
+              </div>
+              <div style={styles.divForm}>
+                <p style={{ margin: 0 }}>Filter By :</p>
+                <Form.Control style={styles.filterForm} type="text" placeholder="Name" ref="nameResep" />
+                <Form.Select style={styles.filterForm} ref="categoryResep">
+                  <option value="">Category</option>
+                  <option value="Asma">Asma</option>
+                  <option value="Jantung">Jantung</option>
+                  <option value="Mata">Mata</option>
+                </Form.Select>
+                <Button variant="outline-primary" onClick={this.onSearchFilterResep}>Search</Button>
+              </div>
+              <div style={styles.divSort}>
+                <p style={{ margin: 0 }}>Sort By :</p>
+                <Form.Select style={styles.filterSort} ref="sortResep">
+                  <option value="nama asc">Name (Asc)</option>
+                  <option value="nama desc">Name (Desc)</option>
+                  <option value="harga asc">Price (Asc)</option>
+                  <option value="harga desc">Price (Desc)</option>
+                </Form.Select>
+                <Button variant="outline-primary" onClick={this.onSortResep}>Sort</Button>
+              </div>
+              <Row style={{ margin: '20px' }} xs={1} md={5} className="g-4">
+                {this.state.products.map((item, index) => (
+                  <Col key={index}>
+                    <Card style={styles.card} key={index+1000}>
+                      <Card.Img variant="top" src={item.link_foto} />
+                      <Card.Body style={styles.cardBody}>
+                        <Card.Title style={{ textAlign: 'center', marginBottom: '15px' }}>{item.nama}</Card.Title>
+                        <Card.Text>Stok: {item.stok_botol} botol {item.stok_ml} ml</Card.Text>
+                        <Card.Text>Rp {(item.harga).toLocaleString()}</Card.Text>
+                        <Button variant="warning" style={{ position: 'absolute', bottom: '25px'}}>Edit</Button>
+                      </Card.Body>
+                    </Card>
+                  </Col>
+                ))}
+              </Row>
+            </div>
+          }
         </div>
-        <div style={styles.divForm}>
-          <p style={{ margin: 0 }}>Filter By :</p>
-          <Form.Control style={styles.filterForm} type="text" placeholder="Name" ref="name" />
-          <Form.Select style={styles.filterForm} ref="category">
-            <option value="">Category</option>
-            <option value="Asma">Asma</option>
-            <option value="Diabetes">Diabetes</option>
-            <option value="Jantung">Jantung</option>
-            <option value="Kulit">Kulit</option>
-            <option value="Mata">Mata</option>
-            <option value="Saluran Pencernaan">Saluran Pencernaan</option>
-          </Form.Select>
-          <Button variant="outline-primary" onClick={this.onSearchFilter}>Search</Button>
+      )
+    } else {
+      return (
+        <div>
+          <NavBar />
+          <div style={styles.paginationDiv}>
+            <Button style={{ marginRight: '10px' }} variant="primary" disabled={this.state.page === 1 ? true : false} onClick={this.onPrev}>Prev</Button>
+            <p style={{ margin: 0 }}>Page {this.state.page} of {this.state.maxPage}</p>
+            <Button style={{ marginLeft: '10px' }} variant="primary" disabled={this.state.page === this.state.maxPage ? true : false} onClick={this.onNext}>Next</Button>
+          </div>
+          <div style={styles.divForm}>
+            <p style={{ margin: 0 }}>Filter By :</p>
+            <Form.Control style={styles.filterForm} type="text" placeholder="Name" ref="name" />
+            <Form.Select style={styles.filterForm} ref="category">
+              <option value="">Category</option>
+              <option value="Asma">Asma</option>
+              <option value="Diabetes">Diabetes</option>
+              <option value="Jantung">Jantung</option>
+              <option value="Kulit">Kulit</option>
+              <option value="Mata">Mata</option>
+              <option value="Saluran Pencernaan">Saluran Pencernaan</option>
+            </Form.Select>
+            <Button variant="outline-primary" onClick={this.onSearchFilter}>Search</Button>
+          </div>
+          <div style={styles.divSort}>
+            <p style={{ margin: 0 }}>Sort By :</p>
+            <Form.Select style={styles.filterSort} ref="sort">
+              <option value="nama asc">Name (Asc)</option>
+              <option value="nama desc">Name (Desc)</option>
+              <option value="harga asc">Price (Asc)</option>
+              <option value="harga desc">Price (Desc)</option>
+            </Form.Select>
+            <Button variant="outline-primary" onClick={this.onSort}>Sort</Button>
+          </div>
+          <Row style={{ margin: '20px' }} xs={1} md={5} className="g-4">
+            {this.state.products.map((item, index) => (
+              <Col key={index}>
+                <Card style={styles.card} key={index+1000}>
+                  <Card.Img variant="top" src={item.link_foto} />
+                  <Card.Body style={styles.cardBody}>
+                    <Card.Title style={{ textAlign: 'center', marginBottom: '15px' }}>{item.nama}</Card.Title>
+                    <Card.Text>{item.satuan}</Card.Text>
+                    <Card.Text>Rp {(item.harga).toLocaleString()}</Card.Text>
+                    <Button style={{ position: 'absolute', bottom: '25px'}} as={Link} to={`/detail-product/${item.idproduk}`}>Detail</Button>
+                  </Card.Body>
+                </Card>
+              </Col>
+            ))}
+          </Row>
         </div>
-        <div style={styles.divSort}>
-          <p style={{ margin: 0 }}>Sort By :</p>
-          <Form.Select style={styles.filterSort} ref="sort">
-            <option value="nama asc">Name (Asc)</option>
-            <option value="nama desc">Name (Desc)</option>
-            <option value="harga asc">Price (Asc)</option>
-            <option value="harga desc">Price (Desc)</option>
-          </Form.Select>
-          <Button variant="outline-primary" onClick={this.onSort}>Sort</Button>
-        </div>
-        <Row style={{ margin: '20px' }} xs={1} md={5} className="g-4">
-          {this.state.products.map((item, index) => (
-            <Col key={index}>
-              <Card style={styles.card} key={index+1000}>
-                <Card.Img variant="top" src={item.link_foto} />
-                <Card.Body style={styles.cardBody}>
-                  <Card.Title style={{ textAlign: 'center', marginBottom: '15px' }}>{item.nama}</Card.Title>
-                  <Card.Text>{item.satuan}</Card.Text>
-                  <Card.Text>Rp {(item.harga).toLocaleString()}</Card.Text>
-                  <Button style={{ position: 'absolute', bottom: '25px'}} as={Link} to={`/detail-product/${item.idproduk}`}>Detail</Button>
-                </Card.Body>
-              </Card>
-            </Col>
-          ))}
-        </Row>
-      </div>
-    )
+      )
+    }
   }
 }
 
 const styles = {
   card: {
-    height: '85vh'
+    height: '90vh'
   },
   cardBody: {
     display: 'flex',
@@ -355,7 +735,7 @@ const styles = {
     width: '100vw',
     display: 'flex',
     alignItems: 'center',
-    marginTop: '44px',
+    marginTop: '124px',
     justifyContent: 'center'
   },
   divForm: {
@@ -378,8 +758,21 @@ const styles = {
     margin: '44px auto 0 auto',
   },
   filterSort: {
-    width: "10vw",
+    width: "15vw",
+  },
+  divAdminPilihProduct: {
+    width: "35vw",
+    display: 'flex',
+    flexDirection: 'row',
+    margin: '44px auto 0',
+    justifyContent: 'space-between'
+  } 
+}
+
+const mapStateToProps = (state) => {
+  return {
+      role: state.userReducer.role
   }
 }
 
-export default HomePage
+export default connect(mapStateToProps)(HomePage)
