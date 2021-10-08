@@ -43,23 +43,25 @@ const userReducer = (state = INITIAL_STATE, action) => {
         case 'FORGOTPW_OK':
             return {
                 ...state,
-                forgot:true,
-                forgot1:false,
+                forgot: true,
+                forgot1: false,
                 forgotpw_ok: action.payload
             }
         case 'FORGOTPW_NO':
             return {
                 ...state,
-                forgot1:true,
-                forgot:false,
+                forgot1: true,
+                forgot: false,
                 forgotpw_no: action.payload
             }
         case 'SUCCESSPW':
-            return{
+            return {
                 ...state,
                 successpw: action.payload,
-                changed:true
+                changed: true
             }
+        case 'LOG_OUT':
+            return INITIAL_STATE
         default:
             return state
     }

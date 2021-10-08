@@ -10,15 +10,16 @@ import SendingEmail from './pages/sendingEmail';
 import VerifyPage from './pages/verivication';
 import ChangePage from './pages/changepw';
 import ForgotPage from './pages/forgotpw';
+import AddPage from './pages/addProduct_1';
 import ProfilePage from './pages/profileUser';
 
-// import { keepLogin } from './redux/actions';
+import { keepLogin } from './redux/actions';
 
 class App extends React.Component {
-  // componentDidMount() {
-  //   // let id = localStorage.getItem('idUser')
-  //   this.props.keepLogin()
-  // }
+  componentDidMount() {
+    // let id = localStorage.getItem('idUser')
+    this.props.keepLogin()
+  }
   render () {
     return (
       <Switch>
@@ -30,11 +31,12 @@ class App extends React.Component {
         <Route path="/verification/:token" component={VerifyPage} />
         <Route path="/email" component={SendingEmail} />
         <Route path="/forgot" component={ForgotPage} />
+        <Route path="/add-product1" component={AddPage} />
         <Route path="/profile/:id" component={ProfilePage} />
       </Switch>
     )
   }
 }
 
-// export default connect(null, { keepLogin })(App);
-export default App
+export default connect(null, { keepLogin })(App);
+// export default App
