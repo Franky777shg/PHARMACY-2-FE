@@ -10,6 +10,7 @@ import SendingEmail from './pages/sendingEmail';
 import VerifyPage from './pages/verivication';
 import ChangePage from './pages/changepw';
 import ForgotPage from './pages/forgotpw';
+import ProfilePage from './pages/profileUser';
 
 // import { keepLogin } from './redux/actions';
 
@@ -29,6 +30,7 @@ class App extends React.Component {
         <Route path="/verification/:token" component={VerifyPage} />
         <Route path="/email" component={SendingEmail} />
         <Route path="/forgot" component={ForgotPage} />
+        <Route path="/profile/:id" component={ProfilePage} />
       </Switch>
     )
   }

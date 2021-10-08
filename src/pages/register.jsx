@@ -217,7 +217,7 @@ class RegisterPage extends React.Component {
             <FormControl
               placeholder="Input Here"
               onChange={(e) => this.ageValid(e)}
-              type="text"
+              type="number"
               ref="age"
             />
           </InputGroup>
