@@ -7,7 +7,8 @@ const INITIAL_STATE = {
     msgFailedLogin: "",
     forgotpw_ok: "",
     forgotpw_no: "",
-    forgot:false
+    forgot:false,
+    profilePic: ''
 }
 
 const userReducer = (state = INITIAL_STATE, action) => {
@@ -49,5 +50,6 @@ const userReducer = (state = INITIAL_STATE, action) => {
     }
 
 }
+
 
 export default userReducer
