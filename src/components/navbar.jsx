@@ -72,10 +72,10 @@ class NavBar extends React.Component {
                                                         {this.props.username ? `${this.props.username}'s Dashboard` :  `${this.props.username}'s Dashboard` }
                                                     </Dropdown.Toggle>
                                                     <Dropdown.Menu>
-                                                        <Dropdown.Item >Profile</Dropdown.Item>
+                                                        <Dropdown.Item as={Link} to={`/profile/${this.props.iduser}`} >Profile</Dropdown.Item>
                                                         {/* <Dropdown.Item as={Link} to="/profile/:id">My Profile</Dropdown.Item> */}
                                                         <Dropdown.Item as={Link} to="#">My Transaction</Dropdown.Item>
-                                                        <Dropdown.Item onClick={this.props.logout} to="/">Logout</Dropdown.Item>
+                                                        <Dropdown.Item onClick={this.props.logout} as={Link} to="/">Logout</Dropdown.Item>
                                                         {/* <Dropdown.Item onClick={this.props.logout}>Logout</Dropdown.Item> */}
                                                     </Dropdown.Menu>
                                                 </>
@@ -145,7 +145,8 @@ const mapStateToProps = (state) => {
     return {
         username: state.userReducer.username,
         cart: state.userReducer.cart,
-        role: state.userReducer.role
+        role: state.userReducer.role,
+        iduser : state.userReducer.id
     }
 }
 export default connect (mapStateToProps, { logout })(NavBar)

@@ -151,33 +151,71 @@ export const verification = (token) => {
     }
 }
 
-export const uploadFile = (data,id) => {
+export const uploadFile = (data) => {
     return (dispatch) => {
-        Axios.post(`http://localhost:2000/profile/upload/${id}`, data, {
+        let token = localStorage.getItem("token")
+        Axios.post(`http://localhost:2000/profile/upload`, data, {
             headers: {
-                'Content-Type' :'multipart/form-data'
+                Authorization: `Bearer ${token}`,
+                'Content-Type': 'multipart/form-data'
             }
         })
-        .then( res => {
-            console.log(res.data)
-            const token = localStorage.getItem('token')
-            if(token){
-                Axios.post(`${URL_API}/keeplogin`,{},{
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    }
-                })
-                .then(res => {
-                    console.log(res.data[0])
-                        dispatch({
-                            type: 'LOGIN',
-                            payload: res.data[0]
+            .then( res => {
+                console.log(res.data)
+
+                const token = localStorage.getItem('token')
+
+                if(token){
+                    Axios.post(`${URL_API}/keeplogin`,{},{
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    })
+                        .then(res => {
+                            console.log(res.data[0])
+                                dispatch({
+                                    type: 'LOGIN',
+                                    payload: res.data[0]
+                                })
                         })
-                })
+                }
+            })
+            .catch( err =>{
+                console.log(err)
+            })
+    }
+}
+
+export const deletePhoto = (data) => {
+    return (dispatch) => {
+        let token = localStorage.getItem("token")
+        Axios.patch(`http://localhost:2000/profile/delete`, data, {
+            headers: {
+                Authorization: `Bearer ${token}`,
             }
         })
-        .catch( err =>{
-            console.log(err)
-        })
+            .then( res => {
+                console.log(res.data)
+
+                const token = localStorage.getItem('token')
+
+                if(token){
+                    Axios.post(`${URL_API}/keeplogin`,{},{
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    })
+                        .then(res => {
+                            console.log(res.data[0])
+                                dispatch({
+                                    type: 'LOGIN',
+                                    payload: res.data[0]
+                                })
+                        })
+                }
+            })
+            .catch( err =>{
+                console.log(err)
+            })
     }
 }
