@@ -26,7 +26,7 @@ const userReducer = (state = INITIAL_STATE, action) => {
                 password: action.payload.password,
                 email: action.payload.email,
                 role: action.payload.role,
-                profilePic: action.payload.profile_pic
+                profilePic: action.payload.profile_picture
             }
         case 'FAILED_LOGIN':
             return {

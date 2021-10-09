@@ -37,10 +37,14 @@ class NavBar extends React.Component {
                         <Nav className="me-auto">
                             {this.props.role === 'admin' ?
                                 <Nav className="mr-auto">
-                                    <Nav.Link as={Link} to={this.props.role === 'admin' ? "/" : "/"} style={styles.navbarText}>Add Products</Nav.Link>
+                                    <Nav.Link as={Link} to={this.props.role === 'admin' ? "/" : "/"} style={styles.navbarText}>Home</Nav.Link>
                                     {/* <Nav.Link href="#listProducts" style={styles.navLink}>Product</Nav.Link> */}
                                 </Nav>
-                                : null
+                                :
+                                <Nav className="mr-auto">
+                                    <Nav.Link as={Link} to={this.props.role === 'user' ? "/" : "/"} style={styles.navbarText}>Home</Nav.Link>
+                                    {/* <Nav.Link href="#listProducts" style={styles.navLink}>Product</Nav.Link> */}
+                                </Nav>
                             }
                         </Nav>
                         <Nav>
@@ -52,8 +56,8 @@ class NavBar extends React.Component {
                                     {this.props.username
                                         ?
                                         <>
-                                            {this.props.role === 'admin' 
-                                            ?
+                                            {this.props.role === 'admin'
+                                                ?
                                                 <>
 
                                                     <Dropdown.Toggle variant="outline-dark" style={styles.button} className="btnTog" id="dropdown-basic">
@@ -62,21 +66,18 @@ class NavBar extends React.Component {
                                                     <Dropdown.Menu>
                                                         <Dropdown.Item as={Link} to="#">Financial</Dropdown.Item>
                                                         <Dropdown.Item as={Link} to="#">Transaction</Dropdown.Item>
-                                                        <Dropdown.Item onClick={this.props.logout}>Logout</Dropdown.Item>
-                                                        {/* <Dropdown.Item onClick={this.props.logout}>Logout</Dropdown.Item> */}
+                                                        <Dropdown.Item as={Link} to="/" onClick={this.props.logout}>Logout</Dropdown.Item>
                                                     </Dropdown.Menu>
                                                 </>
                                                 :
                                                 <>
                                                     <Dropdown.Toggle variant="outline-dark" style={styles.button} className="btnTog" id="dropdown-basic">
-                                                        {this.props.username ? `${this.props.username}'s Dashboard` :  `${this.props.username}'s Dashboard` }
+                                                        {this.props.username ? `${this.props.username}'s Dashboard` : `${this.props.username}'s Dashboard`}
                                                     </Dropdown.Toggle>
                                                     <Dropdown.Menu>
-                                                        <Dropdown.Item >Profile</Dropdown.Item>
-                                                        {/* <Dropdown.Item as={Link} to="/profile/:id">My Profile</Dropdown.Item> */}
+                                                        <Dropdown.Item as={Link} to="/profile/:id">My Profile</Dropdown.Item>
                                                         <Dropdown.Item as={Link} to="#">My Transaction</Dropdown.Item>
-                                                        <Dropdown.Item onClick={this.props.logout} to="/">Logout</Dropdown.Item>
-                                                        {/* <Dropdown.Item onClick={this.props.logout}>Logout</Dropdown.Item> */}
+                                                        <Dropdown.Item as={Link} to="/" onClick={this.props.logout}>Logout</Dropdown.Item>
                                                     </Dropdown.Menu>
                                                 </>
                                             }
@@ -135,9 +136,9 @@ const styles = {
         margin: '0',
         cursor: 'pointer'
     },
-    logo: {
+    image: {
         // width: '20vw'
-        height: '50px'
+        height: '40px'
     }
 }
 
@@ -148,5 +149,5 @@ const mapStateToProps = (state) => {
         role: state.userReducer.role
     }
 }
-export default connect (mapStateToProps, { logout })(NavBar)
+export default connect(mapStateToProps, { logout })(NavBar)
 // export default connect(mapStateToProps)(NavBar)

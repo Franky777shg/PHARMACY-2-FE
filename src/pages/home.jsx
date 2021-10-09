@@ -17,7 +17,7 @@ import {
 } from 'react-bootstrap'
 
 // React Router Dom
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 
 // URL API
 const URL_API = "http://localhost:2000"
@@ -34,6 +34,7 @@ class HomePage extends React.Component {
       nextResep: null,
       prevResep: null,
       show: "satuan",
+      redirect: null
     }
   }
 
@@ -552,8 +553,39 @@ class HomePage extends React.Component {
     this.setState({ show: "resep", page: 1 })
     this.fetchDataResep()
   }
+  
+  onDeletesatuan = (idproduk) => {
+     console.log(idproduk)
+      Axios.delete(`${URL_API}/product/del-product1/${idproduk}`)
+        .then(res => {
+          this.setState({ products: res.data })
+          this.fetchData()
+          // console.log(res.data)
+        })
+        .catch(err => console.log(err))
+    
+  }
 
+  onDeleteracikan = (idproduk_resep) => {
+    console.log(idproduk_resep)
+    Axios.delete(`${URL_API}/product/del-productr/${idproduk_resep}`)
+      .then(res => {
+        this.setState({ products: res.data })
+        this.fetchDataResep()
+        console.log(res.data)
+      })
+      .catch(err => console.log(err))
+  }
+  
   render () {
+    
+    if (this.state.redirect) {
+      return <Redirect to={this.state.redirect} />
+    }
+    // if (this.state.edit) {
+    //   return <Redirect to={this.state.edit} />
+    // }
+    const {redirect,edit} = this.state
     if (this.props.role === "admin") {
       return (
         <div>
@@ -566,9 +598,9 @@ class HomePage extends React.Component {
             {
               this.state.show === "satuan"
               ?
-              <Button variant="success" onClick={this.onAddObatSatuan}>Add Obat Satuan</Button> 
+              <Button variant="success" onClick={() => this.setState({redirect: "/add-product1"})} >Add Obat Satuan</Button> 
               :
-              <Button variant="success" onClick={this.onAddObatResep}>Add Obat Resep</Button>
+              <Button variant="success" onClick={() => this.setState({redirect: "/add-productr"})}>Add Obat Resep</Button>
             }
           </div>
           {
@@ -613,7 +645,8 @@ class HomePage extends React.Component {
                         <Card.Title style={{ textAlign: 'center', marginBottom: '15px' }}>{item.nama}</Card.Title>
                         <Card.Text>{item.satuan}</Card.Text>
                         <Card.Text>Rp {(item.harga).toLocaleString()}</Card.Text>
-                        <Button variant="warning" style={{ position: 'absolute', bottom: '25px'}}>Edit</Button>
+                        <Button variant="warning" style={{ position: 'absolute', bottom: '75px'}} onClick={() => this.setState({redirect:"/edit-satuan/:id"})}>Edit</Button>
+                        <Button variant="danger" style={{ position: 'absolute', bottom: '25px'}} onClick={() => this.onDeletesatuan(item.idproduk)}>Delete</Button>
                       </Card.Body>
                     </Card>
                   </Col>
@@ -657,7 +690,8 @@ class HomePage extends React.Component {
                         <Card.Title style={{ textAlign: 'center', marginBottom: '15px' }}>{item.nama}</Card.Title>
                         <Card.Text>Stok: {item.stok_botol} botol {item.stok_ml} ml</Card.Text>
                         <Card.Text>Rp {(item.harga).toLocaleString()}</Card.Text>
-                        <Button variant="warning" style={{ position: 'absolute', bottom: '25px'}}>Edit</Button>
+                        <Button variant="warning" style={{ position: 'absolute', bottom: '75px'}}>Edit</Button>
+                        <Button variant="danger" style={{ position: 'absolute', bottom: '25px'}} onClick={() => this.onDeleteracikan(item.idproduk_resep)}>Delete</Button>
                       </Card.Body>
                     </Card>
                   </Col>
@@ -764,7 +798,7 @@ const styles = {
     width: "35vw",
     display: 'flex',
     flexDirection: 'row',
-    margin: '44px auto 0',
+    margin: '144px auto 0',
     justifyContent: 'space-between'
   } 
 }

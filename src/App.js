@@ -11,7 +11,10 @@ import VerifyPage from './pages/verivication';
 import ChangePage from './pages/changepw';
 import ForgotPage from './pages/forgotpw';
 import AddPage from './pages/addProduct_1';
+import AddPageR from './pages/addProductR';
 import ProfilePage from './pages/profileUser';
+import EditSatuanPage from './pages/editProduct1';
+import EditRPage from './pages/editProductR';
 
 import { keepLogin } from './redux/actions';
 
@@ -32,11 +35,13 @@ class App extends React.Component {
         <Route path="/email" component={SendingEmail} />
         <Route path="/forgot" component={ForgotPage} />
         <Route path="/add-product1" component={AddPage} />
+        <Route path="/add-productr" component={AddPageR} />
         <Route path="/profile/:id" component={ProfilePage} />
+        <Route path="/edit-satuan/:id" component={EditSatuanPage} />
+        <Route path="/edit-racikan/:id" component={EditRPage} />
       </Switch>
     )
   }
 }
 
 export default connect(null, { keepLogin })(App);
-// export default App
