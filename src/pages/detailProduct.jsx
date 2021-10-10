@@ -169,7 +169,7 @@ const styles = {
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
-        color: 'salmon'
+        color: '#343892'
     },
     textDiv: {
         flex: 3,
@@ -193,9 +193,9 @@ const styles = {
         textAlign: 'center'
     },
     textDescription: {
-        borderBottom: '1px solid salmon',
+        borderBottom: '1px solid #80F1B2',
         marginBottom: '1rem',
-        color: 'salmon'
+        color: '#343892'
     }
 }
 

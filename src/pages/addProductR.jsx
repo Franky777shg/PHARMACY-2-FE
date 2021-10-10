@@ -28,14 +28,14 @@ class AddPageR extends React.Component {
             images: '',
             idEdit: null,
             remove: false,
-            products:[]
+            products: []
         }
     }
 
     fetchData = () => {
-        let idUser = this.props.location.pathname.slice(9)
+        let idProduk = this.props.location.pathname.slice(9)
         // console.log(idUser)
-        Axios.get(`http://localhost:2000/user/userbyid/${idUser}`)
+        Axios.get(`http://localhost:2000/product/detail-product/${idProduk}`)
             .then(res => {
                 // console.log(res.data)
                 this.setState({ users: res.data })
@@ -46,31 +46,31 @@ class AddPageR extends React.Component {
             })
     }
 
-    handleUpload = () => {
-        const data = new FormData()
-        console.log(data) //siapin form data untuk image
+    // handleUpload = () => {
+    //     const data = new FormData()
+    //     console.log(data) //siapin form data untuk image
 
-        data.append('IMG', this.state.images)
-        console.log(data.get('IMG')) // masukin data Image ke formData
+    //     data.append('IMG', this.state.images)
+    //     console.log(data.get('IMG')) // masukin data Image ke formData
 
-        // let idUser = this.props.location.pathname.slice(9)
-        // console.log(idUser)
-        Axios.post(`${URL_API}/add-product1`, data, {
-            headers: {
-                'Content-Type': 'multipart/form-data'
-            }
-        })
-            .then(res => {
-                this.setState({ images: res.data })
-                this.fetchData()
-                console.log(res.data)
-            })
-            .catch(err => {
-                console.log(err)
-            })
+    //     // let idUser = this.props.location.pathname.slice(9)
+    //     // console.log(idUser)
+    //     Axios.post(`${URL_API}/add-product1`, data, {
+    //         headers: {
+    //             'Content-Type': 'multipart/form-data'
+    //         }
+    //     })
+    //         .then(res => {
+    //             this.setState({ images: res.data })
+    //             this.fetchData()
+    //             console.log(res.data)
+    //         })
+    //         .catch(err => {
+    //             console.log(err)
+    //         })
 
-        // this.setState({ images: '' })
-    }
+    //     // this.setState({ images: '' })
+    // }
 
     handleChoose = (e) => {
         console.log('e.target.files', e.target.files)
@@ -81,11 +81,19 @@ class AddPageR extends React.Component {
         console.log('e.target.files', e.target.files)
         this.setState({ images: '' })
     }
+    handleUpload = () => {
+        const data = new FormData()
+        console.log(data)
+        data.append('IMG', this.state.images)
+        // console.log(data.get('IMG'))
+        this.props.uploadProduct1(data)
+        this.setState({images: ''})
+    }
 
     onAddP1 = () => {
         const data = new FormData()
-        console.log(data) //siapin form data untuk image
-
+        console.log(data) //sia pin form data untuk image
+        console.log("tes")
         data.append('IMG', this.state.images)
         console.log(data.get('IMG')) // masukin data Image ke formData
 
@@ -100,59 +108,59 @@ class AddPageR extends React.Component {
                 this.setState({ images: res.data })
                 // this.fetchData()
                 console.log(res.data)
-                const nama = this.refs.nama.value
-                const harga = +this.refs.harga.value
-                const satuan = this.refs.satuan.value
-                // const link_foto = res.data
-                const stok = +this.refs.stok.value
-                const kategori = this.refs.kategori.value
-                const deskripsi = this.refs.deskripsi.value
-                const indikasi_umum = this.refs.indikasi_umum.value
-                const komposisi = this.refs.komposisi.value
-                const dosis = this.refs.dosis.value
-                const aturan_pakai = this.refs.aturan_pakai.value
-                const kontra_indikasi = this.refs.kontra_indikasi.value
-                const perhatian = this.refs.perhatian.value
-                const efek_samping = this.refs.efek_samping.value
-                const segmentasi = this.refs.segmentasi.value
-                const kemasan = this.refs.kemasan.value
-                const manufaktur = this.refs.manufaktur.value
-                const no_registrasi = this.refs.no_registrasi.value
+                // const nama = this.refs.nama.value
+                // const harga = +this.refs.harga.value
+                // const satuan = this.refs.satuan.value
+                // // const link_foto = res.data
+                // const stok = +this.refs.stok.value
+                // const kategori = this.refs.kategori.value
+                // const deskripsi = this.refs.deskripsi.value
+                // const indikasi_umum = this.refs.indikasi_umum.value
+                // const komposisi = this.refs.komposisi.value
+                // const dosis = this.refs.dosis.value
+                // const aturan_pakai = this.refs.aturan_pakai.value
+                // const kontra_indikasi = this.refs.kontra_indikasi.value
+                // const perhatian = this.refs.perhatian.value
+                // const efek_samping = this.refs.efek_samping.value
+                // const segmentasi = this.refs.segmentasi.value
+                // const kemasan = this.refs.kemasan.value
+                // const manufaktur = this.refs.manufaktur.value
+                // const no_registrasi = this.refs.no_registrasi.value
 
-                const body = {
-                    nama,
-                    harga,
-                    satuan,
-                    // link_foto,
-                    stok,
-                    kategori,
-                    deskripsi,
-                    indikasi_umum,
-                    komposisi,
-                    dosis,
-                    aturan_pakai,
-                    kontra_indikasi,
-                    perhatian,
-                    efek_samping,
-                    segmentasi,
-                    kemasan,
-                    manufaktur,
-                    no_registrasi
+                // const body = {
+                //     nama,
+                //     harga,
+                //     satuan,
+                //     // link_foto,
+                //     stok,
+                //     kategori,
+                //     deskripsi,
+                //     indikasi_umum,
+                //     komposisi,
+                //     dosis,
+                //     aturan_pakai,
+                //     kontra_indikasi,
+                //     perhatian,
+                //     efek_samping,
+                //     segmentasi,
+                //     kemasan,
+                //     manufaktur,
+                //     no_registrasi
 
-                }
-                console.log(body)
+                // }
+                // console.log(body)
 
 
-                // let idUser = this.props.location.pathname.slice(9)
-                Axios.post(`${URL_API}/add-product1data`, body)
-                    .then(res => {
-                        console.log(res.data)
-                        this.setState({ products: res.data})
-                        // this.fetchData()
-                    })
-                    .catch(err => {
-                        console.log(err)
-                    })
+                // // let idUser = this.props.location.pathname.slice(9)
+                // Axios.post(`${URL_API}/add-product1data`, body)
+                //     .then(res => {
+                //         console.log(res.data)
+                //         this.setState({ products: res.data})
+                //         // this.fetchData()
+                //     })
+                //     .catch(err => {
+                //         console.log(err)
+                //     })
             })
             .catch(err => {
                 console.log(err)
@@ -417,7 +425,7 @@ class AddPageR extends React.Component {
                         variant="primary" style={styles.button}
                         className="button"
                         variant="success"
-                        onClick={this.onAddP1}
+                        onClick={this.handleUpload}
                     >
                         <i class="fas fa-file-upload" style={{ marginRight: '10px' }}></i>
                         Upload
@@ -448,7 +456,7 @@ const styles = {
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
-        color: 'salmon'
+        color: '#343892'
     },
     textDiv: {
         flex: 3,
@@ -472,9 +480,9 @@ const styles = {
         textAlign: 'center'
     },
     textDescription: {
-        borderBottom: '1px solid salmon',
+        borderBottom: '1px solid #80F1B2',
         marginBottom: '1rem',
-        color: 'salmon'
+        color: '#343892'
     },
     button: {
         backgroundColor: '#343892',
