@@ -2,10 +2,13 @@ import React from 'react'
 import {
     FormControl,
     InputGroup,
-    Button
+    Button,
 } from 'react-bootstrap'
 import Axios from 'axios'
 import { connect } from 'react-redux'
+import NavBar from '../components/navbar'
+import {uploadFile, deletePhoto} from '../redux/actions'
+import {PHOTO} from '../assets'
 
 const URL_API = 'http://localhost:2000/'
 
@@ -23,11 +26,14 @@ class ProfilePage extends React.Component {
     }
 
     fetchData = () => {
-        let idUser = this.props.location.pathname.slice(9)
-        // console.log(idUser)
-        Axios.get(`http://localhost:2000/user/userbyid/${idUser}`)
+        let token = localStorage.getItem("token")
+        Axios.get(`http://localhost:2000/user/userbyid`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            }
+        })
             .then(res => {
-                // console.log(res.data)
+                console.log(res.data)
                 this.setState({ users: res.data })
                 // console.log(this.state.users[0].username)
             })
@@ -53,6 +59,7 @@ class ProfilePage extends React.Component {
                                         <i className="fas fa-user-check"></i>
                                     </InputGroup.Text>
                                     <FormControl
+                                        style={styles.textprof2}
                                         placeholder="Edit Full Name"
                                         defaultValue={item.fullname}
                                         type="text"
@@ -65,6 +72,7 @@ class ProfilePage extends React.Component {
                                         <i className="fas fa-envelope"></i>
                                     </InputGroup.Text>
                                     <FormControl
+                                        style={styles.textprof2}
                                         placeholder="Edit Email"
                                         defaultValue={item.email}
                                         type="text"
@@ -77,6 +85,7 @@ class ProfilePage extends React.Component {
                                         <i className="fas fa-home"></i>
                                     </InputGroup.Text>
                                     <FormControl
+                                        style={styles.textprof2}
                                         placeholder="Edit Address"
                                         defaultValue={item.address}
                                         type="text"
@@ -89,6 +98,7 @@ class ProfilePage extends React.Component {
                                         <i className="fas fa-street-view"></i>
                                     </InputGroup.Text>
                                     <FormControl
+                                        style={styles.textprof2}
                                         placeholder="Edit Age, must number"
                                         defaultValue={item.age}
                                         type="number"
@@ -101,6 +111,7 @@ class ProfilePage extends React.Component {
                                         <i className="fas fa-street-view"></i>
                                     </InputGroup.Text>
                                     <FormControl
+                                        style={styles.textprof2}
                                         placeholder="Edit Gender Female/ Male"
                                         defaultValue={item.gender}
                                         type="text"
@@ -180,9 +191,7 @@ class ProfilePage extends React.Component {
         }
         console.log(body)
 
-
-        let idUser = this.props.location.pathname.slice(9)
-        Axios.patch(`http://localhost:2000/user/edituser/${idUser}`, body)
+        Axios.patch(`http://localhost:2000/user/edituser/${this.props.iduser}`, body)
             .then(res => {
                 console.log(res.data)
                 this.setState({ editUser: res.data, idEdit: null })
@@ -206,34 +215,29 @@ class ProfilePage extends React.Component {
         data.append('IMG', this.state.images)
         console.log(data.get('IMG')) // masukin data Image ke formData
 
-        let idUser = this.props.location.pathname.slice(9)
-        // console.log(idUser)
-        Axios.post(`http://localhost:2000/profile/upload/${idUser}`, data, {
-            headers: {
-                'Content-Type': 'multipart/form-data'
-            }
-        })
-            .then(res => {
-                this.setState({ images: res.data })
-                this.fetchData()
-                console.log(res.data)
-            })
-            .catch(err => {
-                console.log(err)
-            })
+        this.props.uploadFile(data, this.props.iduser)
+        this.fetchData()
+        this.setState({ images: '' })
+    }
 
-        // this.setState({ images: '' })
+    onRemove = () => {
+        this.props.deletePhoto(this.props.iduser)
+        this.fetchData()
+        this.setState({ images: '' })
     }
 
     render() {
-        const { profilePic } = this.props
-        console.log(profilePic)
+        const {profilePic } = this.props
+        const { images } = this.state
+        console.log(images) //288
+        console.log(profilePic) //images/IMG-1633710182861.jpg
         return (
             <div style={styles.cont}>
+                < NavBar />
                 <div style={styles.contForm}>
                     <div style={{ display: 'flex', flexDirection: 'column', marginLeft: '10vw' }}>
                         <h1>My Profile</h1>
-                        <img style={styles.imgProf} src={`url(${profilePic ? URL_API + profilePic : null})`} alt="Girl in a jacket" />
+                        <img style={styles.imgProf} src={profilePic ? `${URL_API}/${profilePic}` : PHOTO.default} />
                     </div>
                     <div >
                         <div style={{ margin:'3vh', marginLeft:'13vw'}}>
@@ -259,7 +263,10 @@ class ProfilePage extends React.Component {
                                 </Button>
                             </div>
                             <div style={styles.contButton}>
-                                <Button variant="primary" style={{ background: '#DF2E2E', border: 'none' }}>
+                                <Button variant="primary" 
+                                        style={{ background: '#DF2E2E', border: 'none' }}
+                                        onClick={this.onRemove}
+                                        >
                                     <i class="fas fa-trash" style={{ marginRight: '10px' }}></i>
                                     Remove
                                 </Button>
@@ -294,6 +301,7 @@ const styles = {
         background: "url(https://media.istockphoto.com/photos/empty-product-stand-platform-podium-with-cloud-picture-id1252597644?b=1&k=20&m=1252597644&s=170667a&w=0&h=hDkXmpVxiNFDBHiwJbkPLNUA-P_5DCEgILtHIrUiUIU=) no-repeat center",
         backgroundSize: 'cover',
         display: 'flex',
+        marginTop:'10vh'
 
     },
     contForm: {
@@ -324,23 +332,27 @@ const styles = {
         marginBottom: '0'
     },
     imgProf: {
-        height: '30vh',
-        width: '15vw',
+        height: '33vh',
+        width: '16vw',
         display: 'flex',
         margin: '5px',
-        borderRadius: '200px',
+        borderRadius: '98px',
         boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)'
     },
     textprof: {
         width: '30vw',
-        backgroundColor: 'rgba(255, 255, 255, .6)',
+        backgroundColor: 'rgba(255, 255, 255, .9)',
+    },
+    textprof2: {
+        width: '30vw',
+        backgroundColor: 'rgba(255, 255, 255, .5)',
     }
 }
 
-const mapStatetoProps = (state) => {
+const mapStateToProps = (state) => {
     return {
-        profilePic: state.userReducer.profilePic
+        iduser : state.userReducer.id,
+        profilePic : state.userReducer.profilePic
     }
 }
-
-export default connect(mapStatetoProps)(ProfilePage);
+export default connect (mapStateToProps, {uploadFile, deletePhoto})(ProfilePage)
