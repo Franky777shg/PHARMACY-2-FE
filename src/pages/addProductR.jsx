@@ -18,7 +18,7 @@ import {
 
 const URL_API = 'http://localhost:2000/product'
 
-class AddPage extends React.Component {
+class AddPageR extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
@@ -493,7 +493,7 @@ const mapStateToProps = (state) => {
     }
 }
 
-export default connect(mapStateToProps, { uploadProduct1 })(AddPage)
+export default connect(mapStateToProps, { uploadProduct1 })(AddPageR)
 
 
 // const URL_API = 'http://localhost:2000/'
