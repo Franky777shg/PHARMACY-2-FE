@@ -17,7 +17,8 @@ const INITIAL_STATE = {
     segmentasi: null,
     kemasan: null,
     manufaktur: null,
-    no_registrasi: null
+    no_registrasi: null,
+    upload1an:''
 }
 
 const productReducer = (state = INITIAL_STATE, action) => {

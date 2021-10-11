@@ -31,8 +31,11 @@ export const login = (data) => {
             //     }
             })
             .catch(err => {
-
                 console.log(err)
+                dispatch({
+                        type: 'FAILED_LOGIN',
+                        payload: err.response.data
+                    })
             })
     }
 }
