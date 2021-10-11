@@ -116,7 +116,7 @@ class LoginPage extends React.Component {
                 
                 </Modal>
            
-                <Modal show={this.props.failedLogin}>
+                <Modal show={this.props.failedLogin ? this.props.failedLogin : false}>
                 
                 <Modal.Header>
                     <Modal.Title>Error</Modal.Title>

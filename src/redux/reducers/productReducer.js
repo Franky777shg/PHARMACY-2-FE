@@ -18,11 +18,28 @@ const INITIAL_STATE = {
     kemasan: null,
     manufaktur: null,
     no_registrasi: null,
-    upload1an:''
+    upload1an:'',
+    halproduk:'',
+    show:false
 }
 
 const productReducer = (state = INITIAL_STATE, action) => {
     switch (action.type) {
+        case 'RENDER_ADDPRODUCT1':
+            return{
+                ...state,
+                halproduk:action.payload,
+                upload1an:'Berhasil menambahkan produk',
+                show: true
+            }
+            case 'RENDER_ADDPRODUCT1_FAIL':
+            return{
+                ...state,
+                // halproduk:action.payload,
+                upload1an:'Gagal menambahkan produk',
+                show: true
+            }
+
         default:
             return state
     }
