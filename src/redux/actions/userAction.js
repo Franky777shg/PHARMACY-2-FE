@@ -5,30 +5,30 @@ const URL_API = 'http://localhost:2000/user'
 export const login = (data) => {
     return (dispatch) => {
         Axios.post(`${URL_API}/login`, data)
-            .then ( res => {
-                localStorage.setItem('token',res.data.token)
+            .then(res => {
+                localStorage.setItem('token', res.data.token)
                 console.log(res.data)
-                 dispatch ({
-                        type: 'LOGIN',
-                        payload: res.data.dataUser
-            })
-            // .then(res => {
-            //     console.log(res.data)
+                dispatch({
+                    type: 'LOGIN',
+                    payload: res.data.dataUser
+                })
+                // .then(res => {
+                //     console.log(res.data)
 
-            //     if (res.data.length !== 0) {
-            //         localStorage.setItem('idUser', res.data[0].iduser)
-            //         dispatch({
-            //             type: 'LOGIN',
-            //             payload: res.data[0]
-            //         })
-            //     }
-            //     else {
-            //         dispatch({
-            //             type: 'FAILED_LOGIN',
-            //             payload: 'Username/Password is Invalid'
-            //         })
+                //     if (res.data.length !== 0) {
+                //         localStorage.setItem('idUser', res.data[0].iduser)
+                //         dispatch({
+                //             type: 'LOGIN',
+                //             payload: res.data[0]
+                //         })
+                //     }
+                //     else {
+                //         dispatch({
+                //             type: 'FAILED_LOGIN',
+                //             payload: 'Username/Password is Invalid'
+                //         })
 
-            //     }
+                //     }
             })
             .catch(err1 => {
                 console.log(err1.response.data)
@@ -61,15 +61,15 @@ export const forgotpw = (body) => {
                     })
                 }
                 // else {
-                    
+
                 // }
             })
             .catch(err => {
                 console.log(err)
                 dispatch({
-                        type: 'FORGOTPW_NO',
-                        payload: 'User with this email does not exists'
-                    })
+                    type: 'FORGOTPW_NO',
+                    payload: 'User with this email does not exists'
+                })
             })
     }
 }
@@ -78,20 +78,21 @@ export const changepw = (data) => {
     console.log(data)
     // console.log(`Bearer ${data.tk}`)
     return (dispatch) => {
-        Axios.post(`${URL_API}/changepw`,data, {
+        Axios.post(`${URL_API}/changepw`, data, {
             headers: {
                 'Authorization': `Bearer ${data.tk}`
             }
         })
-        .then(res => {
-            console.log(res.data,", Success!")
-            dispatch({
-                type:'SUCCESSPW',
-                payload:'Your Password Has Been Changed'
+            .then(res => {
+                console.log(res.data, ", Success!")
+                dispatch({
+                    type: 'SUCCESSPW',
+                    payload: 'Your Password Has Been Changed'
+                })
             })
-        })
-        .catch(err => {
-            console.log(err)})
+            .catch(err => {
+                console.log(err)
+            })
     }
 }
 
@@ -110,19 +111,19 @@ export const keepLogin = () => {
     //respons dr BACKEND sql selalu ARRAY jd hrs ambil OBJECT AJA
     return (dispatch) => {
         const token = localStorage.getItem('token')
-        if(token){
-            Axios.post(`${URL_API}/keeplogin`,{},{
+        if (token) {
+            Axios.post(`${URL_API}/keeplogin`, {}, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
             })
-            .then(res => {
-                console.log(res.data[0])
+                .then(res => {
+                    console.log(res.data[0])
                     dispatch({
                         type: 'LOGIN',
                         payload: res.data[0]
                     })
-            })
+                })
         }
         // const idUser = localStorage.getItem('idUser')
         // if (idUser) {
@@ -146,12 +147,12 @@ export const verification = (token) => {
                 'Authorization': `Bearer ${token}`
             }
         })
-        .then(res => {
-            console.log(res.data)
-        })
-        .catch(err => {
-            console.log(err)
-        })
+            .then(res => {
+                console.log(res.data)
+            })
+            .catch(err => {
+                console.log(err)
+            })
     }
 }
 
@@ -164,27 +165,27 @@ export const uploadFile = (data) => {
                 'Content-Type': 'multipart/form-data'
             }
         })
-            .then( res => {
+            .then(res => {
                 console.log(res.data)
 
                 const token = localStorage.getItem('token')
 
-                if(token){
-                    Axios.post(`${URL_API}/keeplogin`,{},{
+                if (token) {
+                    Axios.post(`${URL_API}/keeplogin`, {}, {
                         headers: {
                             'Authorization': `Bearer ${token}`
                         }
                     })
                         .then(res => {
                             console.log(res.data[0])
-                                dispatch({
-                                    type: 'LOGIN',
-                                    payload: res.data[0]
-                                })
+                            dispatch({
+                                type: 'LOGIN',
+                                payload: res.data[0]
+                            })
                         })
                 }
             })
-            .catch( err =>{
+            .catch(err => {
                 console.log(err)
             })
     }
@@ -198,27 +199,133 @@ export const deletePhoto = (data) => {
                 Authorization: `Bearer ${token}`,
             }
         })
-            .then( res => {
+            .then(res => {
                 console.log(res.data)
 
                 const token = localStorage.getItem('token')
 
-                if(token){
-                    Axios.post(`${URL_API}/keeplogin`,{},{
+                if (token) {
+                    Axios.post(`${URL_API}/keeplogin`, {}, {
                         headers: {
                             'Authorization': `Bearer ${token}`
                         }
                     })
                         .then(res => {
                             console.log(res.data[0])
-                                dispatch({
-                                    type: 'LOGIN',
-                                    payload: res.data[0]
-                                })
+                            dispatch({
+                                type: 'LOGIN',
+                                payload: res.data[0]
+                            })
                         })
                 }
             })
-            .catch( err =>{
+            .catch(err => {
+                console.log(err)
+            })
+    }
+}
+
+export const getDataResep = () => {
+    return(dispatch) => {
+        Axios.get(`http://localhost:2000/profile/dataresep`)
+            .then(res => {
+                console.log(res.data[0])
+                console.log(res.data[0].idresep)
+                dispatch({
+                    type: 'RESEP',
+                    payload: res.data
+                })
+                const token = localStorage.getItem('token')
+
+                if (token) {
+                    Axios.post(`${URL_API}/keeplogin`, {}, {
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    })
+                        .then(res => {
+                            console.log(res.data[0])
+                            dispatch({
+                                type: 'LOGIN',
+                                payload: res.data[0]
+                            })
+                        })
+                }
+                
+            })
+            .catch(err => {
+                console.log(err)
+            })
+    
+    }
+    
+}
+
+
+// export const uploadResep = (data) => {
+//     return (dispatch) => {
+//         const token = localStorage.getItem('token')
+//         Axios.post(`http://localhost:2000/profile/resep`, data, {
+//             headers: {
+//                 Authorization: `Bearer ${token}`,
+//                 'Content-Type': 'multipart/form-data'
+//             }
+//         })
+//             .then(res => {
+//                 console.log(res.data);
+//                 const token = localStorage.getItem('token')
+
+//                 if (token) {
+//                     Axios.post(`${URL_API}/keeplogin`, {}, {
+//                         headers: {
+//                             'Authorization': `Bearer ${token}`
+//                         }
+//                     })
+//                         .then(res => {
+//                             console.log(res.data[0])
+//                             dispatch({
+//                                 type: 'LOGIN',
+//                                 payload: res.data[0]
+//                             })
+//                         })
+//                 }
+//             })
+//             .catch(err => {
+//                 console.log(err)
+//             })
+//     }
+// }
+
+export const uploadResep = (data) => {
+    return (dispatch) => {
+        let token = localStorage.getItem("token")
+        Axios.post(`http://localhost:2000/profile/resep`, data, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+                'Content-Type': 'multipart/form-data'
+            }
+        })
+            .then(res => {
+                console.log(res.data)
+
+                const token = localStorage.getItem('token')
+
+                if (token) {
+                    Axios.post(`${URL_API}/keeplogin`, {}, {
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    })
+                        .then(res => {
+                            console.log(res.data[0])
+                            dispatch({
+                                type: 'LOGIN',
+                                payload: res.data[0]
+                            })
+                        })
+                }
+            })
+            .catch(err => {
                 console.log(err)
             })
     }

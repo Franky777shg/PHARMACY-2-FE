@@ -10,6 +10,7 @@ import {
     Badge,
     Dropdown
 } from 'react-bootstrap'
+import Axios from 'axios'
 
 // React Router DOM
 import { Link } from 'react-router-dom'
@@ -18,6 +19,13 @@ import { logout } from '../redux/actions'
 import { LOGO } from '../assets'
 
 class NavBar extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            recipes: [],
+        }
+    }
+
     render() {
         return (
             // <Navbar style={styles.navbar}>
@@ -75,8 +83,8 @@ class NavBar extends React.Component {
                                                         {this.props.username ? `${this.props.username}'s Dashboard` : `${this.props.username}'s Dashboard`}
                                                     </Dropdown.Toggle>
                                                     <Dropdown.Menu>
-                                                        <Dropdown.Item as={Link} to={`/profile/${this.props.iduser}`} >Profile</Dropdown.Item>
-                                                        {/* <Dropdown.Item as={Link} to="/profile/:id">My Profile</Dropdown.Item> */}
+                                                        <Dropdown.Item as={Link} to={`/profile/${this.props.iduser}`} >My Profile</Dropdown.Item>
+                                                        <Dropdown.Item onClick={this.addResep} as={Link} to={`/uploadresep/${this.props.iduser}`}>Upload Recipe</Dropdown.Item>
                                                         <Dropdown.Item as={Link} to="#">My Transaction</Dropdown.Item>
                                                         <Dropdown.Item onClick={this.props.logout} as={Link} to="/">Logout</Dropdown.Item>
                                                         {/* <Dropdown.Item onClick={this.props.logout}>Logout</Dropdown.Item> */}
@@ -149,7 +157,9 @@ const mapStateToProps = (state) => {
         username: state.userReducer.username,
         cart: state.userReducer.cart,
         role: state.userReducer.role,
-        iduser : state.userReducer.id
+        iduser : state.userReducer.id,
+        imageRes: state.userReducer.resepPic,
+        idResep: state.userReducer.idResep
     }
 }
 export default connect(mapStateToProps, { logout })(NavBar)
