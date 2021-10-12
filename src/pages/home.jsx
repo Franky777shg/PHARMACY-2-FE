@@ -576,6 +576,10 @@ class HomePage extends React.Component {
       })
       .catch(err => console.log(err))
   }
+
+  onAddObatsatuan = () => {
+    this.setState({})
+  }
   
   render () {
     
@@ -645,7 +649,7 @@ class HomePage extends React.Component {
                         <Card.Title style={{ textAlign: 'center', marginBottom: '15px' }}>{item.nama}</Card.Title>
                         <Card.Text>{item.satuan}</Card.Text>
                         <Card.Text>Rp {(item.harga).toLocaleString()}</Card.Text>
-                        <Button variant="warning" style={{ position: 'absolute', bottom: '75px'}} onClick={() => this.setState({redirect:"/edit-satuan/:id"})}>Edit</Button>
+                        <Button variant="warning" style={{ position: 'absolute', bottom: '75px'}} as={Link} to={`/edit-satuan/${item.idproduk}`}>Edit</Button>
                         <Button variant="danger" style={{ position: 'absolute', bottom: '25px'}} onClick={() => this.onDeletesatuan(item.idproduk)}>Delete</Button>
                       </Card.Body>
                     </Card>
@@ -690,7 +694,7 @@ class HomePage extends React.Component {
                         <Card.Title style={{ textAlign: 'center', marginBottom: '15px' }}>{item.nama}</Card.Title>
                         <Card.Text>Stok: {item.stok_botol} botol {item.stok_ml} ml</Card.Text>
                         <Card.Text>Rp {(item.harga).toLocaleString()}</Card.Text>
-                        <Button variant="warning" style={{ position: 'absolute', bottom: '75px'}}>Edit</Button>
+                        <Button variant="warning" style={{ position: 'absolute', bottom: '75px'}} as={Link} to={`/edit-racikan/${item.idproduk_resep}`}>Edit</Button>
                         <Button variant="danger" style={{ position: 'absolute', bottom: '25px'}} onClick={() => this.onDeleteracikan(item.idproduk_resep)}>Delete</Button>
                       </Card.Body>
                     </Card>

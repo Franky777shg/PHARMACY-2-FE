@@ -167,14 +167,14 @@ class AddPage extends React.Component {
             return (
                 <div>
                     <NavBar />
-                    <div style={{ padding: '125px 50px' }}>
-                        <div style={styles.container}>
-                            <div style={styles.imageDiv}>
-                                <div style={{ display: 'flex', flexDirection: 'column', marginLeft: '10vw' }}>
+                    <div style={{ display: 'flex', paddingTop:'100px', marginLeft: '10vw',color:'#343892' }}>
                                     <h1>Add Products</h1>
 
                                     {/* <img style={styles.imgProf} src={`url(${upload1an ? URL_API + upload1an : null})`}/> */}
                                 </div>
+                    <div style={{ padding: '45px 50px' }}>
+                        <div style={styles.container}>
+                            <div style={styles.imageDiv}>
                                 <div >
                                     <div style={{ margin: '3vh', marginLeft: '13vw' }}>
                                         <form encType="multipart/form-data">
@@ -424,7 +424,7 @@ const styles = {
         margin: '0 0 10px'
     },
     imageDiv: {
-        height: '150vh',
+        height: '105vh',
         flex: 2,
         display: 'flex',
         flexDirection: 'column',
