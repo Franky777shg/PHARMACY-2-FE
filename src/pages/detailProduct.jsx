@@ -60,7 +60,7 @@ class DetailProductPage extends React.Component {
         return (
             <div>
                 <NavBar />
-                <div style={{ padding: '25px 50px' }}>
+                <div style={{ padding: '100px 50px' }}>
                     <div style={styles.container}>
                         <div style={styles.imageDiv}>
                             <Image style={styles.image} src={this.state.product ? this.state.product.link_foto : ""} />
