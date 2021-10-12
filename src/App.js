@@ -17,6 +17,8 @@ import EditSatuanPage from './pages/editProduct1';
 import EditRPage from './pages/editProductR';
 
 import { keepLogin } from './redux/actions';
+import UploadResep from './pages/uploadRecipe';
+import UploadPayment from './pages/uploadPayment';
 
 class App extends React.Component {
   componentDidMount() {
@@ -39,6 +41,8 @@ class App extends React.Component {
         <Route path="/profile/:id" component={ProfilePage} />
         <Route path="/edit-satuan/:id" component={EditSatuanPage} />
         <Route path="/edit-racikan/:id" component={EditRPage} />
+        <Route path="/uploadresep/:id" component={UploadResep} />
+        <Route path="/uploadpayment" component={UploadPayment} />
       </Switch>
     )
   }
