@@ -20,7 +20,7 @@ import {
 
 const URL_API = 'http://localhost:2000/product'
 
-class EditSatuanPage extends React.Component {
+class EditRPage extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
@@ -40,8 +40,8 @@ class EditSatuanPage extends React.Component {
     }
 
     componentDidMount() {
-        let idProduct = this.props.location.pathname.slice(13)
-        Axios.get(`${URL_API}/detail-product/${idProduct}`)
+        let idProduct = this.props.location.pathname.slice(14)
+        Axios.get(`${URL_API}/detail-productr/${idProduct}`)
             .then(res => {
                 this.setState({
                     product: res.data, maxbotol: res.data.stok_botol, stok_ml: res.data.stok_ml,
@@ -58,6 +58,24 @@ class EditSatuanPage extends React.Component {
             })
     }
 
+    fetchData = () => {
+        let idProduct = this.props.location.pathname.slice(14)
+        Axios.get(`${URL_API}/detail-productr/${idProduct}`)
+            .then(res => {
+                this.setState({
+                    product: res.data, maxbotol: res.data.stok_botol, stok_ml: res.data.stok_ml,
+                    nama: res.data.nama,
+                    harga: res.data.harga,
+                    stok_botol: res.data.stok_botol,
+                    kategori: res.data.kategori,
+                    deskripsi: res.data.deskripsi,
+                    
+                })
+            })
+            .catch(err => {
+                console.log(err)
+            })
+    }
     onChangeQty = (e) => {
         let value = +e.target.value
         let maxQty = this.state.product.stok_botol
@@ -80,7 +98,11 @@ class EditSatuanPage extends React.Component {
         console.log(e.target.files[0])
         console.log(this.state.images)
     }
-
+    onRemove = () => {
+        this.props.deletePhoto( this.props.location.pathname.slice(14))
+        this.fetchData()
+        this.setState({ images: '' })
+    }
     handleUpload = () => {
         //foto dan data = 2, data aja = 1
         let data = new FormData()
@@ -122,14 +144,9 @@ class EditSatuanPage extends React.Component {
         console.log(data.length)
         // console.log(message)
         this.props.editProduct1(data,body, idproduct)
-        // this.setState({ images: '' })
-    }
-
-    // onChangeStock = (e) => {
-    //     this.setState({ stok: e.target.value })
-    // }
-
-   
+        this.fetchData()
+        this.setState({ images: '' })
+    } 
 
     render() {
         if (this.props.role !== "admin") {
@@ -153,12 +170,19 @@ class EditSatuanPage extends React.Component {
                                 </form>
                                 <Button
                                     className="button"
-                                    variant="success"
-                                    onClick={this.handleUpload}
+                                    variant="danger"
+                                    onClick={this.onRemove}
                                 >
-                                    Upload
+                                    Remove
                                 </Button>
                             </div>
+                            
+ 
+                          
+
+                        </div>
+                        <div style={styles.textDiv}>
+                            <div style={styles.textDescription}>
                             <h3 style={styles.h3}>Nama Obat<FormControl
                                 // placeholder={this.state.product ? this.state.product.nama : ""}
                                 value={this.state.nama}
@@ -173,12 +197,6 @@ class EditSatuanPage extends React.Component {
                                 type="number"
                                 ref="harga"
                             /></h4>
- 
-                          
-
-                        </div>
-                        <div style={styles.textDiv}>
-                            <div style={styles.textDescription}>
                                 <h5 style={{ marginBottom: '2px' }}>Kategori</h5>
                                 {/* <Form.Control style={styles.filterForm} type="text" placeholder="Name" ref="name" /> */}
                                 <Form.Select style={styles.filterForm} ref="category" value={this.state.kategori} onChange={(e) => this.setState({kategori: e.target.value})} >
@@ -193,13 +211,13 @@ class EditSatuanPage extends React.Component {
                             </div>
                            
                             <div style={styles.textDescription}>
-                            <h4 style={styles.h4}>Stok Botol
+                            <h5 style={styles.h5}>Stok Botol
                                 {/* <FormControl
                                     placeholder={this.state.product ? `Stok: ${this.state.product.stok}` : ""}
                                     type="text"
                                     ref="nama"
                                 /> */}
-                            </h4>
+                            </h5>
                             {this.props.username
                                 ?
                                 <div style={styles.controlDiv}>
@@ -272,7 +290,7 @@ const styles = {
         margin: '0 0 10px'
     },
     imageDiv: {
-        height: '150vh',
+        // height: '150vh',
         flex: 2,
         display: 'flex',
         flexDirection: 'column',
@@ -315,4 +333,4 @@ const mapStateToProps = (state) => {
     }
 }
 
-export default connect(mapStateToProps, {editProductR})(EditSatuanPage)
+export default connect(mapStateToProps, {editProductR})(EditRPage)

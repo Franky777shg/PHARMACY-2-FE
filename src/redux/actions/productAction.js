@@ -274,17 +274,16 @@ export const editProductR = (foto, data,idproduct) => {
         // }
         //kalo edit foto dan data
         // if (data.message === 0) {
-            Axios.post(`${URL_API}/edit-productrfoto/${idproduct}`, foto, {
-            headers: {
-                'Content-Type': 'multipart/form-data'
-            }
-        })
+            Axios.post(`${URL_API}/edit-productrdata/${idproduct}`, data)
             .then(res => {
                 // console.log(res.data.data[0].idproduk)
                 console.log(res.data)
                 // const hasil = res.data
                 // const kirim = { ...data, hasil }
-                Axios.post(`${URL_API}/edit-productrdata/${idproduct}`, data)
+                Axios.post(`${URL_API}/edit-productrfoto/${idproduct}`, foto, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    }})
                     .then(res => {
                         // console.log(res.data.data[0].idproduk)
                         // console.log(res.data)
@@ -326,3 +325,36 @@ export const editProductR = (foto, data,idproduct) => {
     }
 }
 
+export const deletePhoto = (remove,id) => {
+    return (dispatch) => {
+        let token = localStorage.getItem("token")
+        Axios.patch(`http://localhost:2000/product/delete`, remove, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            }
+        })
+            .then(res => {
+                console.log(res.data)
+
+                const token = localStorage.getItem('token')
+
+                if (token) {
+                    Axios.post(`${URL_API}/keeplogin`, {}, {
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    })
+                        .then(res => {
+                            console.log(res.data[0])
+                            dispatch({
+                                type: 'LOGIN',
+                                payload: res.data[0]
+                            })
+                        })
+                }
+            })
+            .catch(err => {
+                console.log(err)
+            })
+    }
+}

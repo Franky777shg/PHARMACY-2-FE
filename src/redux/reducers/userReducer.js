@@ -16,7 +16,8 @@ const INITIAL_STATE = {
     role: "",
     idResep: null,
     resepPic: "",
-    orderNumb :''
+    orderNumb :'',
+    cart:[]
 }
 
 const userReducer = (state = INITIAL_STATE, action) => {
@@ -29,7 +30,8 @@ const userReducer = (state = INITIAL_STATE, action) => {
                 password: action.payload.password,
                 email: action.payload.email,
                 role: action.payload.role,
-                profilePic: action.payload.profile_picture
+                profilePic: action.payload.profile_picture,
+                cart: action.payload.cart
               
             }
         case 'FAILED_LOGIN':

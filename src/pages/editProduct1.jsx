@@ -199,9 +199,9 @@ class EditSatuanPage extends React.Component {
                                 <Button
                                     className="button"
                                     variant="success"
-                                    onClick={this.handleUpload}
+                                    onClick={this.onRemove}
                                 >
-                                    Upload
+                                    Remove
                                 </Button>
                             </div>
                             <h3 style={styles.h3}>Nama Obat<FormControl
