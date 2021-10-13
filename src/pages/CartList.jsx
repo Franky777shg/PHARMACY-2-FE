@@ -9,8 +9,8 @@ import {
     Form,
     Modal
 } from 'react-bootstrap'
-import { delCart, saveCart, checkout } from '../redux/action'
-
+import { delCart, saveCart, onCheckout } from '../redux/actions'
+import Axios from 'axios';
 class CartPage extends React.Component {
     constructor(props) {
         super(props)
@@ -22,6 +22,26 @@ class CartPage extends React.Component {
             toHistory: false,
             visibility: false
         }
+    }
+    fetchData = () => {
+        let token = localStorage.getItem("token")
+        Axios.get(`http://localhost:2000/user/cart`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            }
+        })
+            .then(res => {
+                console.log(res.data)
+                this.setState({ users: res.data })
+                // console.log(this.state.users[0].username)
+            })
+            .catch(err => {
+                console.log(err)
+            })
+    }
+
+    componentDidMount() {
+        this.fetchData()
     }
     showTableHead = () => {
         return (
@@ -326,4 +346,4 @@ const mapStateToProps = (state) => {
 }
 
 
-export default connect(mapStateToProps, { delCart, saveCart, checkout })(CartPage)
+export default connect(mapStateToProps, { delCart, saveCart, onCheckout })(CartPage)

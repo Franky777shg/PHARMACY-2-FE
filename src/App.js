@@ -15,6 +15,7 @@ import AddPageR from './pages/addProductR';
 import ProfilePage from './pages/profileUser';
 import EditSatuanPage from './pages/editProduct1';
 import EditRPage from './pages/editProductR';
+import CartPage from './pages/CartList';
 
 import { keepLogin } from './redux/actions';
 import UploadResep from './pages/uploadRecipe';
@@ -43,6 +44,7 @@ class App extends React.Component {
         <Route path="/edit-racikan/:id" component={EditRPage} />
         <Route path="/uploadresep/:id" component={UploadResep} />
         <Route path="/uploadpayment" component={UploadPayment} />
+        <Route path="/cart/:id" component={CartPage} />
       </Switch>
     )
   }
