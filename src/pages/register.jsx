@@ -90,7 +90,7 @@ class RegisterPage extends React.Component {
       address,
       age,
       role: 'user',
-      profile_picture: 'picture',
+      profile_picture: '',
       verify: 'unverified'
     }
     console.log(newData)
@@ -235,7 +235,6 @@ class RegisterPage extends React.Component {
           </Form.Text>
           <p style={styles.goToRegis}>Already Have an Account ? <Link style={{ color: '#00BCD4', fontWeight: 'bold' }} to="/login">Login Here</Link></p>
           <p style={styles.goToRegis}>Go to <Link style={{ color: '#00BCD4', fontWeight: 'bold' }} to="/">Home</Link></p>
-
         </div>
       </div>
     )

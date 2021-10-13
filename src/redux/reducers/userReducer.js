@@ -8,12 +8,16 @@ const INITIAL_STATE = {
     msgFailedLogin: "",
     forgotpw_ok: "",
     forgotpw_no: "",
-    forgot:false,
+    forgot: false,
     profilePic: '',
-    forgot1:false,
-    successpw:"",
-    changed:false,
-    role:""
+    forgot1: false,
+    successpw: "",
+    changed: false,
+    role: "",
+    idResep: null,
+    resepPic: "",
+    orderNumb :'',
+    cart:[]
 }
 
 const userReducer = (state = INITIAL_STATE, action) => {
@@ -26,7 +30,9 @@ const userReducer = (state = INITIAL_STATE, action) => {
                 password: action.payload.password,
                 email: action.payload.email,
                 role: action.payload.role,
-                profilePic: action.payload.profile_picture
+                profilePic: action.payload.profile_picture,
+                cart: action.payload.cart
+              
             }
         case 'FAILED_LOGIN':
             return {
@@ -62,6 +68,13 @@ const userReducer = (state = INITIAL_STATE, action) => {
             }
         case 'LOG_OUT':
             return INITIAL_STATE
+        case 'RESEP':
+            return {
+                ...state,
+                resepPic: action.payload[0].image_resep,
+                idResep: action.payload[0].idresep,
+                orderNumb : action.payload[0].order_number
+            }
         default:
             return state
     }

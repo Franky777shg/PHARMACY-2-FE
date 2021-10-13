@@ -16,7 +16,7 @@ import {
     Button,
     Form
 } from 'react-bootstrap'
-
+import { addCart } from '../redux/actions'
 const URL_API = 'http://localhost:2000/product'
 
 class DetailProductPage extends React.Component {
@@ -39,6 +39,28 @@ class DetailProductPage extends React.Component {
                 console.log(err)
             })
     }
+    onCheckout = () => {
+        const {product,qty} = this.state
+        if (!this.props.username){
+            return this.setState({toLogin: true})
+        }
+
+        //siapkan data produk yang mau kita push ke dalam cart user yang sedang aktif
+        let obj = {
+            id: product.id,
+            name: product.name,
+            image: product.images[0],
+            price: product.price,
+            stock: product.stock,
+            qty
+            
+            //qty:qty, property:value nya sama,
+        }
+        console.log(obj)
+        this.props.addCart(this.props.id,obj)
+
+        this.setState({toCart:true})
+    }
 
     onChangeQty = (e) => {
         let value = +e.target.value
@@ -60,7 +82,7 @@ class DetailProductPage extends React.Component {
         return (
             <div>
                 <NavBar />
-                <div style={{ padding: '25px 50px', marginTop: '84px' }}>
+                <div style={{ padding: '100px 50px' }}>
                     <div style={styles.container}>
                         <div style={styles.imageDiv}>
                             <Image style={styles.image} src={this.state.product ? "http://localhost:2000/" + this.state.product.link_foto : ""} />
@@ -81,7 +103,7 @@ class DetailProductPage extends React.Component {
                                     />
                                     <Button variant="primary" disabled={this.state.qty === this.state.max ? true : false} onClick={() => this.setState({ qty: this.state.qty + 1 })}>+</Button>
                                 </div>
-                                <Button style={{ width: '10vw', marginBottom: '30px' }} variant="success">Add to Cart</Button>
+                                <Button style={{ width: '10vw', marginBottom: '30px' }} variant="success" onClick={this.onCheckout}>Add to Cart</Button>
                             </div>
                             :
                             <div></div>

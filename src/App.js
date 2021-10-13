@@ -16,8 +16,11 @@ import ProfilePage from './pages/profileUser';
 import EditSatuanPage from './pages/editProduct1';
 import EditRPage from './pages/editProductR';
 import TransactionAdminPage from './pages/transactionAdmin';
+import CartPage from './pages/CartList';
 
 import { keepLogin } from './redux/actions';
+import UploadResep from './pages/uploadRecipe';
+import UploadPayment from './pages/uploadPayment';
 
 class App extends React.Component {
   componentDidMount() {
@@ -41,6 +44,9 @@ class App extends React.Component {
         <Route path="/edit-satuan/:id" component={EditSatuanPage} />
         <Route path="/edit-racikan/:id" component={EditRPage} />
         <Route path="/transaction-admin" component={TransactionAdminPage} />
+        <Route path="/uploadresep/:id" component={UploadResep} />
+        <Route path="/uploadpayment" component={UploadPayment} />
+        <Route path="/cart/:id" component={CartPage} />
       </Switch>
     )
   }
