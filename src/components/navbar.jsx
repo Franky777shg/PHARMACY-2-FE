@@ -65,7 +65,7 @@ class NavBar extends React.Component {
                                                     </Dropdown.Toggle>
                                                     <Dropdown.Menu>
                                                         <Dropdown.Item as={Link} to="#">Financial</Dropdown.Item>
-                                                        <Dropdown.Item as={Link} to="#">Transaction</Dropdown.Item>
+                                                        <Dropdown.Item as={Link} to="/transaction-admin">Transaction</Dropdown.Item>
                                                         <Dropdown.Item as={Link} to="/" onClick={this.props.logout}>Logout</Dropdown.Item>
                                                     </Dropdown.Menu>
                                                 </>
