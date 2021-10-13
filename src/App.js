@@ -15,6 +15,7 @@ import AddPageR from './pages/addProductR';
 import ProfilePage from './pages/profileUser';
 import EditSatuanPage from './pages/editProduct1';
 import EditRPage from './pages/editProductR';
+import TransactionAdminPage from './pages/transactionAdmin';
 import CartPage from './pages/CartList';
 
 import { keepLogin } from './redux/actions';
@@ -42,6 +43,7 @@ class App extends React.Component {
         <Route path="/profile/:id" component={ProfilePage} />
         <Route path="/edit-satuan/:id" component={EditSatuanPage} />
         <Route path="/edit-racikan/:id" component={EditRPage} />
+        <Route path="/transaction-admin" component={TransactionAdminPage} />
         <Route path="/uploadresep/:id" component={UploadResep} />
         <Route path="/uploadpayment" component={UploadPayment} />
         <Route path="/cart/:id" component={CartPage} />
