@@ -27,7 +27,8 @@ class TransactionAdminPage extends React.Component {
             dataDetailOrder: null,
             cariBahan: null, // untuk di isi dengan data produk resep yang dicari
             inputOrder: [], // data produk yang akan di pakai buat resep
-            totalHargaResep: 0
+            totalHargaResep: 0,
+            imageBuktiPembayaranResep: null
         }
     }
 
@@ -92,6 +93,12 @@ class TransactionAdminPage extends React.Component {
             .then(res => {
                 this.setState({ dataOrder: res.data })
                 this.setState({ showModal: true })
+                this.setState({
+                    cariBahan: null,
+                    inputOrder: [],
+                    totalHargaResep: 0,
+                    imageBuktiPembayaranResep: null 
+                })
             })
             .catch(err => console.log(err))
     }
@@ -178,11 +185,6 @@ class TransactionAdminPage extends React.Component {
                                 .then(() => {
                                     this.onTransaksiObatResep()
                                     this.setState({ showModal: false })
-                                    this.setState({
-                                        cariBahan: null,
-                                        inputOrder: [],
-                                        totalHargaResep: 0
-                                    })
                                 })
                                 .catch(err => console.log('error update status resep'))
                         })
@@ -209,6 +211,96 @@ class TransactionAdminPage extends React.Component {
                 })
             })
             .catch(err => console.log('error reject transaksi resep'))
+    }
+
+    getDataOrderResep = (order_number) => {
+        let data = {
+            order_number
+        }
+
+        Axios.post(`${URL_API}/getDetailOrderResep`, data)
+            .then(res => {
+                this.setState({ inputOrder: res.data })
+                let total = 0
+
+                this.state.inputOrder.map((item) => {
+                    total = total + (item.qty_beli * item.harga)
+                })
+
+                this.setState({ totalHargaResep: total })
+            })
+            .catch(err => console.log('error get data order resep'))
+    }
+
+    modalPaymentApprovalResep = (order_number) => {
+        let data = {
+            order_number
+        }
+
+        Axios.post(`${URL_API}/getDetailOrderResep`, data)
+            .then(res => {
+                this.setState({ inputOrder: res.data })
+                let total = 0
+
+                this.state.inputOrder.map((item) => {
+                    total = total + (item.qty_beli * item.harga)
+                })
+
+                this.setState({ totalHargaResep: total })
+                Axios.post(`${URL_API}/getImageBuktiPembayaranResep`, data)
+                    .then(res => {
+                        this.setState({ imageBuktiPembayaranResep: res.data })
+                    })
+            })
+            .catch(err => console.log('error modal payment approval'))
+    }
+
+    onCloseModalResep = () => {
+        this.setState({ 
+            showModal: false,
+        })
+    }
+
+    onProsesOrderResep = () => {
+        let data = {
+            statusBaru: 'Processing',
+            order_number: this.state.dataOrder.order_number
+        }
+
+        Axios.post(`${URL_API}/updateStatusResep`, data)
+            .then(() => {
+                this.onTransaksiObatResep()
+                this.setState({ showModal: false })
+            })
+            .catch(err => console.log('error update status resep'))
+    }
+
+    onRequestReuploadBuktiPembayaranResep = () => {
+        let data = {
+            statusBaru: 'Waiting For Payment',
+            order_number: this.state.dataOrder.order_number
+        }
+
+        Axios.post(`${URL_API}/updateStatusResep`, data)
+            .then(() => {
+                this.onTransaksiObatResep()
+                this.setState({ showModal: false })
+            })
+            .catch(err => console.log('error update status resep'))
+    }
+
+    onSendPackageResep = () => {
+        let data = {
+            statusBaru: 'Sending Package',
+            order_number: this.state.dataOrder.order_number
+        }
+
+        Axios.post(`${URL_API}/updateStatusResep`, data)
+            .then(() => {
+                this.onTransaksiObatResep()
+                this.setState({ showModal: false })
+            })
+            .catch(err => console.log('error update status resep'))
     }
 
     render() {
@@ -289,7 +381,7 @@ class TransactionAdminPage extends React.Component {
                 </div>
                 <Modal
                     show={this.state.showModal}
-                    onHide={() => this.setState({ showModal: false })}
+                    onHide={this.onCloseModalResep}
                     fullscreen={true}
                 >
                     <Modal.Header closeButton>
@@ -399,6 +491,192 @@ class TransactionAdminPage extends React.Component {
                             :
                             <div></div>
                         }
+                        {this.state.dataOrder && this.state.dataOrder.status === "Waiting For Payment" ?
+                            this.state.inputOrder.length === 0 ? 
+                                this.getDataOrderResep(this.state.dataOrder.order_number)
+                                :
+                                <Table style={{ marginTop: '20px' }} striped bordered hover>
+                                    <thead>
+                                        <tr>
+                                            <th>Nama Bahan</th>
+                                            <th>Quantity(ml)</th>
+                                            <th>Harga(/ml)</th>
+                                            <th>Total</th>
+                                        </tr>
+                                    </thead>
+                                    {this.state.inputOrder.map((item, index) => {
+                                        return (
+                                            <tbody key={index}>
+                                                <tr>
+                                                    <td>{item.nama_produk}</td>
+                                                    <td>{item.qty_beli}</td>
+                                                    <td>Rp {(item.harga).toLocaleString()}</td>
+                                                    <td>Rp {(item.harga * item.qty_beli).toLocaleString()}</td>
+                                                </tr>
+                                            </tbody>
+                                        )
+                                    })}
+                                    <tfoot>
+                                        <tr>
+                                            <td colSpan="3">Total</td>
+                                            <td>Rp {(this.state.totalHargaResep).toLocaleString()}</td>
+                                        </tr>
+                                    </tfoot>
+                                </Table>
+                            :
+                            <div></div>
+                        }
+                        {this.state.dataOrder && this.state.dataOrder.status === "Waiting For Payment Approval" ?
+                            this.state.inputOrder.length === 0 ? 
+                                this.modalPaymentApprovalResep(this.state.dataOrder.order_number)
+                                :
+                                <div>
+                                    <Table style={{ marginTop: '20px' }} striped bordered hover>
+                                        <thead>
+                                            <tr>
+                                                <th>Nama Bahan</th>
+                                                <th>Quantity(ml)</th>
+                                                <th>Harga(/ml)</th>
+                                                <th>Total</th>
+                                            </tr>
+                                        </thead>
+                                        {this.state.inputOrder.map((item, index) => {
+                                            return (
+                                                <tbody key={index}>
+                                                    <tr>
+                                                        <td>{item.nama_produk}</td>
+                                                        <td>{item.qty_beli}</td>
+                                                        <td>Rp {(item.harga).toLocaleString()}</td>
+                                                        <td>Rp {(item.harga * item.qty_beli).toLocaleString()}</td>
+                                                    </tr>
+                                                </tbody>
+                                            )
+                                        })}
+                                        <tfoot>
+                                            <tr>
+                                                <td colSpan="3">Total</td>
+                                                <td>Rp {(this.state.totalHargaResep).toLocaleString()}</td>
+                                            </tr>
+                                        </tfoot>
+                                    </Table>
+                                    <h3 style={{ textDecoration: 'underline', textAlign: 'center' }}>Bukti Pembayaran</h3>
+                                    <Image style={styles.imageBuktiPembayaranResep} src={`http://localhost:2000/${this.state.imageBuktiPembayaranResep}`} />
+                                    <div style={{ textAlign: 'center', marginTop: '20px' }}>
+                                        <Button variant="success" onClick={this.onProsesOrderResep}>Process Order</Button>
+                                        <Button  style={{ marginLeft: '20px'}} variant="danger" onClick={this.onRequestReuploadBuktiPembayaranResep}>Request Reupload Payment Proof</Button>
+                                    </div>
+                                </div>
+                            :
+                            <div></div>
+                        }
+                        {this.state.dataOrder && this.state.dataOrder.status === "Processing" ?
+                            this.state.inputOrder.length === 0 ? 
+                                this.getDataOrderResep(this.state.dataOrder.order_number)
+                                :
+                                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                                    <Table style={{ marginTop: '20px', width: '40vw' }} striped bordered hover>
+                                        <thead>
+                                            <tr>
+                                                <th>Nama Bahan</th>
+                                                <th>Quantity(ml)</th>
+                                                <th>Harga(/ml)</th>
+                                                <th>Total</th>
+                                            </tr>
+                                        </thead>
+                                        {this.state.inputOrder.map((item, index) => {
+                                            return (
+                                                <tbody key={index}>
+                                                    <tr>
+                                                        <td>{item.nama_produk}</td>
+                                                        <td>{item.qty_beli}</td>
+                                                        <td>Rp {(item.harga).toLocaleString()}</td>
+                                                        <td>Rp {(item.harga * item.qty_beli).toLocaleString()}</td>
+                                                    </tr>
+                                                </tbody>
+                                            )
+                                        })}
+                                        <tfoot>
+                                            <tr>
+                                                <td colSpan="3">Total</td>
+                                                <td>Rp {(this.state.totalHargaResep).toLocaleString()}</td>
+                                            </tr>
+                                        </tfoot>
+                                    </Table>
+                                    <Button style={{ marginTop: '20px' }} variant="success" onClick={this.onSendPackageResep}>Send Package</Button>
+                                </div>
+                            :
+                            <div></div>
+                        }
+                        {this.state.dataOrder && this.state.dataOrder.status === "Sending Package" ?
+                            this.state.inputOrder.length === 0 ? 
+                                this.getDataOrderResep(this.state.dataOrder.order_number)
+                                :
+                                <Table style={{ marginTop: '20px', width: '40vw' }} striped bordered hover>
+                                    <thead>
+                                        <tr>
+                                            <th>Nama Bahan</th>
+                                            <th>Quantity(ml)</th>
+                                            <th>Harga(/ml)</th>
+                                            <th>Total</th>
+                                        </tr>
+                                    </thead>
+                                    {this.state.inputOrder.map((item, index) => {
+                                        return (
+                                            <tbody key={index}>
+                                                <tr>
+                                                    <td>{item.nama_produk}</td>
+                                                    <td>{item.qty_beli}</td>
+                                                    <td>Rp {(item.harga).toLocaleString()}</td>
+                                                    <td>Rp {(item.harga * item.qty_beli).toLocaleString()}</td>
+                                                </tr>
+                                            </tbody>
+                                        )
+                                    })}
+                                    <tfoot>
+                                        <tr>
+                                            <td colSpan="3">Total</td>
+                                            <td>Rp {(this.state.totalHargaResep).toLocaleString()}</td>
+                                        </tr>
+                                    </tfoot>
+                                </Table>
+                            :
+                            <div></div>
+                        }
+                        {this.state.dataOrder && this.state.dataOrder.status === "Complete" ?
+                            this.state.inputOrder.length === 0 ? 
+                                this.getDataOrderResep(this.state.dataOrder.order_number)
+                                :
+                                <Table style={{ marginTop: '20px' }} striped bordered hover>
+                                    <thead>
+                                        <tr>
+                                            <th>Nama Bahan</th>
+                                            <th>Quantity(ml)</th>
+                                            <th>Harga(/ml)</th>
+                                            <th>Total</th>
+                                        </tr>
+                                    </thead>
+                                    {this.state.inputOrder.map((item, index) => {
+                                        return (
+                                            <tbody key={index}>
+                                                <tr>
+                                                    <td>{item.nama_produk}</td>
+                                                    <td>{item.qty_beli}</td>
+                                                    <td>Rp {(item.harga).toLocaleString()}</td>
+                                                    <td>Rp {(item.harga * item.qty_beli).toLocaleString()}</td>
+                                                </tr>
+                                            </tbody>
+                                        )
+                                    })}
+                                    <tfoot>
+                                        <tr>
+                                            <td colSpan="3">Total</td>
+                                            <td>Rp {(this.state.totalHargaResep).toLocaleString()}</td>
+                                        </tr>
+                                    </tfoot>
+                                </Table>
+                            :
+                            <div></div>
+                        }
                     </Modal.Body>
                 </Modal>
             </div>
@@ -459,6 +737,12 @@ const styles = {
         flexDirection: 'column',
         alignItems: 'center'
     },
+    imageBuktiPembayaranResep: {
+        marginTop: '20px',
+        width: '40vw',
+        border: '5px solid #343892',
+        borderRadius: '10px'
+    }
 }
 
 export default TransactionAdminPage
