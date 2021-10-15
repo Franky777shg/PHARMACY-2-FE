@@ -694,6 +694,7 @@ class HomePage extends React.Component {
                         <Card.Title style={{ textAlign: 'center', marginBottom: '15px' }}>{item.nama}</Card.Title>
                         <Card.Text>Stok: {Math.floor(item.stok_ml/100)} botol {item.stok_ml%100} ml</Card.Text>
                         <Card.Text>Rp {(item.harga).toLocaleString()}</Card.Text>
+                        <Button variant="info" style={{ position: 'absolute', bottom: '125px'}} as={Link} to={`/rawMaterialUsage/${item.idproduk_resep}`}>Usage</Button>
                         <Button variant="warning" style={{ position: 'absolute', bottom: '75px'}} as={Link} to={`/edit-racikan/${item.idproduk_resep}`}>Edit</Button>
                         <Button variant="danger" style={{ position: 'absolute', bottom: '25px'}} onClick={() => this.onDeleteracikan(item.idproduk_resep)}>Delete</Button>
                       </Card.Body>

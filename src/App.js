@@ -17,6 +17,7 @@ import EditSatuanPage from './pages/editProduct1';
 import EditRPage from './pages/editProductR';
 import TransactionAdminPage from './pages/transactionAdmin';
 import CartPage from './pages/CartList';
+import RawMaterialUsagePage from './pages/rawMaterialUsagePage';
 
 import { keepLogin } from './redux/actions';
 import UploadResep from './pages/uploadRecipe';
@@ -47,6 +48,7 @@ class App extends React.Component {
         <Route path="/uploadresep/:id" component={UploadResep} />
         <Route path="/uploadpayment" component={UploadPayment} />
         <Route path="/cart/:id" component={CartPage} />
+        <Route path="/rawMaterialUsage/:id" component={RawMaterialUsagePage} />
       </Switch>
     )
   }
