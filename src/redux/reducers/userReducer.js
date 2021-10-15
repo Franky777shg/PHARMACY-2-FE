@@ -16,8 +16,8 @@ const INITIAL_STATE = {
     role: "",
     idResep: null,
     resepPic: "",
-    orderNumb :'',
-    cart:[]
+    orderNumb: '',
+    cart: []
 }
 
 const userReducer = (state = INITIAL_STATE, action) => {
@@ -32,7 +32,7 @@ const userReducer = (state = INITIAL_STATE, action) => {
                 role: action.payload.role,
                 profilePic: action.payload.profile_picture,
                 cart: action.payload.cart
-              
+
             }
         case 'FAILED_LOGIN':
             return {
@@ -73,7 +73,12 @@ const userReducer = (state = INITIAL_STATE, action) => {
                 ...state,
                 resepPic: action.payload[0].image_resep,
                 idResep: action.payload[0].idresep,
-                orderNumb : action.payload[0].order_number
+                orderNumb: action.payload[0].order_number
+            }
+        case 'CART':
+            return {
+                ...state,
+                cart: action.payload
             }
         default:
             return state

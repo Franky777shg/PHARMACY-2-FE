@@ -23,26 +23,26 @@ class CartPage extends React.Component {
             visibility: false
         }
     }
-    fetchData = () => {
-        let token = localStorage.getItem("token")
-        Axios.get(`http://localhost:2000/user/cart`, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            }
-        })
-            .then(res => {
-                console.log(res.data)
-                this.setState({ users: res.data })
-                // console.log(this.state.users[0].username)
-            })
-            .catch(err => {
-                console.log(err)
-            })
-    }
+    // fetchData = () => {
+    //     let token = localStorage.getItem("token")
+    //     Axios.get(`http://localhost:2000/user/cart`, {
+    //         headers: {
+    //             Authorization: `Bearer ${token}`,
+    //         }
+    //     })
+    //         .then(res => {
+    //             console.log(res.data)
+    //             this.setState({ users: res.data })
+    //             // console.log(this.state.users[0].username)
+    //         })
+    //         .catch(err => {
+    //             console.log(err)
+    //         })
+    // }
 
-    componentDidMount() {
-        this.fetchData()
-    }
+    // componentDidMount() {
+    //     this.fetchData()
+    // }
     showTableHead = () => {
         return (
             <thead>
@@ -160,31 +160,32 @@ class CartPage extends React.Component {
         console.log(this.props.cart)
     }
     showTableBody = () => {
+        console.log(this.props.cart)
         const { qty } = this.state
         return (
             <tbody>
-                {this.props.cart.map((item, index) => {
+                {this.props.cart ? this.props.cart.map((item, index) => {
                     if (index === this.state.indexEdit) {
                         return (
                             <tr key={index}>
                                 <td>{index + 1}</td>
-                                <td><Image src={item.image} style={{ width: '100px' }} rounded /></td>
-                                <td>{item.name}</td>
-                                <td>IDR {item.price.toLocaleString()}</td>
+                                <td><Image src={item.cart.product_image} style={{ width: '100px' }} rounded /></td>
+                                <td>{item.cart.nama}</td>
+                                <td>IDR {item.cart.harga.toLocaleString()}</td>
                                 <td>
                                     <div style={styles.inputEdit}>
 
-                                        <Button variant="outline-light" onClick={this.onMinus} disabled={qty === 1 ? true : false}><i className="fas fa-minus"></i></Button>
+                                        <Button variant="outline-light" onClick={this.onMinus} disabled={item.cart.qty_beli === 1 ? true : false}><i className="fas fa-minus"></i></Button>
                                         <FormControl
                                             style={{ width: '40%' }}
-                                            value={this.state.qty}
+                                            value={item.cart.qty_beli}
                                             onChange={(e) => this.onChangeQty(e, item.stock)} />
-                                        <Button variant="outline-light" onClick={this.onPlus} disabled={qty === item.stock ? true : false}>
+                                        <Button variant="outline-light" onClick={this.onPlus} disabled={item.cart.qty_beli === item.stock ? true : false}>
                                             <i className="fas fa-plus"></i>
                                         </Button>
                                     </div>
                                 </td>
-                                <td>IDR {(item.price * item.qty).toLocaleString()}</td>
+                                <td>IDR {(item.cart.qty_beli * item.cart.harga).toLocaleString()}</td>
                                 <td>
                                     <Button variant="outline-light" className="mr-2" onClick={() => this.onSave(index)}>Save</Button>
                                     <Button variant="outline-dark" style={{backgroundColor:'#f6f6f6',color:'#000051'}} onClick={() => this.setState({ indexEdit: null })}>Cancel</Button>
@@ -195,18 +196,19 @@ class CartPage extends React.Component {
                     return (
                         <tr key={index}>
                             <td>{index + 1}</td>
-                            <td><Image src={item.image} style={{ width: '70px' }} rounded /></td>
-                            <td>{item.name}</td>
-                            <td>IDR {item.price.toLocaleString()}</td>
-                            <td>{item.qty}</td>
-                            <td>IDR {(item.price * item.qty).toLocaleString()}</td>
+                            <td><Image src={item.cart.product_image ? item.cart.product_image : item.cart.product_image} style={{ width: '70px' }} rounded /></td>
+                            <td>{item.cart.name}</td>
+                            <td>IDR {item.cart.harga.toLocaleString()}</td>
+                            <td>{item.cart.qty_beli}</td>
+                            <td>IDR {(item.cart.harga * item.cart.qty_beli).toLocaleString()}</td>
                             <td>
                                 <Button variant="outline-light" style={{backgroundColor:'#6e7aba'}} onClick={() => this.onEdit(index)} className="mr-2">Edit</Button>
                                 <Button variant="outline-light" onClick={() => this.onDelete(index)}>Delete</Button>
                             </td>
                         </tr>
                     )
-                })}
+                })
+            : <div></div>}
             </tbody>
         )
     }

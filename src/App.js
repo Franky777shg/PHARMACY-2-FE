@@ -47,7 +47,7 @@ class App extends React.Component {
         <Route path="/transaction-admin" component={TransactionAdminPage} />
         <Route path="/uploadresep/:id" component={UploadResep} />
         <Route path="/uploadpayment" component={UploadPayment} />
-        <Route path="/cart/:id" component={CartPage} />
+        <Route path="/cart" component={CartPage} />
         <Route path="/rawMaterialUsage/:id" component={RawMaterialUsagePage} />
       </Switch>
     )
