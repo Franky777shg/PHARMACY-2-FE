@@ -151,7 +151,8 @@ class DetailProductPage extends React.Component {
 
 const styles = {
     container: {
-        display: 'flex'
+        display: 'flex',
+        marginTop: '10vh'
     },
     image: {
         width: '30vw',

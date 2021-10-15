@@ -4,7 +4,7 @@ import NavBar from '../components/navbar'
 import Axios from 'axios'
 import { connect } from 'react-redux'
 import { PAY } from '../assets'
-import { getDataResep, uploadResep } from '../redux/actions'
+import { uploadResep, addResepAct, getid } from '../redux/actions' //getDataResep
 
 const URL_API = 'http://localhost:2000/'
 
@@ -13,51 +13,35 @@ class UploadResep extends React.Component {
         super(props);
         this.state = {
             images: '',
-            recipes: [],
+            recipes: [], //add data
+            allDataResep: [], //hasil getById
             done: 'Account Confirmation ',
             disabled: false
 
         }
     }
 
-
-    fetchData = () => {
-        Axios.get(`http://localhost:2000/profile/resepbyid/${this.props.idResep}`)
-            .then(res => {
-                console.log(res.data)
-                this.setState({ recipes: res.data })
-                console.log(this.state.recipes[0].idresep)
-            })
-            .catch(err => {
-                console.log(err)
-            })
-
-    }
-    componentDidMount() {
-        this.fetchData()
-
-    }
-
     addResep = () => {
         let newData = {
             date: `${new Date().toLocaleString()}`,
+            time: `${new Date().toDateString()}`,
             order_number: `${Date.now()}`,
-            idusers: `${this.props.iduser}`,
-            image_resep: `${this.props.imageRes}`,
+            iduser: `${this.props.iduser}`,
+            image_resep: ``,
             status: 'waiting for approval',
         }
         console.log(newData)
-        Axios.post(`http://localhost:2000/profile/newdata`, newData)
-            .then(res => {
-                console.log(res.data)
-                this.setState({ recipes: res.data })
-                this.props.getDataResep()
-                this.setState({ done: 'Please Upload your recipe' })
-                this.setState({ disabled: true })
-            })
-            .catch(err => {
-                console.log(err)
-            })
+        this.props.addResepAct(newData)
+        this.setState({ done: 'Please Upload your recipe' })
+        this.setState({ disabled: true })
+        // this.props.getid()
+        // console.log(this.props.order_Numb)
+    }
+    
+
+    getid = () => {
+        this.setState({ recipes: this.addResep() })
+        console.log(this.state.recipes)
     }
 
 
@@ -72,9 +56,9 @@ class UploadResep extends React.Component {
 
         data.append('IMG', this.state.images)
         console.log(data.get('IMG')) // masukin data Image ke formData
-        console.log(this.props.idResep)
+        console.log(this.props.order_number)
 
-        Axios.patch(`http://localhost:2000/profile/resep/${this.props.idResep}`, data, {
+        Axios.patch(`http://localhost:2000/profile/resep`, data, {
             headers: {
                 'Content-Type': 'multipart/form-data'
             }
@@ -83,21 +67,20 @@ class UploadResep extends React.Component {
                 console.log(res.data)
                 this.setState({ images: res.data })
                 this.fetchData()
-                this.props.getDataResep()
+                // this.props.getDataResep()
             })
             .catch(err => {
                 console.log(err)
             })
         // this.props.uploadResep(data, this.props.idResep)
-        this.fetchData()
-        this.addResep()
-        this.setState({ images: '' })
+        // this.fetchData()
+        // this.setState({ images: '' })
     }
 
     render() {
         const { imageRes, idResep } = this.props
-        console.log(imageRes)
-        console.log(idResep)
+        // console.log(imageRes)
+        // console.log(idResep)
         return (
             <div style={styles.cont}>
                 <NavBar />
@@ -144,6 +127,7 @@ class UploadResep extends React.Component {
                         </Card.Body>
                     </Card>
                 </div>
+                <Button variant="info" style={{ width: '15vw' }} onClick={this.getid}>getid</Button>
             </div>
         )
     }
@@ -172,8 +156,9 @@ const mapStateToProps = (state) => {
     return {
         iduser: state.userReducer.id,
         imageRes: state.userReducer.resepPic,
-        idResep: state.userReducer.idResep
+        idResep: state.userReducer.idResep,
+        order_Numb: state.userReducer.order_Numb
     }
 }
 
-export default connect(mapStateToProps, { getDataResep, uploadResep })(UploadResep)
+export default connect(mapStateToProps, { uploadResep, addResepAct, getid })(UploadResep) // getDataResep

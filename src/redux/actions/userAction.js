@@ -225,81 +225,51 @@ export const deletePhoto = (data) => {
     }
 }
 
-export const getDataResep = () => {
+export const addResepAct = (newData, order_number) => { //OK
     return(dispatch) => {
-        Axios.get(`http://localhost:2000/profile/dataresep`)
+        Axios.post(`http://localhost:2000/profile/newdata`, newData)
+        .then(res => {
+            console.log(res.data)
+            console.log(res.data.date)
+            console.log(res.data.order_number)
+            Axios.get(`http://localhost:2000/profile/resepbyid`, order_number)
             .then(res => {
-                console.log(res.data[0])
-                console.log(res.data[0].idresep)
+                console.log(res.data)
                 dispatch({
                     type: 'RESEP',
                     payload: res.data
                 })
-                const token = localStorage.getItem('token')
-
-                if (token) {
-                    Axios.post(`${URL_API}/keeplogin`, {}, {
-                        headers: {
-                            'Authorization': `Bearer ${token}`
-                        }
-                    })
-                        .then(res => {
-                            console.log(res.data[0])
-                            dispatch({
-                                type: 'LOGIN',
-                                payload: res.data[0]
-                            })
-                        })
-                }
-                
             })
-            .catch(err => {
-                console.log(err)
-            })
-    
+            
+        })
+        .catch(err => {
+            console.log(err)
+        })
     }
-    
 }
 
+export const getid = (order_number) => { //OK
+    return(dispatch) => {
+        Axios.get(`http://localhost:2000/profile/resepbyid`, order_number)
+        .then(res => {
+            console.log(res.data)
+            console.log(res.data.date)
+            console.log(res.data.order_number)
+            dispatch({
+                type: 'RESEP',
+                payload: res.data
+            })
+        })
+        .catch(err => {
+            console.log(err)
+        })
+    }
+}
 
-// export const uploadResep = (data) => {
-//     return (dispatch) => {
-//         const token = localStorage.getItem('token')
-//         Axios.post(`http://localhost:2000/profile/resep`, data, {
-//             headers: {
-//                 Authorization: `Bearer ${token}`,
-//                 'Content-Type': 'multipart/form-data'
-//             }
-//         })
-//             .then(res => {
-//                 console.log(res.data);
-//                 const token = localStorage.getItem('token')
-
-//                 if (token) {
-//                     Axios.post(`${URL_API}/keeplogin`, {}, {
-//                         headers: {
-//                             'Authorization': `Bearer ${token}`
-//                         }
-//                     })
-//                         .then(res => {
-//                             console.log(res.data[0])
-//                             dispatch({
-//                                 type: 'LOGIN',
-//                                 payload: res.data[0]
-//                             })
-//                         })
-//                 }
-//             })
-//             .catch(err => {
-//                 console.log(err)
-//             })
-//     }
-// }
-
-export const uploadResep = (data) => {
+export const uploadResep = (data, id) => {
     return (dispatch) => {
         let token = localStorage.getItem("token")
-        Axios.post(`http://localhost:2000/profile/resep`, data, {
+        Axios.post(`http://localhost:2000/profile/resep/${id}`, data, {
             headers: {
                 Authorization: `Bearer ${token}`,
                 'Content-Type': 'multipart/form-data'
