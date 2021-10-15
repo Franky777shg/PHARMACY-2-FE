@@ -95,7 +95,7 @@ class DetailProductPage extends React.Component {
                 <div style={{ padding: '100px 50px' }}>
                     <div style={styles.container}>
                         <div style={styles.imageDiv}>
-                            <Image style={styles.image} src={this.state.product ? this.state.product.link_foto : ""} />
+                            <Image style={styles.image} src={this.state.product ? "http://localhost:2000/" + this.state.product.link_foto : ""} />
                             <h3 style={styles.h3}>{this.state.product ? this.state.product.nama : ""}</h3>
                             <h4 style={styles.h4}>{this.state.product ? `Rp ${(this.state.product.harga).toLocaleString()}` : ""}</h4>
                             <h4 style={styles.h4}>{this.state.product ? this.state.product.satuan : ""}</h4>
