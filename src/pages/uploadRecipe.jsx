@@ -4,7 +4,8 @@ import NavBar from '../components/navbar'
 import Axios from 'axios'
 import { connect } from 'react-redux'
 import { PAY } from '../assets'
-import { uploadResep, addResepAct, getid } from '../redux/actions' //getDataResep
+import { Link } from 'react-router-dom'
+import { uploadResep, addResepAct, addPayment } from '../redux/actions' //getDataResep
 
 const URL_API = 'http://localhost:2000/'
 
@@ -13,17 +14,16 @@ class UploadResep extends React.Component {
         super(props);
         this.state = {
             images: '',
-            recipes: [], //add data
-            allDataResep: [], //hasil getById
+            recipes: [], //hasil data id
             done: 'Account Confirmation ',
-            disabled: false
+            disabled: false,
 
         }
     }
 
     addResep = () => {
         let newData = {
-            date: `${new Date().toLocaleString()}`,
+            date: `${new Date().toDateString()}`,
             time: `${new Date().toDateString()}`,
             order_number: `${Date.now()}`,
             iduser: `${this.props.iduser}`,
@@ -34,20 +34,30 @@ class UploadResep extends React.Component {
         this.props.addResepAct(newData)
         this.setState({ done: 'Please Upload your recipe' })
         this.setState({ disabled: true })
-        // this.props.getid()
-        // console.log(this.props.order_Numb)
-    }
-    
-
-    getid = () => {
-        this.setState({ recipes: this.addResep() })
-        console.log(this.state.recipes)
+        
     }
 
+    fetchData = () => {
+        Axios.get(`http://localhost:2000/profile/byid/${this.props.idResep}`)
+            .then(res => {
+                console.log(res.data[0])
+                this.setState({ recipes: res.data[0] })
+
+            })
+            .catch(err => {
+                console.log(err)
+            })
+
+    }
+
+    componentDidMount() {
+        this.fetchData()
+    }
 
     handleChoose = (e) => {
         console.log('e.target.files', e.target.files)
         this.setState({ images: e.target.files[0] })
+        this.fetchData()
     }
 
     handleUpload = () => {
@@ -56,31 +66,31 @@ class UploadResep extends React.Component {
 
         data.append('IMG', this.state.images)
         console.log(data.get('IMG')) // masukin data Image ke formData
-        console.log(this.props.order_number)
 
-        Axios.patch(`http://localhost:2000/profile/resep`, data, {
-            headers: {
-                'Content-Type': 'multipart/form-data'
-            }
-        })
-            .then(res => {
-                console.log(res.data)
-                this.setState({ images: res.data })
-                this.fetchData()
-                // this.props.getDataResep()
-            })
-            .catch(err => {
-                console.log(err)
-            })
-        // this.props.uploadResep(data, this.props.idResep)
-        // this.fetchData()
+        this.props.uploadResep(data, this.props.idResep)
+        this.fetchData()
+        console.log(this.props.resep_Image)
         // this.setState({ images: '' })
     }
+    addPayment = () => {
+        let newData = {
+            order_number: `${this.props.order_Numb}`,
+            payment_proof_resep: ``,
+            total_belanja: 100000,
+        }
+        console.log(newData)
+        this.props.addPayment(newData)
+        // this.setState({payments: newData})
+        console.log(this.props.idPayment) //3
+        console.log(this.props.order_numb)
+    }
+
 
     render() {
-        const { imageRes, idResep } = this.props
-        // console.log(imageRes)
+        const { resep_Image, idResep, order_Numb } = this.props
+        // console.log(resep_Image)
         // console.log(idResep)
+        // console.log(order_Numb)
         return (
             <div style={styles.cont}>
                 <NavBar />
@@ -118,7 +128,7 @@ class UploadResep extends React.Component {
                         </InputGroup>
                     </div>
                     <Card style={{ width: '20rem', marginTop: '0', marginLeft: '8vw', boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)' }}>
-                        <Card.Img variant="top" src={imageRes ? `${URL_API}/${imageRes}` : PAY.default} />
+                        <Card.Img variant="top" src={resep_Image  ? `${URL_API}/${resep_Image }` : PAY.default} />
                         <Card.Body>
                             <Card.Title>Your Recipe</Card.Title>
                             <Card.Text>
@@ -127,7 +137,8 @@ class UploadResep extends React.Component {
                         </Card.Body>
                     </Card>
                 </div>
-                <Button variant="info" style={{ width: '15vw' }} onClick={this.getid}>getid</Button>
+                <Button variant="warning" style={{ width: '15vw',marginLeft:'10vw' }} onClick={this.addPayment} as={Link} to={`/paymentresep/${this.props.iduser}`}
+                >payment</Button>
             </div>
         )
     }
@@ -155,10 +166,10 @@ const styles = {
 const mapStateToProps = (state) => {
     return {
         iduser: state.userReducer.id,
-        imageRes: state.userReducer.resepPic,
         idResep: state.userReducer.idResep,
-        order_Numb: state.userReducer.order_Numb
+        order_Numb : state.userReducer.orderNumb,
+        resep_Image : state.userReducer.resepPic
     }
 }
 
-export default connect(mapStateToProps, { uploadResep, addResepAct, getid })(UploadResep) // getDataResep
+export default connect(mapStateToProps, { uploadResep, addResepAct, addPayment })(UploadResep)

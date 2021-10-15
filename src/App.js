@@ -43,8 +43,8 @@ class App extends React.Component {
         <Route path="/profile/:id" component={ProfilePage} />
         <Route path="/edit-satuan/:id" component={EditSatuanPage} />
         <Route path="/edit-racikan/:id" component={EditRPage} />
-        <Route path="/uploadresep" component={UploadResep} />
-        <Route path="/paymentresep" component={UploadPayment} />
+        <Route path="/uploadresep/:id" component={UploadResep} />
+        <Route path="/paymentresep/:id" component={UploadPayment} />
         <Route path="/paymentsatuan" component={UploadPaymentSatuan} />
       </Switch>
     )

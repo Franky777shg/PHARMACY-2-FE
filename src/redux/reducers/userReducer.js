@@ -16,7 +16,9 @@ const INITIAL_STATE = {
     role: "",
     idResep: null,
     resepPic: "",
-    orderNumb: ''
+    orderNumb: '',
+    idPayment: null,
+    paymentPic: ''
 }
 
 const userReducer = (state = INITIAL_STATE, action) => {
@@ -71,7 +73,17 @@ const userReducer = (state = INITIAL_STATE, action) => {
                 ...state,
                 idResep: action.payload.idresep,
                 resepPic: action.payload.image_resep,
-                orderNumb: action.payload.order_number
+                orderNumb: action.payload.order_number,
+            }
+        case 'RESEP_IMG':
+            return {
+                ...state,
+                resepPic: action.payload
+            }
+        case 'ADD_DATA':
+            return {
+                ...state,
+                idPayment: action.payload.id_payment_resep
             }
         default:
             return state

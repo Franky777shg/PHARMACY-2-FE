@@ -64,3 +64,17 @@
               })
       }
   
+//axios upload foto resep
+        // Axios.post(`http://localhost:2000/profile/resep/${this.props.idResep}`, data, {
+        //     headers: {
+        //         'Content-Type': 'multipart/form-data'
+        //     }
+        // })
+        //     .then(res => {
+        //         console.log(res.data)
+        //         this.setState({ images: res.data })
+        //         console.log(this.state.images)
+        //     })
+        //     .catch(err => {
+        //         console.log(err)
+        //     })
