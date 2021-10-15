@@ -44,7 +44,7 @@ class App extends React.Component {
         <Route path="/edit-racikan/:id" component={EditRPage} />
         <Route path="/uploadresep/:id" component={UploadResep} />
         <Route path="/uploadpayment" component={UploadPayment} />
-        <Route path="/cart/:id" component={CartPage} />
+        <Route path="/cart" component={CartPage} />
       </Switch>
     )
   }

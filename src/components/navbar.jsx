@@ -57,7 +57,7 @@ class NavBar extends React.Component {
                         </Nav>
                         <Nav>
                             <Nav.Link>{this.props.role === 'user' ?
-                                <Button variant="outline-dark" as={Link} to={`/cart/${this.props.iduser}`}><i class="fa fa-cart-plus" aria-hidden="true"></i><Badge variant="outline-dark"></Badge></Button>
+                                <Button variant="outline-dark" as={Link} to={`/cart`}><i class="fa fa-cart-plus" aria-hidden="true"></i><Badge variant="outline-dark"></Badge></Button>
                                 : null
                             }</Nav.Link><Nav.Link>
                                 <Dropdown style={{ marginLeft: '10px' }}>

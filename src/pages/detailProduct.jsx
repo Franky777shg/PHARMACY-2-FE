@@ -25,7 +25,9 @@ class DetailProductPage extends React.Component {
         this.state = {
             product: null,
             qty: 1,
-            max: null
+            max: null,
+            toLogin:false,
+            toCart:false,
         }
     }
 
@@ -47,17 +49,20 @@ class DetailProductPage extends React.Component {
 
         //siapkan data produk yang mau kita push ke dalam cart user yang sedang aktif
         let obj = {
-            id: product.id,
-            name: product.name,
-            image: product.images[0],
-            price: product.price,
-            stock: product.stock,
+            // id: product.id,
+            dataproduk: product,
+            // nama: product.nama,
+            // image: product.images[0],
+            // harga: product.harga,
+            // stock: product.stock,
             qty
             
             //qty:qty, property:value nya sama,
         }
         console.log(obj)
-        this.props.addCart(this.props.id,obj)
+        console.log(this.props.iduser)
+        this.props.addCart(this.props.iduser,obj)
+        console.log(this.props.cart)
 
         this.setState({toCart:true})
     }
@@ -78,6 +83,11 @@ class DetailProductPage extends React.Component {
     render () {
         if (this.props.role === "admin") {
             return <Redirect to="/" />
+        }
+        else if (this.state.toLogin) {
+            return <Redirect to="/login" />
+        }else if (this.state.toCart) {
+            return <Redirect to="/cart" />
         }
         return (
             <div>
@@ -224,8 +234,10 @@ const styles = {
 const mapStateToProps = (state) => {
     return {
         username: state.userReducer.username,
-        role: state.userReducer.role
+        role: state.userReducer.role,
+        iduser:state.userReducer.id,
+        cart: state.userReducer.cart
     }
 }
 
-export default connect(mapStateToProps)(DetailProductPage)
+export default connect(mapStateToProps, {addCart})(DetailProductPage)
