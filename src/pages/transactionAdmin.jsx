@@ -13,6 +13,12 @@ import {
     Table
 } from 'react-bootstrap'
 
+// Redux
+import { connect } from 'react-redux'
+
+// React Router DOM
+import { Redirect } from 'react-router-dom'
+
 const URL_API = "http://localhost:2000/transaction"
 
 class TransactionAdminPage extends React.Component {
@@ -304,6 +310,9 @@ class TransactionAdminPage extends React.Component {
     }
 
     render() {
+        if (this.props.role !== "admin") {
+            return <Redirect to="/" />
+        }
         return (
             <div>
                 <NavBar />
@@ -366,7 +375,7 @@ class TransactionAdminPage extends React.Component {
                                     <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
                                         <h5>{`Date : ${item.date}, ${item.time}`}</h5>
                                         <h5>{`Order Number : ${item.order_number}`}</h5>
-                                        <h5>{`User ID : ${item.idusers}`}</h5>
+                                        <h5>{`User ID : ${item.iduser}`}</h5>
                                         <h5 style={{ margin: 0 }}>{`Status : ${item.status}`}</h5>
                                     </div>
                                     <div>
@@ -646,7 +655,7 @@ class TransactionAdminPage extends React.Component {
                             this.state.inputOrder.length === 0 ? 
                                 this.getDataOrderResep(this.state.dataOrder.order_number)
                                 :
-                                <Table style={{ marginTop: '20px' }} striped bordered hover>
+                                <Table style={{ marginTop: '20px', width: '40vw' }} striped bordered hover>
                                     <thead>
                                         <tr>
                                             <th>Nama Bahan</th>
@@ -745,4 +754,10 @@ const styles = {
     }
 }
 
-export default TransactionAdminPage
+const mapStateToProps = (state) => {
+    return {
+        role: state.userReducer.role
+    }
+}
+
+export default connect(mapStateToProps)(TransactionAdminPage)
