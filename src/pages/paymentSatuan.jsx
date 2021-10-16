@@ -1,65 +1,16 @@
 import React from 'react'
 import { Card, Button, InputGroup } from 'react-bootstrap'
 import NavBar from '../components/navbar'
-import Axios from 'axios'
-import { connect } from 'react-redux'
-import {uploadPay, getIdPay} from '../redux/actions'
 
-const URL_API = "http://localhost:2000/payment"
 
-class UploadPayment extends React.Component {
+class UploadPaymentSatuan extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            payments: [],
-            disabled: false,
-            images: ''
         }
     }
 
-    // componentDidMount() {
-    //     this.fetchData()
-    // }
-
-    handleChoose = (e) => {
-        console.log('e.target.files', e.target.files)
-        this.setState({ images: e.target.files[0] })
-    }
-
-    fetchData3 = () => {
-        Axios.get(`http://localhost:2000/payment/allpayment`)
-            .then(res => {
-                console.log(res.data[0])
-                this.setState({ payments: res.data[0] })
-
-            })
-            .catch(err => {
-                console.log(err)
-            })
-    }
-
-    componentDidMount() {
-        this.fetchData3()
-    }
-
-    handleUpload = () => {
-        const data = new FormData()
-        console.log(data) //siapin form data untuk image
-
-        data.append('IMG', this.state.images)
-        console.log(data.get('IMG')) // masukin data Image ke formData
-
-        this.props.uploadPay(data, this.props.idPayment)
-        // this.props.getIdPay()
-        // this.fetchData()
-        this.fetchData3()
-        this.setState({ images: '' })
-    }
-
-
     render() {
-        console.log(this.props.idPayment)
-        console.log(this.props.orderNumb)
         return (
             <div style={styles.cont}>
                 <NavBar />
@@ -74,7 +25,7 @@ class UploadPayment extends React.Component {
                         </Card.Body>
                     </Card>
                     <div style={{ display: 'flex', flexDirection: 'column', marginTop: '8vh', marginLeft: '6vw' }}>
-                        <h1 style={{ display: 'flex', marginLeft: '9vw', marginBottom: '5vh' }} >Payment Upload</h1>
+                        <h1 style={{ display: 'flex', marginLeft: '9vw', marginBottom: '5vh' }} >Payment Proof Upload</h1>
                         <div style={{ margin: '3vh', marginLeft: '13vw' }}>
                             <form encType="multipart/form-data">
                                 <input
@@ -103,9 +54,7 @@ class UploadPayment extends React.Component {
                                 <i className="fas fa-hourglass-half"> Status</i>
                             </InputGroup.Text>
                             <Button variant="info" style={{ width: '15vw' }}>Done Upload Payment</Button>
-
                         </InputGroup>
-                        <Button disabled={this.state.disabled} variant="warning" style={{ width: '15vw' }} onClick={this.addPayment}>ADD DATA</Button>
                     </div>
 
                 </div>
@@ -122,20 +71,11 @@ const styles = {
         backgroundSize: 'cover',
         boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)',
         padding: '16vh',
-        marginTop: '8vh'
+        marginTop:'8vh'
 
     },
 
     //status : done upload foto(biru) --> waiting konfirmasi (yellow)--> accept by admin(green) --> payment --> on going process --> cart
 }
 
-const mapStateToProps = (state) => {
-    return {
-        idPayment: state.userReducer.idPayment,
-        orderNumb : state.userReducer.orderNumb,
-        iduser : state.userReducer.iduser,
-
-    }
-}
-
-export default connect(mapStateToProps, {uploadPay, getIdPay})(UploadPayment)
+export default UploadPaymentSatuan
