@@ -1,6 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { Redirect } from 'react-router-dom'
+import NavBar from '../components/navbar'
 import {
     Table,
     Image,
@@ -20,39 +21,39 @@ class CartPage extends React.Component {
             error: [false, ""],
             askPass: false,
             toHistory: false,
-            visibility: false
+            visibility: false,
+            rendercart: [],
+            stockProd: null
         }
     }
-    // fetchData = () => {
-    //     let token = localStorage.getItem("token")
-    //     Axios.get(`http://localhost:2000/user/cart`, {
-    //         headers: {
-    //             Authorization: `Bearer ${token}`,
-    //         }
-    //     })
-    //         .then(res => {
-    //             console.log(res.data)
-    //             this.setState({ users: res.data })
-    //             // console.log(this.state.users[0].username)
-    //         })
-    //         .catch(err => {
-    //             console.log(err)
-    //         })
-    // }
+    fetchData = () => {
+        Axios.get(`http://localhost:2000/transaction/get-cart/${this.props.iduser}`)
+            .then(res => {
+                console.log(res.data)
+                console.log(res.data.cart.qty_beli)
+                this.setState({ qty: res.data.cart.qty_beli, rendercart: res.data.cart })
+                console.log(this.state.qty)
+                console.log(this.state.rendercart)
+                // console.log(this.state.users[0].username)
+            })
+            .catch(err => {
+                console.log(err)
+            })
+    }
 
-    // componentDidMount() {
-    //     this.fetchData()
-    // }
+    componentDidMount() {
+        this.fetchData()
+    }
     showTableHead = () => {
         return (
             <thead>
                 <tr>
                     <th>#</th>
                     <th>Image</th>
-                    <th>{this.state.visibility ? <i class="fas fa-sort-alpha-up" style={{marginRight: '15px',cursor:'pointer'}} onClick={this.onSortNameASC}></i> : <i class="fas fa-sort-alpha-down"  style={{marginRight: '15px',cursor:'pointer'}} onClick={this.onSortNameDESC}></i>}Name</th>
+                    <th>{this.state.visibility ? <i class="fas fa-sort-alpha-up" style={{ marginRight: '15px', cursor: 'pointer' }} onClick={this.onSortNameASC}></i> : <i class="fas fa-sort-alpha-down" style={{ marginRight: '15px', cursor: 'pointer' }} onClick={this.onSortNameDESC}></i>}Name</th>
                     <th onClick={this.onSortPrice}>Price</th>
                     <th>Quantity</th>
-                    <th><i class="fas fa-sort-amount-up" style={{marginRight:'10px'}} onClick={this.onSortTotalPrice}></i>Total Price</th>
+                    <th><i class="fas fa-sort-amount-up" style={{ marginRight: '10px' }} onClick={this.onSortTotalPrice}></i>Total Price</th>
                     <th>Action</th>
                 </tr>
             </thead>
@@ -60,166 +61,194 @@ class CartPage extends React.Component {
     }
     onSortNameASC = () => {
         // let tempvisibility = visibility
-        this.setState({visibility: !this.state.visibility})
+        this.setState({ visibility: !this.state.visibility })
 
-        this.props.cart.sort(function(a, b) {
+        this.props.cart.sort(function (a, b) {
             var nameA = a.name.toUpperCase(); // ignore upper and lowercase
             var nameB = b.name.toUpperCase(); // ignore upper and lowercase
             if (nameA < nameB) {
-              return -1;
+                return -1;
             }
             if (nameA > nameB) {
-              return 1;
+                return 1;
             }
-          
+
             // names must be equal
             return 0;
-          });
-          console.log(this.props.cart)
-        
-        this.showTableBody()             
-            // let list = []
-            // tempCart.forEach((item,index) => {
-            //     list.push({"name": item.name, "index": index})
-            // })
-            // list.sort(function(a, b) {
-            //     var nameA = a.name.toUpperCase(); // ignore upper and lowercase
-            //     var nameB = b.name.toUpperCase(); // ignore upper and lowercase
-            //     if (nameA < nameB) {
-            //       return -1;
-            //     }
-            //     if (nameA > nameB) {
-            //       return 1;
-            //     }
-              
-            //     // names must be equal
-            //     return 0;
-            //   });
-            // console.log(list)
+        });
+        console.log(this.props.cart)
+
+        this.showTableBody()
+        // let list = []
+        // tempCart.forEach((item,index) => {
+        //     list.push({"name": item.name, "index": index})
+        // })
+        // list.sort(function(a, b) {
+        //     var nameA = a.name.toUpperCase(); // ignore upper and lowercase
+        //     var nameB = b.name.toUpperCase(); // ignore upper and lowercase
+        //     if (nameA < nameB) {
+        //       return -1;
+        //     }
+        //     if (nameA > nameB) {
+        //       return 1;
+        //     }
+
+        //     // names must be equal
+        //     return 0;
+        //   });
+        // console.log(list)
 
     }
     onSortNameDESC = () => {
         // let tempvisibility = visibility
-        this.setState({visibility: !this.state.visibility})
+        this.setState({ visibility: !this.state.visibility })
 
-        this.props.cart.sort(function(a, b) {
+        this.props.cart.sort(function (a, b) {
             var nameA = a.name.toUpperCase(); // ignore upper and lowercase
             var nameB = b.name.toUpperCase(); // ignore upper and lowercase
             if (nameA < nameB) {
-              return 1;
+                return 1;
             }
             if (nameA > nameB) {
-              return -1;
+                return -1;
             }
-          
+
             // names must be equal
             return 0;
-          });
-          console.log(this.props.cart)
-        
-        this.showTableBody()             
+        });
+        console.log(this.props.cart)
+
+        this.showTableBody()
 
     }
     onSortPrice = () => {
-        this.props.cart.sort(function(a, b) {
+        this.props.cart.sort(function (a, b) {
             var priceA = a.price.toLocaleString(); // ignore upper and lowercase
             var priceB = b.price.toLocaleString(); // ignore upper and lowercase
             if (priceA < priceB) {
-              return -1;
+                return -1;
             }
             if (priceA > priceB) {
-              return 1;
+                return 1;
             }
-          
+
             // names must be equal
             return 0;
-          });
-          console.log(this.props.cart)
+        });
+        console.log(this.props.cart)
 
         console.log('sortprice')
         this.showTableBody()
     }
     onSortTotalPrice = () => {
-        this.props.cart.sort(function(a, b) {
-            var priceA = a.price*a.qty; // ignore upper and lowercase
-            var priceB = b.price*b.qty; // ignore upper and lowercase
+        this.props.cart.sort(function (a, b) {
+            var priceA = a.price * a.qty; // ignore upper and lowercase
+            var priceB = b.price * b.qty; // ignore upper and lowercase
             if (priceA < priceB) {
-              return -1;
+                return -1;
             }
             if (priceA > priceB) {
-              return 1;
+                return 1;
             }
-          
+
             // names must be equal
             return 0;
-          });
-          
+        });
+
 
         console.log('sorttotalprice')
         this.showTableBody()
         console.log(this.props.cart)
+        console.log(this.props.cart[0])
     }
     showTableBody = () => {
         console.log(this.props.cart)
+        console.log(this.state.rendercart)
+        // console.log(this.props.cart.product_image)
         const { qty } = this.state
         return (
             <tbody>
-                {this.props.cart ? this.props.cart.map((item, index) => {
+                {this.state.rendercart ? this.state.rendercart.map((item, index) => {
+                    // console.log(item.cart.product_image)
+                    // console.log(item)
+                    // console.log(item.cart)
                     if (index === this.state.indexEdit) {
+                        // if (index === 0) {
                         return (
                             <tr key={index}>
                                 <td>{index + 1}</td>
-                                <td><Image src={item.cart.product_image} style={{ width: '100px' }} rounded /></td>
-                                <td>{item.cart.nama}</td>
-                                <td>IDR {item.cart.harga.toLocaleString()}</td>
+                                <td><Image src={item.product_image ? `http://localhost:2000/${item.product_image}` : item.product_image} style={{ width: '100px' }} rounded /></td>
+                                <td>{item.nama}</td>
+                                <td>IDR {item.harga.toLocaleString()}</td>
                                 <td>
                                     <div style={styles.inputEdit}>
 
-                                        <Button variant="outline-light" onClick={this.onMinus} disabled={item.cart.qty_beli === 1 ? true : false}><i className="fas fa-minus"></i></Button>
+                                        <Button variant="outline-light" onClick={this.onMinus} disabled={item.qty_beli === 1 ? true : false}><i className="fas fa-minus"></i></Button>
                                         <FormControl
                                             style={{ width: '40%' }}
-                                            value={item.cart.qty_beli}
-                                            onChange={(e) => this.onChangeQty(e, item.stock)} />
-                                        <Button variant="outline-light" onClick={this.onPlus} disabled={item.cart.qty_beli === item.stock ? true : false}>
+                                            defaultValue={item.qty_beli}
+                                            // placeholder={item.qty_beli}
+                                            ref="kuantitas"
+                                            // onChange={(e) => this.onChangeQty(e, item.idproduk)} 
+                                            onChange={(e) => this.onChangeQty(e, item.idproduk, item.qty_beli)}
+                                        />
+                                        <Button variant="outline-light" onClick={this.onPlus} disabled={item.qty_beli === this.state.stockProd ? true : false}>
                                             <i className="fas fa-plus"></i>
                                         </Button>
                                     </div>
                                 </td>
-                                <td>IDR {(item.cart.qty_beli * item.cart.harga).toLocaleString()}</td>
+                                <td>IDR {(item.total_harga).toLocaleString()}</td>
                                 <td>
                                     <Button variant="outline-light" className="mr-2" onClick={() => this.onSave(index)}>Save</Button>
-                                    <Button variant="outline-dark" style={{backgroundColor:'#f6f6f6',color:'#000051'}} onClick={() => this.setState({ indexEdit: null })}>Cancel</Button>
+                                    <Button variant="outline-dark" style={{ backgroundColor: '#f6f6f6', color: '#000051' }} onClick={() => this.setState({ indexEdit: null })}>Cancel</Button>
                                 </td>
                             </tr>
                         )
+                        // }
                     }
+                    // if (index === 0) {
                     return (
                         <tr key={index}>
                             <td>{index + 1}</td>
-                            <td><Image src={item.cart.product_image ? item.cart.product_image : item.cart.product_image} style={{ width: '70px' }} rounded /></td>
-                            <td>{item.cart.name}</td>
-                            <td>IDR {item.cart.harga.toLocaleString()}</td>
-                            <td>{item.cart.qty_beli}</td>
-                            <td>IDR {(item.cart.harga * item.cart.qty_beli).toLocaleString()}</td>
+                            <td><Image src={item.product_image ? `http://localhost:2000/${item.product_image}` : item.product_image} style={{ width: '70px' }} rounded /></td>
+                            <td>{item.nama}</td>
+                            <td>IDR {item.harga ? item.harga.toLocaleString() : item.harga}</td>
+                            <td>{item.qty_beli}</td>
+                            <td>IDR {(item.total_harga).toLocaleString()}</td>
                             <td>
-                                <Button variant="outline-light" style={{backgroundColor:'#6e7aba'}} onClick={() => this.onEdit(index)} className="mr-2">Edit</Button>
-                                <Button variant="outline-light" onClick={() => this.onDelete(index)}>Delete</Button>
+                                <Button variant="outline-light" style={{ backgroundColor: '#6e7aba' }} onClick={() => this.onEdit(index, item.qty_beli, item.idproduk, item.order_number)} className="mr-2">Edit</Button>
+                                <Button variant="outline-light" onClick={() => this.onDelete(item.idproduk, item.order_number)}>Delete</Button>
                             </td>
                         </tr>
                     )
+                    // }
                 })
-            : <div></div>}
+                    : <div></div>}
             </tbody>
         )
     }
 
-    onDelete = (index) => {
-        this.props.delCart(this.props.id, index)
-        console.log(this.props.id)
-        console.log(index)
+    onDelete = (idprod, ordernum) => {
+        let ordernumber = { order_number: ordernum }
+        this.props.delCart(this.props.iduser, idprod, ordernumber)
+        console.log(this.props.iduser)
+        console.log(idprod)
+        console.log(ordernum)
+        this.fetchData()
     }
-    onEdit = (index) => {
-        this.setState({ indexEdit: index, qty: this.props.cart[index].qty })
+    onEdit = (index, q, idprod, on) => {
+        console.log(q)
+        let beli = q
+        let obj = { order_number: on, idproduk: idprod }
+        // this.setState({ indexEdit: index})
+        this.setState({ indexEdit: index })
+        Axios.get(`http://localhost:2000/transaction/get-cartqty/${this.props.iduser}`, obj)
+            .then(res => {
+                console.log(res)
+                this.setState({ qty: res.data.qty_beli })
+            })
+        // this.setState({ qty: beli })
+        console.log(this.state.qty)
         console.log(this.props.cart)
     }
     onMinus = () => {
@@ -228,20 +257,32 @@ class CartPage extends React.Component {
     onPlus = () => {
         this.setState({ qty: this.state.qty + 1 })
     }
-    onChangeQty = (e, stockProd) => {
+    onChangeQty = (e, idproduk, q) => {
+        Axios.get(`http://localhost:2000/product/detail-product/${idproduk}`)
+            .then(res => {
+                console.log(res)
+                console.log(res.data.stok)
+                this.setState({ stockProd: res.data.stok })
+                console.log(this.state.stockProd)
+            })
+
+        let beli = q
+        // this.setState({qty: q})
+        console.log(this.state.qty)
         let value = +e.target.value
         if (value <= 1) {
             this.setState({ qty: 1 })
-        } else if (value > stockProd) {
-            this.setState({ qty: stockProd })
+        } else if (value > this.state.stockProd) {
+            this.setState({ qty: this.state.stockProd })
         } else {
             this.setState({ qty: value })
         }
 
     }
     onSave = (index) => {
-        this.props.saveCart(this.props.id, index, this.state.qty)
+        this.props.saveCart(this.props.iduser, index, this.state.qty)
         this.setState({ indexEdit: null })
+        // this.fetchData()
     }
 
     onCheckout = () => {
@@ -265,7 +306,7 @@ class CartPage extends React.Component {
             products: this.props.cart
         }
 
-        this.props.checkout(this.props.id, history)
+        this.props.checkout(this.props.iduser, history)
         this.setState({ askPass: false, toHistory: true })
     }
 
@@ -283,12 +324,13 @@ class CartPage extends React.Component {
 
         return (
             <>
+                <NavBar />
                 <div style={{ padding: '1%', minHeight: '100vh' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '10vh' }}>
-                        <h1 style={{ marginTop: '10vh',color:'#000051' }}>Cart Page</h1>
-                       <div style={{backgroundColor:'#000051',color:'white',borderRadius:'5px'}}><Button variant="outline-light" onClick={this.onCheckout}>Checkout</Button></div>
+                        <h1 style={{ marginTop: '10vh', color: '#000051' }}>Cart Page</h1>
+                        <div style={{ backgroundColor: '#000051', color: 'white', borderRadius: '5px' }}><Button variant="outline-light" onClick={this.onCheckout}>Checkout</Button></div>
                     </div>
-                    <Table style={styles.table} striped bordered hover variant="dark" style={{backgroundColor:'#000051'}}>
+                    <Table style={styles.table} striped bordered hover variant="dark" style={{ backgroundColor: '#000051' }}>
                         {this.showTableHead()}
                         {this.showTableBody()}
                     </Table>
@@ -298,7 +340,7 @@ class CartPage extends React.Component {
                         </Modal.Header>
                         <Modal.Body>{error[1]}</Modal.Body>
                         <Modal.Footer>
-                            <Button style={{backgroundColor:'#000051'}} onClick={() => this.setState({ error: [false, ""] })}>
+                            <Button style={{ backgroundColor: '#000051' }} onClick={() => this.setState({ error: [false, ""] })}>
                                 OK
                             </Button>
                         </Modal.Footer>
@@ -309,7 +351,7 @@ class CartPage extends React.Component {
                         </Modal.Header>
                         <Modal.Body>
                             <FormControl
-                                style={{backgroundColor:'#000051'}}
+                                style={{ backgroundColor: '#000051' }}
                                 placeholder="Input Here..."
                                 ref="passwordUser"
                             />
@@ -342,7 +384,7 @@ const mapStateToProps = (state) => {
     return {
         username: state.userReducer.username,
         cart: state.userReducer.cart,
-        id: state.userReducer.id,
+        iduser: state.userReducer.id,
         password: state.userReducer.password
     }
 }
