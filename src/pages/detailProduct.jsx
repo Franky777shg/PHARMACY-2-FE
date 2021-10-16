@@ -16,7 +16,7 @@ import {
     Button,
     Form
 } from 'react-bootstrap'
-
+import { addCart } from '../redux/actions'
 const URL_API = 'http://localhost:2000/product'
 
 class DetailProductPage extends React.Component {
@@ -25,7 +25,9 @@ class DetailProductPage extends React.Component {
         this.state = {
             product: null,
             qty: 1,
-            max: null
+            max: null,
+            toLogin:false,
+            toCart:false,
         }
     }
 
@@ -38,6 +40,31 @@ class DetailProductPage extends React.Component {
             .catch(err => {
                 console.log(err)
             })
+    }
+    onCheckout = () => {
+        const {product,qty} = this.state
+        if (!this.props.username){
+            return this.setState({toLogin: true})
+        }
+
+        //siapkan data produk yang mau kita push ke dalam cart user yang sedang aktif
+        let obj = {
+            // id: product.id,
+            dataproduk: product,
+            // nama: product.nama,
+            // image: product.images[0],
+            // harga: product.harga,
+            // stock: product.stock,
+            qty
+            
+            //qty:qty, property:value nya sama,
+        }
+        console.log(obj)
+        console.log(this.props.iduser)
+        this.props.addCart(this.props.iduser,obj)
+        console.log(this.props.cart)
+
+        this.setState({toCart:true})
     }
 
     onChangeQty = (e) => {
@@ -57,13 +84,18 @@ class DetailProductPage extends React.Component {
         if (this.props.role === "admin") {
             return <Redirect to="/" />
         }
+        else if (this.state.toLogin) {
+            return <Redirect to="/login" />
+        }else if (this.state.toCart) {
+            return <Redirect to="/cart" />
+        }
         return (
             <div>
                 <NavBar />
-                <div style={{ padding: '25px 50px' }}>
+                <div style={{ padding: '100px 50px' }}>
                     <div style={styles.container}>
                         <div style={styles.imageDiv}>
-                            <Image style={styles.image} src={this.state.product ? this.state.product.link_foto : ""} />
+                            <Image style={styles.image} src={this.state.product ? "http://localhost:2000/" + this.state.product.link_foto : ""} />
                             <h3 style={styles.h3}>{this.state.product ? this.state.product.nama : ""}</h3>
                             <h4 style={styles.h4}>{this.state.product ? `Rp ${(this.state.product.harga).toLocaleString()}` : ""}</h4>
                             <h4 style={styles.h4}>{this.state.product ? this.state.product.satuan : ""}</h4>
@@ -81,7 +113,7 @@ class DetailProductPage extends React.Component {
                                     />
                                     <Button variant="primary" disabled={this.state.qty === this.state.max ? true : false} onClick={() => this.setState({ qty: this.state.qty + 1 })}>+</Button>
                                 </div>
-                                <Button style={{ width: '10vw', marginBottom: '30px' }} variant="success">Add to Cart</Button>
+                                <Button style={{ width: '10vw', marginBottom: '30px' }} variant="success" onClick={this.onCheckout}>Add to Cart</Button>
                             </div>
                             :
                             <div></div>
@@ -203,8 +235,10 @@ const styles = {
 const mapStateToProps = (state) => {
     return {
         username: state.userReducer.username,
-        role: state.userReducer.role
+        role: state.userReducer.role,
+        iduser:state.userReducer.id,
+        cart: state.userReducer.cart
     }
 }
 
-export default connect(mapStateToProps)(DetailProductPage)
+export default connect(mapStateToProps, {addCart})(DetailProductPage)

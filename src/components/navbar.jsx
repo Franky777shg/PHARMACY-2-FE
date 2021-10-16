@@ -57,7 +57,7 @@ class NavBar extends React.Component {
                         </Nav>
                         <Nav>
                             <Nav.Link>{this.props.role === 'user' ?
-                                <Button variant="outline-dark" as={Link} to="/cart"><i class="fa fa-cart-plus" aria-hidden="true"></i><Badge variant="outline-dark"></Badge></Button>
+                                <Button variant="outline-dark" as={Link} to={`/cart`}><i class="fa fa-cart-plus" aria-hidden="true"></i><Badge variant="outline-dark"></Badge></Button>
                                 : null
                             }</Nav.Link><Nav.Link>
                                 <Dropdown style={{ marginLeft: '10px' }}>
@@ -73,7 +73,7 @@ class NavBar extends React.Component {
                                                     </Dropdown.Toggle>
                                                     <Dropdown.Menu>
                                                         <Dropdown.Item as={Link} to="#">Financial</Dropdown.Item>
-                                                        <Dropdown.Item as={Link} to="#">Transaction</Dropdown.Item>
+                                                        <Dropdown.Item as={Link} to="/transaction-admin">Transaction</Dropdown.Item>
                                                         <Dropdown.Item as={Link} to="/" onClick={this.props.logout}>Logout</Dropdown.Item>
                                                     </Dropdown.Menu>
                                                 </>
@@ -86,7 +86,7 @@ class NavBar extends React.Component {
                                                         <Dropdown.Item as={Link} to={`/profile/${this.props.iduser}`} >My Profile</Dropdown.Item>
                                                         <Dropdown.Item onClick={this.addResep} as={Link} to={`/uploadresep/${this.props.iduser}`}>Recipe Upload</Dropdown.Item>
                                                         {/* <Dropdown.Item onClick={this.addResep} as={Link} to={`/paymentresep/${this.props.iduser}`}>Recipe Payment</Dropdown.Item> */}
-                                                        <Dropdown.Item as={Link} to="#">My Transaction</Dropdown.Item>
+                                                        <Dropdown.Item as={Link} to="#">History Transaction</Dropdown.Item>
                                                         <Dropdown.Item onClick={this.props.logout} as={Link} to="/">Logout</Dropdown.Item>
                                                         {/* <Dropdown.Item onClick={this.props.logout}>Logout</Dropdown.Item> */}
                                                     </Dropdown.Menu>

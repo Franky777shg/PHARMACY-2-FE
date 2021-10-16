@@ -576,6 +576,10 @@ class HomePage extends React.Component {
       })
       .catch(err => console.log(err))
   }
+
+  onAddObatsatuan = () => {
+    this.setState({})
+  }
   
   render () {
     
@@ -640,12 +644,12 @@ class HomePage extends React.Component {
                 {this.state.products.map((item, index) => (
                   <Col key={index}>
                     <Card style={styles.card} key={index+1000}>
-                      <Card.Img variant="top" src={item.link_foto} />
+                      <Card.Img style={styles.cardImage} variant="top" src={URL_API + "/" + item.link_foto} />
                       <Card.Body style={styles.cardBody}>
                         <Card.Title style={{ textAlign: 'center', marginBottom: '15px' }}>{item.nama}</Card.Title>
                         <Card.Text>{item.satuan}</Card.Text>
                         <Card.Text>Rp {(item.harga).toLocaleString()}</Card.Text>
-                        <Button variant="warning" style={{ position: 'absolute', bottom: '75px'}} onClick={() => this.setState({redirect:"/edit-satuan/:id"})}>Edit</Button>
+                        <Button variant="warning" style={{ position: 'absolute', bottom: '75px'}} as={Link} to={`/edit-satuan/${item.idproduk}`}>Edit</Button>
                         <Button variant="danger" style={{ position: 'absolute', bottom: '25px'}} onClick={() => this.onDeletesatuan(item.idproduk)}>Delete</Button>
                       </Card.Body>
                     </Card>
@@ -685,12 +689,13 @@ class HomePage extends React.Component {
                 {this.state.products.map((item, index) => (
                   <Col key={index}>
                     <Card style={styles.card} key={index+1000}>
-                      <Card.Img variant="top" src={item.link_foto} />
+                      <Card.Img variant="top" src={URL_API + "/" + item.link_foto} />
                       <Card.Body style={styles.cardBody}>
                         <Card.Title style={{ textAlign: 'center', marginBottom: '15px' }}>{item.nama}</Card.Title>
-                        <Card.Text>Stok: {item.stok_botol} botol {item.stok_ml} ml</Card.Text>
+                        <Card.Text>Stok: {Math.floor(item.stok_ml/100)} botol {item.stok_ml%100} ml</Card.Text>
                         <Card.Text>Rp {(item.harga).toLocaleString()}</Card.Text>
-                        <Button variant="warning" style={{ position: 'absolute', bottom: '75px'}}>Edit</Button>
+                        <Button variant="info" style={{ position: 'absolute', bottom: '125px'}} as={Link} to={`/rawMaterialUsage/${item.idproduk_resep}`}>Usage</Button>
+                        <Button variant="warning" style={{ position: 'absolute', bottom: '75px'}} as={Link} to={`/edit-racikan/${item.idproduk_resep}`}>Edit</Button>
                         <Button variant="danger" style={{ position: 'absolute', bottom: '25px'}} onClick={() => this.onDeleteracikan(item.idproduk_resep)}>Delete</Button>
                       </Card.Body>
                     </Card>
@@ -705,7 +710,7 @@ class HomePage extends React.Component {
       return (
         <div>
           <NavBar />
-          <div style={styles.paginationDiv}>
+          <div style={{...styles.paginationDiv, marginTop: '94px'}}>
             <Button style={{ marginRight: '10px' }} variant="primary" disabled={this.state.page === 1 ? true : false} onClick={this.onPrev}>Prev</Button>
             <p style={{ margin: 0 }}>Page {this.state.page} of {this.state.maxPage}</p>
             <Button style={{ marginLeft: '10px' }} variant="primary" disabled={this.state.page === this.state.maxPage ? true : false} onClick={this.onNext}>Next</Button>
@@ -738,7 +743,7 @@ class HomePage extends React.Component {
             {this.state.products.map((item, index) => (
               <Col key={index}>
                 <Card style={styles.card} key={index+1000}>
-                  <Card.Img variant="top" src={item.link_foto} />
+                  <Card.Img style={styles.cardImage} variant="top" src={URL_API + "/" + item.link_foto} />
                   <Card.Body style={styles.cardBody}>
                     <Card.Title style={{ textAlign: 'center', marginBottom: '15px' }}>{item.nama}</Card.Title>
                     <Card.Text>{item.satuan}</Card.Text>
@@ -759,17 +764,20 @@ const styles = {
   card: {
     height: '90vh'
   },
+  cardImage: {
+    height: '200px'
+  },
   cardBody: {
     display: 'flex',
     flexDirection: 'column',
-    justifyContent: 'center',
+    justifyContent: 'start',
     alignItems: 'center'
   },
   paginationDiv: {
     width: '100vw',
     display: 'flex',
     alignItems: 'center',
-    marginTop: '124px',
+    marginTop: '44px',
     justifyContent: 'center'
   },
   divForm: {
@@ -798,7 +806,7 @@ const styles = {
     width: "35vw",
     display: 'flex',
     flexDirection: 'row',
-    margin: '144px auto 0',
+    margin: '94px auto 0',
     justifyContent: 'space-between'
   } 
 }
