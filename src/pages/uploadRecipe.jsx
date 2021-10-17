@@ -23,18 +23,18 @@ class UploadResep extends React.Component {
 
     addResep = () => {
         let newData = {
-            date: `${new Date().toDateString()}`,
-            time: `${new Date().toDateString()}`,
+            date: `${new Date().getDate()}/${new Date().getMonth()}/${new Date().getFullYear()}`,
+            time: `${new Date().getHours()}:${new Date().getMinutes()}:${new Date().getSeconds()}`,
             order_number: `${Date.now()}`,
             iduser: `${this.props.iduser}`,
             image_resep: ``,
-            status: 'waiting for approval',
+            status: 'Waiting For Payment Approval',
         }
         console.log(newData)
         this.props.addResepAct(newData)
         this.setState({ done: 'Please Upload your recipe' })
         this.setState({ disabled: true })
-        
+
     }
 
     fetchData = () => {
@@ -128,7 +128,7 @@ class UploadResep extends React.Component {
                         </InputGroup>
                     </div>
                     <Card style={{ width: '20rem', marginTop: '0', marginLeft: '8vw', boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)' }}>
-                        <Card.Img variant="top" src={resep_Image  ? `${URL_API}/${resep_Image }` : PAY.default} />
+                        <Card.Img variant="top" src={resep_Image ? `${URL_API}/${resep_Image}` : PAY.default} />
                         <Card.Body>
                             <Card.Title>Your Recipe</Card.Title>
                             <Card.Text>
@@ -137,7 +137,7 @@ class UploadResep extends React.Component {
                         </Card.Body>
                     </Card>
                 </div>
-                <Button variant="warning" style={{ width: '15vw',marginLeft:'10vw' }} onClick={this.addPayment} as={Link} to={`/paymentresep/${this.props.iduser}`}
+                <Button variant="warning" style={{ width: '15vw', marginLeft: '10vw' }} onClick={this.addPayment} as={Link} to={`/paymentresep/${this.props.iduser}`}
                 >payment</Button>
             </div>
         )
@@ -167,8 +167,8 @@ const mapStateToProps = (state) => {
     return {
         iduser: state.userReducer.id,
         idResep: state.userReducer.idResep,
-        order_Numb : state.userReducer.orderNumb,
-        resep_Image : state.userReducer.resepPic
+        order_Numb: state.userReducer.orderNumb,
+        resep_Image: state.userReducer.resepPic
     }
 }
 
