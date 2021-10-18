@@ -242,7 +242,7 @@ class EditSatuanPage extends React.Component {
                                             type="number"
                                             value={this.state.stok}
                                             //setiap placeholder ada state masing2
-                                            onChange={(e) => this.setState({ stok: e.target.value })}
+                                            onChange={(e) => this.setState({ stok: +e.target.value })}
                                             ref="stok"
 
                                         />

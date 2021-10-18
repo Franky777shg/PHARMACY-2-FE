@@ -87,9 +87,8 @@ class NavBar extends React.Component {
                                                         <Dropdown.Item as={Link} to={`/profile/${this.props.iduser}`} >My Profile</Dropdown.Item>
                                                         <Dropdown.Item onClick={this.addResep} as={Link} to={`/uploadresep/${this.props.iduser}`}>Recipe Upload</Dropdown.Item>
                                                         {/* <Dropdown.Item onClick={this.addResep} as={Link} to={`/paymentresep/${this.props.iduser}`}>Recipe Payment</Dropdown.Item> */}
-                                                        <Dropdown.Item as={Link} to="#">History Transaction</Dropdown.Item>
+                                                        <Dropdown.Item as={Link} to="/history">History Transaction</Dropdown.Item>
                                                         <Dropdown.Item onClick={this.props.logout} as={Link} to="/">Logout</Dropdown.Item>
-                                                        {/* <Dropdown.Item onClick={this.props.logout}>Logout</Dropdown.Item> */}
                                                     </Dropdown.Menu>
                                                 </>
                                             }

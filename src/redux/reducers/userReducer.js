@@ -33,7 +33,7 @@ const userReducer = (state = INITIAL_STATE, action) => {
                 email: action.payload.email,
                 role: action.payload.role,
                 profilePic: action.payload.profile_picture,
-                cart: action.payload.cart
+                // cart: action.payload.cart
             }
         case 'FAILED_LOGIN':
             return {

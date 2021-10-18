@@ -42,6 +42,8 @@ class LoginPage extends React.Component {
         }
 
         this.props.login({ username, password })
+        this.refs.username.value=""
+        this.refs.password.value=""
 
     }
 
