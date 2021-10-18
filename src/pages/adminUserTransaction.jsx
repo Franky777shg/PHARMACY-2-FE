@@ -38,11 +38,15 @@ class AdminPage extends React.Component {
             imageBuktiPembayaranResep: null,
             page: 1,
             maxPage: null,
-            next: null,
-            prev: null,
+            nextSatuan: null,
+            prevSatuan: null,
+            nextResep: null,
+            prevResep: null,
             show: "satuan",
         }
     }
+
+    //pagination
     fetchData = () => {
         Axios.post(`${URL_API2}/admin/order-resep`, { page: 1 })
             .then(res => {
@@ -67,43 +71,121 @@ class AdminPage extends React.Component {
         this.fetchData2()
     }
 
-    onNext = () => {
-        Axios.post(`${URL_API2}/admin/order-resep`, { page: this.state.page + 1 })
-            .then(res => {
-                this.setState({ daftarTransaksi: res.data.slice(0, res.data.length - 1), maxPage: res.data[res.data.length - 1], page: this.state.page + 1 })
-            })
-            .catch(err => {
-                console.log(err)
-            })
+    onNextResep = () => {
+        if (this.state.nextResep === null) {
+            Axios.post(`${URL_API2}/admin/order-resep`, { page: this.state.page + 1 })
+                .then(res => {
+                    this.setState({ daftarTransaksi: res.data.slice(0, res.data.length - 1), maxPage: res.data[res.data.length - 1], page: this.state.page + 1 })
+                })
+                .catch(err => {
+                    console.log(err)
+                })
+        } else if (this.state.nextResep === 'filter') {
+            let name = this.refs.name.value
+            let page = this.state.page + 1
+
+            let data = {
+                name,
+                page
+            }
+
+            Axios.post(`${URL_API2}/admin/filter-resep`, data)
+                .then(res => {
+                    this.setState({ daftarTransaksi: res.data.slice(0, res.data.length - 1), maxPage: res.data[res.data.length - 1], page: this.state.page + 1 })
+                })
+                .catch(err => {
+                    console.log(err)
+                })
+
+        }
     }
 
-    onPrev = () => {
-        Axios.post(`${URL_API2}/admin/order-resep`, { page: this.state.page - 1 })
-            .then(res => {
-                this.setState({ daftarTransaksi: res.data.slice(0, res.data.length - 1), maxPage: res.data[res.data.length - 1], page: this.state.page - 1 })
-            })
-            .catch(err => {
-                console.log(err)
-            })
+    onPrevResep = () => {
+        if (this.state.nextResep === null) {
+            Axios.post(`${URL_API2}/admin/order-resep`, { page: this.state.page - 1 })
+                .then(res => {
+                    this.setState({ daftarTransaksi: res.data.slice(0, res.data.length - 1), maxPage: res.data[res.data.length - 1], page: this.state.page - 1 })
+                })
+                .catch(err => {
+                    console.log(err)
+                })
+        } else if (this.state.nextResep === 'filter') {
+            let name = this.refs.name.value
+            let page = this.state.page - 1
+
+            let data = {
+                name,
+                page
+            }
+
+            Axios.post(`${URL_API2}/admin/filter-resep`, data)
+                .then(res => {
+                    this.setState({ daftarTransaksi: res.data.slice(0, res.data.length - 1), maxPage: res.data[res.data.length - 1], page: this.state.page - 1 })
+                })
+                .catch(err => {
+                    console.log(err)
+                })
+        }
+
     }
     onNextSatuan = () => {
-        Axios.post(`${URL_API2}/admin/order-satuan`, { page: this.state.page + 1 })
-            .then(res => {
-                this.setState({ daftarTransaksi: res.data.slice(0, res.data.length - 1), maxPage: res.data[res.data.length - 1], page: this.state.page + 1 })
-            })
-            .catch(err => {
-                console.log(err)
-            })
+        if (this.state.nextSatuan === null) {
+            Axios.post(`${URL_API2}/admin/order-satuan`, { page: this.state.page + 1 })
+                .then(res => {
+                    this.setState({ daftarTransaksi: res.data.slice(0, res.data.length - 1), maxPage: res.data[res.data.length - 1], page: this.state.page + 1 })
+                })
+                .catch(err => {
+                    console.log(err)
+                })
+        } else if (this.state.nextSatuan === 'filter') {
+            let name = this.refs.name.value
+            let page = this.state.page + 1
+
+            let data = {
+                name,
+                page
+            }
+
+            Axios.post(`${URL_API2}/admin/filter-satuan`, data)
+                .then(res => {
+                    this.setState({ daftarTransaksi: res.data.slice(0, res.data.length - 1), maxPage: res.data[res.data.length - 1], page: this.state.page + 1 })
+                })
+                .catch(err => {
+                    console.log(err)
+                })
+
+        }
+
     }
 
     onPrevSatuan = () => {
-        Axios.post(`${URL_API2}/admin/order-satuan`, { page: this.state.page - 1 })
+        if (this.state.nextSatuan === null) {
+             Axios.post(`${URL_API2}/admin/order-satuan`, { page: this.state.page - 1 })
             .then(res => {
                 this.setState({ daftarTransaksi: res.data.slice(0, res.data.length - 1), maxPage: res.data[res.data.length - 1], page: this.state.page - 1 })
             })
             .catch(err => {
                 console.log(err)
             })
+        } else if (this.state.nextSatuan === 'filter') {
+            let name = this.refs.name.value
+            let page = this.state.page - 1
+
+            let data = {
+                name,
+                page
+            }
+
+            Axios.post(`${URL_API2}/admin/filter-satuan`, data)
+                .then(res => {
+                    this.setState({ daftarTransaksi: res.data.slice(0, res.data.length - 1), maxPage: res.data[res.data.length - 1], page: this.state.page - 1 })
+                })
+                .catch(err => {
+                    console.log(err)
+                })
+
+        }
+       
     }
 
     onTransaksiObatSatuan = () => {
@@ -116,8 +198,6 @@ class AdminPage extends React.Component {
             .catch(err => {
                 console.log(err)
             })
-        // this.fetchData2()
-        // this.setState({ transaksiObat: 'satuan', pilihanStatusTransaksi: 'On Going' })
     }
 
     onTransaksiObatResep = () => {
@@ -127,6 +207,48 @@ class AdminPage extends React.Component {
                 this.setState({ transaksiObat: 'resep', pilihanStatusTransaksi: 'On Going' })
             })
             .catch(err => console.log(err))
+    }
+
+    //filter Resep by Name, date, order_number
+    onFilterResep = () => {
+        let name = this.refs.name.value
+
+        let data = {
+            name,
+            page: 1
+        }
+
+        Axios.post(`${URL_API2}/admin/filter-resep`, data)
+            .then(res => {
+                this.setState({ daftarTransaksi: res.data.slice(0, res.data.length - 1), maxPage: res.data[res.data.length - 1] })
+                this.setState({ page: 1 })
+                this.setState({ nextResep: 'filter', prevResep: 'filter' })
+            })
+            .catch(err => {
+                console.log(err)
+            })
+        this.setState({ nextResep: null, prevResep: null })
+    }
+
+    //filter Satuan by Name, date, order_number
+    onFilterSatuan = () => {
+        let name = this.refs.name.value
+
+        let data = {
+            name,
+            page: 1
+        }
+
+        Axios.post(`${URL_API2}/admin/filter-satuan`, data)
+            .then(res => {
+                this.setState({ daftarTransaksi: res.data.slice(0, res.data.length - 1), maxPage: res.data[res.data.length - 1] })
+                this.setState({ page: 1 })
+                this.setState({ nextSatuan: 'filter', prevSatuan: 'filter' })
+            })
+            .catch(err => {
+                console.log(err)
+            })
+        this.setState({ nextSatuan: null, prevSatuan: null })
     }
 
     onOnGoingSatuan = () => {
@@ -410,7 +532,7 @@ class AdminPage extends React.Component {
                     </div>
                     {this.state.transaksiObat === 'satuan' ?
                         <div style={styles.divPilihanStatusTransaksi}>
-                            <div style={{ display: 'flex', flexBasis: '80%', justifyContent: 'space-between', marginRight: '8vw' }}>
+                            <div style={{ display: 'flex', flexBasis: '60%', justifyContent: 'space-between', marginRight: '2vw' }}>
                                 <Button
                                     variant="primary"
                                     disabled={this.state.pilihanStatusTransaksi === 'On Going' ? true : false}
@@ -427,7 +549,11 @@ class AdminPage extends React.Component {
                                     onClick={this.onCancelledSatuan}
                                 >Cancelled Satuan</Button>
                             </div>
-
+                            <div style={styles.divForm}>
+                                <p style={{ margin: 0, width: '5vw' }}>Filter :</p>
+                                <Form.Control style={styles.filterForm} type="text" placeholder="Name/ Date/ OrderNumb" ref="name" />
+                                <Button variant="outline-primary" onClick={this.onFilterSatuan}>Search</Button>
+                            </div>
                             <div style={styles.paginationDiv}>
                                 <Button style={{ marginRight: '10px' }} variant="primary" disabled={this.state.page === 1 ? true : false} onClick={this.onPrevSatuan}>Prev</Button>
                                 <p style={{ margin: 0 }}>Page {this.state.page} of {this.state.maxPage}</p>
@@ -436,7 +562,7 @@ class AdminPage extends React.Component {
                         </div>
                         :
                         <div style={styles.divPilihanStatusTransaksi}>
-                            <div style={{ display: 'flex', flexBasis: '80%', justifyContent: 'space-between', marginRight: '8vw' }}>
+                            <div style={{ display: 'flex', flexBasis: '60%', justifyContent: 'space-between', marginRight: '2vw' }}>
                                 <Button
                                     variant="primary"
                                     disabled={this.state.pilihanStatusTransaksi === 'On Going' ? true : false}
@@ -453,10 +579,15 @@ class AdminPage extends React.Component {
                                     onClick={this.onCancelledResep}
                                 >Cancelled Resep</Button>
                             </div>
+                            <div style={styles.divForm}>
+                                <p style={{ margin: 0, width: '5vw' }}>Filter :</p>
+                                <Form.Control style={styles.filterForm} type="text" placeholder="Name/ Date/ OrderNumb" ref="name" />
+                                <Button variant="outline-primary" onClick={this.onFilterResep}>Search</Button>
+                            </div>
                             <div style={styles.paginationDiv}>
-                                <Button style={{ marginRight: '10px' }} variant="primary" disabled={this.state.page === 1 ? true : false} onClick={this.onPrev}>Prev</Button>
+                                <Button style={{ marginRight: '10px' }} variant="primary" disabled={this.state.page === 1 ? true : false} onClick={this.onPrevResep}>Prev</Button>
                                 <p style={{ margin: 0 }}>Page {this.state.page} of {this.state.maxPage}</p>
-                                <Button style={{ marginLeft: '10px' }} variant="primary" disabled={this.state.page === this.state.maxPage ? true : false} onClick={this.onNext}>Next</Button>
+                                <Button style={{ marginLeft: '10px' }} variant="primary" disabled={this.state.page === this.state.maxPage ? true : false} onClick={this.onNextResep}>Next</Button>
                             </div>
                         </div>
                     }
@@ -470,6 +601,7 @@ class AdminPage extends React.Component {
                                             <h5>{`Date : ${item.date}, ${item.time}`}</h5>
                                             <h5>{`Order Number : ${item.order_number}`}</h5>
                                             <h5>{`User ID : ${item.iduser}`}</h5>
+                                            <h5>{`Username : ${item.username}`}</h5>
                                             <h5 style={{ margin: 0 }}>{`Status : ${item.status}`}</h5>
                                         </div>
                                         <div>
@@ -484,6 +616,7 @@ class AdminPage extends React.Component {
                                             <h5>{`Date : ${item.date}, ${item.time}`}</h5>
                                             <h5>{`Order Number : ${item.order_number}`}</h5>
                                             <h5>{`User ID : ${item.iduser}`}</h5>
+                                            <h5>{`Username : ${item.username}`}</h5>
                                             <h5 style={{ margin: 0 }}>{`Status : ${item.status}`}</h5>
                                         </div>
                                         <div>
@@ -805,7 +938,6 @@ class AdminPage extends React.Component {
 
 const styles = {
     divPilihanStatusTransaksi: {
-        width: '90vw',
         marginTop: '5vh',
         height: '7vh',
         display: 'flex',
@@ -869,6 +1001,18 @@ const styles = {
         flexBasis: '30%',
         alignItems: 'center',
         justifyContent: 'center',
+    },
+    divForm: {
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        alignItems: 'center',
+        marginRight: '2vw',
+        marginTop: '0',
+        marginLeft: '0'
+    },
+    filterForm: {
+        width: "17vw",
     },
 }
 
