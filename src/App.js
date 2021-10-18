@@ -19,10 +19,13 @@ import TransactionAdminPage from './pages/transactionAdmin';
 import CartPage from './pages/CartList';
 import RawMaterialUsagePage from './pages/rawMaterialUsagePage';
 import HistoryPage from './pages/historyuser';
+import AdminPage from './pages/adminUserTransaction'
 
 import { keepLogin } from './redux/actions';
 import UploadResep from './pages/uploadRecipe';
 import UploadPayment from './pages/uploadPayment';
+import UploadPaymentSatuan from './pages/paymentSatuan';
+
 
 class App extends React.Component {
   componentDidMount() {
@@ -47,10 +50,13 @@ class App extends React.Component {
         <Route path="/edit-racikan/:id" component={EditRPage} />
         <Route path="/transaction-admin" component={TransactionAdminPage} />
         <Route path="/uploadresep/:id" component={UploadResep} />
+        <Route path="/paymentresep/:id" component={UploadPayment} />
+        <Route path="/paymentsatuan" component={UploadPaymentSatuan} />
         <Route path="/uploadpayment" component={UploadPayment} />
         <Route path="/cart" component={CartPage} />
         <Route path="/rawMaterialUsage/:id" component={RawMaterialUsagePage} />
         <Route path="/history" component={HistoryPage} />
+        <Route path="/admin-trans" component={AdminPage} />
       </Switch>
     )
   }

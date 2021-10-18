@@ -74,6 +74,7 @@ class NavBar extends React.Component {
                                                     <Dropdown.Menu>
                                                         <Dropdown.Item as={Link} to="#">Financial</Dropdown.Item>
                                                         <Dropdown.Item as={Link} to="/transaction-admin">Transaction</Dropdown.Item>
+                                                        <Dropdown.Item as={Link} to="/admin-trans">Pagination-Trans</Dropdown.Item>
                                                         <Dropdown.Item as={Link} to="/" onClick={this.props.logout}>Logout</Dropdown.Item>
                                                     </Dropdown.Menu>
                                                 </>
@@ -84,10 +85,10 @@ class NavBar extends React.Component {
                                                     </Dropdown.Toggle>
                                                     <Dropdown.Menu>
                                                         <Dropdown.Item as={Link} to={`/profile/${this.props.iduser}`} >My Profile</Dropdown.Item>
-                                                        <Dropdown.Item onClick={this.addResep} as={Link} to={`/uploadresep/${this.props.iduser}`}>Upload Recipe</Dropdown.Item>
+                                                        <Dropdown.Item onClick={this.addResep} as={Link} to={`/uploadresep/${this.props.iduser}`}>Recipe Upload</Dropdown.Item>
+                                                        {/* <Dropdown.Item onClick={this.addResep} as={Link} to={`/paymentresep/${this.props.iduser}`}>Recipe Payment</Dropdown.Item> */}
                                                         <Dropdown.Item as={Link} to="/history">History Transaction</Dropdown.Item>
                                                         <Dropdown.Item onClick={this.props.logout} as={Link} to="/">Logout</Dropdown.Item>
-                                                        {/* <Dropdown.Item onClick={this.props.logout}>Logout</Dropdown.Item> */}
                                                     </Dropdown.Menu>
                                                 </>
                                             }
