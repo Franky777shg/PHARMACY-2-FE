@@ -24,7 +24,8 @@ class CartPage extends React.Component {
             visibility: false,
             rendercart: [],
             stockProd: null,
-            total_bayar: null
+            total_bayar: null,
+            inputOrder:[]
         }
     }
     fetchData = () => {
@@ -297,11 +298,34 @@ class CartPage extends React.Component {
         if (this.state.rendercart.length === 0) {
             return this.setState({ error: [true, "Your Cart is Empty!"] })
         }
+        let tempArr = this.state.inputOrder
+
         Axios.get(`http://localhost:2000/transaction/total-cart/${this.props.iduser}`)
             .then(res => {
                 // console.log(res.data.carttotal[0].total_bayar)
                 this.setState({ total_bayar: (res.data.carttotal[0].total_bayar).toLocaleString() })
                 console.log(this.state.total_bayar)
+            })
+            // .catch(err => console.log(err))
+
+            .then(result1 => {
+                Axios.get(`http://localhost:2000/transaction/get-cart/${this.props.iduser}`)
+                    .then(result => {
+                        console.log(result.data)
+                        // console.log(res.data.cart.qty_beli)
+                        let obj = {
+                            ...result.data,
+                            // qty: res.data.cartqty_beli,
+                            // order_number: res.data.order_number
+                        }
+                        tempArr.push(obj)
+                        // console.log(tempArr)
+                        this.setState({ inputOrder: tempArr })
+                        console.log(this.state.inputOrder)
+                    })
+            })
+            .catch(err => {
+                console.log(err)
             })
         this.setState({ askPass: true })
     }
@@ -312,17 +336,63 @@ class CartPage extends React.Component {
         //     return this.setState({ error: [true, "Your password doesn't match"] })
         // }
 
+
+        this.state.inputOrder.map((item,index) => {
+            console.log(item)
+            // console.log(item.idproduk)
+            let data = {
+                order_number: item.cart[index].order_number,
+                idproduk: item.cart[index].idproduk,
+                nama: item.cart[index].nama,
+                qty_beli: item.cart[index].qty_beli,
+                harga: item.cart[index].harga
+            }
+            console.log(data)
+            console.log(data.idproduk)
+            Axios.get(`http://localhost:2000/product/detail-product/${data.idproduk}`)
+            .then(res => {
+                // console.log(res)
+                console.log(res.data.stok)
+                let newStok = res.data.stok - item.cart[index].qty_beli
+                let databaru = {
+                    idproduk: item.cart[index].idproduk,
+                    newstok: newStok
+                }
+            console.log(databaru)
+            Axios.patch(`http://localhost:2000/product/updateqty/${data.idproduk}`, databaru)
+                .then(() => {
+                    console.log("berhasil update stock")
+                //     Axios.patch(`http://localhost:2000/updateStokResep`, data2)
+                //         .then(() => {
+                //             let data3 = {
+                //                 statusBaru: 'Waiting For Payment',
+                //                 order_number: this.state.dataOrder.order_number
+                //             }
+                //             Axios.post(`http://localhost:2000/updateStatusResep`, data3)
+                //                 .then(() => {
+                //                     this.onTransaksiObatResep()
+                //                     this.setState({ showModal: false })
+                //                 })
+                //                 .catch(err => console.log('error update status resep'))
+                //         })
+                //         .catch(err => console.log('error update stok resep'))
+                })
+                .catch(err => console.log('error update stok'))
+            })
+        })
+
         //siapkan data yang mau di push ke history
-        let history = {
+        let objhistory = {
             iduser: this.props.iduser,
             username: this.props.username,
-            time: new Date().toLocaleString(),
+            date: new Date().toLocaleString(),
             isicart: this.state.rendercart,
-            order_number: this.state.rendercart[0].order_number
+            order_number: this.state.rendercart[0].order_number,
+            total_bayar: this.state.total_bayar
             // isicart: this.props.cart,
         }
 
-        this.props.onCheckout(this.props.iduser, history)
+        this.props.onCheckout(this.props.iduser, objhistory)
         this.setState({ askPass: false, toHistory: true })
     }
 
