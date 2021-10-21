@@ -25,6 +25,7 @@ import { keepLogin } from './redux/actions';
 import UploadResep from './pages/uploadRecipe';
 import UploadPayment from './pages/uploadPayment';
 import UploadPaymentSatuan from './pages/paymentSatuan';
+import SalesPage from './pages/salesreport';
 
 
 class App extends React.Component {
@@ -57,6 +58,7 @@ class App extends React.Component {
         <Route path="/rawMaterialUsage/:id" component={RawMaterialUsagePage} />
         <Route path="/history" component={HistoryPage} />
         <Route path="/admin-trans" component={AdminPage} />
+        <Route path="/salesreport" component={SalesPage} />
       </Switch>
     )
   }

@@ -213,7 +213,7 @@ export const onCheckout = (iduser, dataTrans) => {
         Axios.post(`http://localhost:2000/history/og-wfp/${iduser}`, dataTrans)
             .then(res => {
                 // let idUser = localStorage.getItem('idUser')
-                console.log(res)
+                console.log(res.data)
                 Axios.get(`http://localhost:2000/transaction/get-ongoing/${iduser}`)
                     .then(res => {
                         return dispatch({

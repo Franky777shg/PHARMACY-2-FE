@@ -9,7 +9,7 @@ import {
 } from 'react-bootstrap'
 import { connect } from 'react-redux'
 import { Redirect } from 'react-router-dom'
-import { getHistory, getonGoing } from '../redux/actions'
+import { getHistory, getonGoing, total_payment, upload_payment } from '../redux/actions'
 import Axios from 'axios';
 import NavBar from '../components/navbar'
 class HistoryPage extends React.Component {
@@ -20,8 +20,12 @@ class HistoryPage extends React.Component {
             menuongoing: false,
             menuhistory: false,
             arrongoing: [],
-            images:null,
-            message:null
+            images: null,
+            message: null,
+            historysatuan: false,
+            historyresep: false,
+            ongoingsatuan: false,
+            ongoingresep: false
         }
     }
     arrongoing = () => {
@@ -45,13 +49,14 @@ class HistoryPage extends React.Component {
         // .then(res => {
         //     this.setState({arrhistory: res.data})
         // })
-        // this.props.getHistory(this.props.iduser)
-        // this.props.getonGoing(this.props.iduser)
+        this.props.getHistory(this.props.iduser)
+        this.props.getonGoing(this.props.iduser)
         this.arrhistory()
+        this.arrongoing()
     }
     onGoing = () => {
         this.setState({ menuongoing: true, menuhistory: false })
-        
+
     }
     historyTransaction = () => {
         this.setState({ menuhistory: true, menuongoing: false })
@@ -81,13 +86,15 @@ class HistoryPage extends React.Component {
         console.log(this.state.images)
     }
 
-    handleUpload = () => {
+    handleUpload = (order_number,item,idproduk,qty_beli,harga,nama) => {
         //foto dan data = 2, data aja = 1
-        let data = new FormData()
-        console.log(data)
+        let foto = new FormData()
         console.log(this.state.images)
         let message = ''
-        data.append('IMG', this.state.images)
+        foto.append('IMG', this.state.images)
+        console.log(foto)
+        console.log(foto.length)
+        console.log(order_number,item,idproduk,qty_beli,harga,nama)
         // if(this.state.images !==''){
         //     data.append('IMG', this.state.images)
         //     message="2"
@@ -96,56 +103,37 @@ class HistoryPage extends React.Component {
         //     data = ''
         //     message="1"
         // }
-        console.log(this.refs.namaobat.value)
+        
         // console.log(data.get('IMG'))
-        let nama = this.refs.namaobat.value
-        let harga = +this.refs.harga.value
-        let satuan = this.refs.satuan.value
-        // const link_foto = res.data
-        let stok = +this.refs.stok.value
-        let kategori = this.refs.category.value
-        let deskripsi = this.refs.deskripsi.value
-        let indikasi_umum = this.refs.indikasi_umum.value
-        let komposisi = this.refs.komposisi.value
-        let dosis = this.refs.dosis.value
-        let aturan_pakai = this.refs.aturan_pakai.value
-        let kontra_indikasi = this.refs.kontra_indikasi.value
-        let perhatian = this.refs.perhatian.value
-        let efek_samping = this.refs.efek_samping.value
-        let segmentasi = this.refs.segmentasi.value
-        let kemasan = this.refs.kemasan.value
-        let manufaktur = this.refs.manufaktur.value
-        let no_registrasi = this.refs.no_registrasi.value
+        
+        
         // let message = this.state.message
         let idproduct = this.props.location.pathname.slice(13)
         let body = {
-            nama,
-            harga,
-            satuan,
-            // link_foto,
-            stok,
-            kategori,
-            deskripsi,
-            indikasi_umum,
-            komposisi,
-            dosis,
-            aturan_pakai,
-            kontra_indikasi,
-            perhatian,
-            efek_samping,
-            segmentasi,
-            kemasan,
-            manufaktur,
-            no_registrasi,
-            idproduct,
-            message: this.state.message
+            order_number:order_number,
+            item:item,
+            idproduk:idproduk,
+            qty_beli:qty_beli,
+            harga:harga,
+            nama:nama,
+            foto
+            // message: this.state.message
         }
         // console.log(data.get('IMG'),body)
-        console.log(this.state.images)
-        console.log(data)
-        console.log(data.length)
-        // console.log(message)
-        this.props.editProduct1(data, body, idproduct)
+      
+        console.log(body)
+        this.props.upload_payment(this.props.iduser,foto,body)
+        // this.setState({ images: '' })
+    }
+
+    
+    handleChoose = (e) => {
+        console.log('e.target.files', e.target.files)
+        this.setState({ images: e.target.files[0] })
+    }
+    onRemove = (order_number) => {
+        // this.props.deletePhoto(this.props.iduser,order_number)
+        // this.fetchData()
         // this.setState({ images: '' })
     }
     render() {
@@ -172,11 +160,11 @@ class HistoryPage extends React.Component {
                             <Nav.Link eventKey="link-2" onClick={this.historyTransaction}>History Transaction</Nav.Link>
                         </Nav.Item>
                     </Nav>
-                    {/* {this.state.ongoing ?
+                    {this.state.menuongoing === true ?
                         <div>
-                            <Nav variant="pills" defaultActiveKey="/home">
+                            <Nav variant="pills" defaultActiveKey="link-1">
                                 <Nav.Item>
-                                    <Nav.Link eventKey="link-1">Obat Satuan</Nav.Link>
+                                    <Nav.Link eventKey="link-1" onClick={() => this.setState({ ongoingsatuan: true })}>Obat Satuan</Nav.Link>
                                 </Nav.Item>
                                 <Nav.Item>
                                     <Nav.Link eventKey="link-2">Obat Resep</Nav.Link>
@@ -186,19 +174,19 @@ class HistoryPage extends React.Component {
                                 {this.props.ongoingreducer.reverse().map((item, index) => {
                                     console.log(item)
                                     return (
-                                        <Card key={index} >
-                                            <Accordion.Toggle as={Card.Header} variant="link" eventKey={index.toString()}>Username: {item.username}, Time: {item.date}</Accordion.Toggle>
-                                            <Accordion.Collapse eventKey={index.toString()}>
-                                                <Table striped bordered hover variant="dark">
+                                        <Accordion.Item>
+                                            <Accordion.Header variant="link" eventKey={index.toString()}>Order number: {item.order_number}, Time: {item.date}</Accordion.Header>
+                                            <Accordion.Body eventKey={index.toString()}>
+                                                <Table striped bordered hover >
                                                     <thead>
                                                         <tr>
                                                             <th>#</th>
-                                                            <th>Image</th>
+                                                            {/* <th>Image</th> */}
                                                             <th>Name</th>
                                                             <th>Price</th>
                                                             <th>Quantity</th>
                                                             <th>Total Price</th>
-                                                            <th>Status</th>
+
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -207,55 +195,70 @@ class HistoryPage extends React.Component {
                                                             return (
                                                                 <tr>
                                                                     <td>{index2 + 1}</td>
-                                                                    <td><Image src={item2.product_image} rounded style={{ width: '70px' }} /></td>
+                                                                    {/* <td><Image src={item2.product_image} rounded style={{ width: '70px' }} /></td> */}
                                                                     <td>{item2.nama}</td>
                                                                     <td>IDR{item2.harga.toLocaleString()},00</td>
                                                                     <td>{item2.qty_beli}</td>
                                                                     <td>IDR{(item2.total_harga).toLocaleString()},00</td>
-                                                                    <td>{item.status}<form encType="multipart/form-data">
+
+                                                                </tr>
+                                                            )
+                                                        })}
+
+                                                        <tr>
+                                                            <td>Status: {item.status}</td>
+                                                            {/* <td>{this.props.totalpmt}{this.props.total_payment(this.props.iduser, { order_number: item.order_number })}</td> */}
+                                                            <td></td>
+                                                            {item.status === 'Waiting For Payment' ?
+                                                                <td>
+                                                                    <form encType="multipart/form-data">
                                                                         <input
                                                                             type="file"
                                                                             accept="image/*"
                                                                             name="IMG"
-                                                                            onChange={(e) => this.setState({ images: e.target.files[0], message: '0' })}
+                                                                            onChange={(e) => this.setState({images: e.target.files[0]})}
                                                                         />
-                                                                    </form>
-                                                                    <Button style={{ width: '10vw', marginBottom: '30px' }} variant="primary" onClick={this.handleUpload}>Upload Payment Proof</Button>
-                                                                       {this.state.message === 0 ? <Button
-                                                                            className="button"
-                                                                            variant="success"
-                                                                            onClick={this.onRemove}
-                                                                        >
-                                                                            Remove
-                                                                        </Button> : null }</td>
-                                                                </tr>
-                                                            )
-                                                        })}
+                                                                    </form></td>
+                                                                : null}
+                                                                <td>{item.total_bayar}</td>
+                                                            {item.status === 'Waiting For Payment' ?
+                                                                <td><Button style={{ width: '10vw', marginBottom: '30px' }} variant="primary" onClick={() =>this.handleUpload(item.order_number, item, item.idproduk, item.qty_beli, item.harga, item.nama)}>Upload Payment Proof</Button>
+                                                                    {/* <Button
+                                                                        className="button"
+                                                                        variant="success"
+                                                                        onClick={this.onRemove(item.order_number)}
+                                                                    >
+                                                                        Remove
+                                                                    </Button> */}
+                                                                </td>
+                                                                : null}
+                                                        </tr>
                                                     </tbody>
                                                 </Table>
-                                            </Accordion.Collapse>
-                                        </Card>
+                                            </Accordion.Body>
+                                        </Accordion.Item>
+
                                     )
                                 })}
                             </Accordion>
                         </div>
-                        : */}
+                        :
                         <div>
-                            <Nav variant="pills" defaultActiveKey="link-1" className="justify-content-end" >
+                            <Nav variant="pills" defaultActiveKey="link-1" className="justify-content-end" style={{ marginBottom: '10px' }}>
                                 <Nav.Item>
-                                    <Nav.Link eventKey="link-1">Obat Satuan</Nav.Link>
+                                    <Nav.Link eventKey="link-1" onClick={() => this.setState({ historysatuan: true })}>Obat Satuan</Nav.Link>
                                 </Nav.Item>
                                 <Nav.Item>
                                     <Nav.Link eventKey="link-2">Obat Resep</Nav.Link>
                                 </Nav.Item>
                             </Nav>
-                            <Accordion>
-                                {this.state.arrhistory.reverse().map((item, index) => {
+                            <Accordion display={this.state.historysatuan}>
+                                {this.props.history.reverse().map((item, index) => {
                                     return (
-                                        <Accordion.Item eventKey = "0">
+                                        <Accordion.Item eventKey="0">
                                             <Accordion.Header as={Card.Header} variant="link" eventKey={index.toString()}>Order Number: {item.order_number}, Time: {item.date}</Accordion.Header>
                                             <Accordion.Body>
-                                                <Table striped bordered hover variant="dark">
+                                                <Table striped bordered hover>
                                                     <thead>
                                                         <tr>
                                                             <th>#</th>
@@ -287,11 +290,11 @@ class HistoryPage extends React.Component {
                                         </Accordion.Item>
                                     )
                                 })
-                                    
+
                                 }
                             </Accordion>
                         </div>
-                    {/* } */}
+                    }
                 </div>
 
             </div>
@@ -304,7 +307,8 @@ const mapStateToProps = (state) => {
         username: state.userReducer.username,
         iduser: state.userReducer.id,
         history: state.historyReducer.history,
-        ongoingreducer: state.historyReducer.ongoing
+        ongoingreducer: state.historyReducer.ongoing,
+        totalpmt: state.historyReducer.totalpmt
     }
 }
-export default connect(mapStateToProps, { getHistory, getonGoing })(HistoryPage)
+export default connect(mapStateToProps, { getHistory, getonGoing, total_payment, upload_payment })(HistoryPage)

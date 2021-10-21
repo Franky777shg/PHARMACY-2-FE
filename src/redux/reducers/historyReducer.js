@@ -1,7 +1,8 @@
 const INITIAL_STATE = {
     history: [],
     ongoing: [],
-    pmt:null
+    pmt:null,
+    totalpmt:null
 }
 
 const historyReducer = (state = INITIAL_STATE, action) => {
@@ -20,6 +21,11 @@ const historyReducer = (state = INITIAL_STATE, action) => {
             return {
                 ...state,
                 pmt: action.payload
+            }
+        case 'TOTAL_PMT':
+            return {
+                ...state,
+                totalpmt: action.payload
             }
         default:
             return state
