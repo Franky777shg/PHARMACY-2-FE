@@ -209,14 +209,15 @@ export const saveCart = (iduser, qtyUpdate, ProdCart) => {
 export const onCheckout = (iduser, dataTrans) => {
     return (dispatch) => {
         console.log(dataTrans)
-        //untuk mencatat data history ke dalam database
+        //untuk mencatat data history ke dalam database dan ganti status jd waiting for payment
         Axios.post(`http://localhost:2000/history/og-wfp/${iduser}`, dataTrans)
             .then(res => {
-                let idUser = localStorage.getItem('idUser')
-                Axios.get(`http://localhost:2000/transaction/get-history/${iduser}`)
+                // let idUser = localStorage.getItem('idUser')
+                console.log(res.data)
+                Axios.get(`http://localhost:2000/transaction/get-ongoing/${iduser}`)
                     .then(res => {
                         return dispatch({
-                            type: 'GET_HISTORY',
+                            type: 'GET_ONGOING',
                             payload: res.data
                         })
                     })
