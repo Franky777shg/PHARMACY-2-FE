@@ -780,7 +780,14 @@ const styles = {
     marginTop: '44px',
     justifyContent: 'center'
   },
-
+  divForm: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    width: '60vw',
+    margin: '44px auto 0 auto',
+  },
   filterForm: {
     width: "20vw",
   },
