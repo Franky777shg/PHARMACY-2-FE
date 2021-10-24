@@ -10,7 +10,7 @@ import {
     Form,
     Modal, Alert
 } from 'react-bootstrap'
-import { delCart, saveCart, onCheckout } from '../redux/actions'
+import { delCart, saveCart, onCheckout, keepLogin } from '../redux/actions'
 import Axios from 'axios';
 class CartPage extends React.Component {
     constructor(props) {
@@ -31,12 +31,13 @@ class CartPage extends React.Component {
     fetchData = () => {
         Axios.get(`http://localhost:2000/transaction/get-cart/${this.props.iduser}`)
             .then(res => {
-                console.log(res.data)
+                // console.log(res.data)
                 // console.log(res.data.cart.qty_beli)
                 this.setState({ rendercart: res.data.cart })
                 console.log(this.state.rendercart)
                 // console.log(this.state.rendercart[0].order_number)
                 // console.log(this.state.users[0].username)
+                console.log('a')
             })
             .catch(err => {
                 console.log(err)
@@ -45,6 +46,9 @@ class CartPage extends React.Component {
 
     componentDidMount() {
         this.fetchData()
+        this.props.keepLogin()
+        // console.log(this.state.rendercart)
+
     }
     showTableHead = () => {
         return (
@@ -168,7 +172,7 @@ class CartPage extends React.Component {
         return (
             <tbody>
                 {/* {this.props.cart ? this.fetchData() : null} */}
-                {this.state.rendercart ? this.state.rendercart.map((item, index) => {
+                {this.state.rendercart.map((item, index) => {
                     if (index === this.state.indexEdit) {
                         // if (index === 0) {
                         return (
@@ -220,7 +224,7 @@ class CartPage extends React.Component {
                     )
                     // }
                 })
-                    : <div></div>}
+                    }
             </tbody>
         )
     }
@@ -439,13 +443,15 @@ class CartPage extends React.Component {
     }
 
     render() {
+        console.log(this.props.username)
         const { error, askPass, toHistory } = this.state
 
         if (!this.props.username) {
             return <Redirect to='/login' />
-        } else if (toHistory) {
-            return <Redirect to='/history' />
-        }
+        } 
+        // else if (toHistory) {
+        //     return <Redirect to='/history' />
+        // }
 
         // console.log(this.props.cart)
         return (
@@ -458,7 +464,8 @@ class CartPage extends React.Component {
                     </div>
                     <Table style={styles.table} striped bordered hover variant="dark" style={{ backgroundColor: '#000051' }}>
                         {this.showTableHead()}
-                        {this.showTableBody()}
+                        {this.state.rendercart.length ===0 ? <div></div> : this.showTableBody()}
+                        
                     </Table>
                     <Modal show={error[0]} onHide={() => this.setState({ error: [false, ""] })}>
                         <Modal.Header closeButton>
@@ -535,4 +542,4 @@ const mapStateToProps = (state) => {
 }
 
 
-export default connect(mapStateToProps, { delCart, saveCart, onCheckout })(CartPage)
+export default connect(mapStateToProps, { delCart, saveCart, onCheckout, keepLogin })(CartPage)
