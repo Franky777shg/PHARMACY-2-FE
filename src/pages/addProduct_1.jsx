@@ -13,7 +13,7 @@ import {
     Button,
     Form,
     InputGroup,
-    FormControl,
+    FormControl, Modal,
     Alert
 } from 'react-bootstrap'
 import { Link, Redirect } from 'react-router-dom';
@@ -31,14 +31,20 @@ class AddPage extends React.Component {
             idEdit: null,
             remove: false,
             products: [],
-            selectValue: ''
+            selectValue: '',
+            adafoto: false,
+            showmodal: false,
+            error:false,
+            errormes:'',
+            berhasil:true,
+            berhasilmes:''
         }
     }
 
     handleUpload = () => {
-        const data = new FormData()
-        console.log(data)
-        data.append('IMG', this.state.images)
+        const foto = new FormData()
+        console.log(foto)
+        foto.append('IMG', this.state.images)
         console.log(this.refs.namaobat.value)
         // console.log(data.get('IMG'))
         let nama = this.refs.namaobat.value
@@ -81,42 +87,72 @@ class AddPage extends React.Component {
             no_registrasi
 
         }
-        this.props.uploadProduct1(data, body)
-        this.setState({ images: '' })
+        // this.props.uploadProduct1(data, this.state.adafoto, body)
+        if (this.state.adafoto === true) {
+            Axios.post(`${URL_API}/add-product1foto`, foto, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            })
+                .then(res => {
+                    // console.log(res.data.data[0].idproduk)
+                    console.log(res.data)
+                    const hasil = res.data
+                    const kirim = { ...body, hasil }
+                    Axios.post(`${URL_API}/add-product1data`, kirim)
+                        .then(res => {
+                            console.log(res.data.data[0].idproduk)
+                            // console.log(res.data)
+                            // dispatch({
+                            //     type: 'RENDER_ADDPRODUCT1',
+                            //     payload: res.data.data[0].idproduk
 
+                            // })
+                            // this.fetchData()
+                            this.setState({ berhasil: true, berhasilmes: `Berhasil menambahkan produk` })
+                        })
+                        .catch(err => {
+                            console.log(err)
+                            // dispatch({
+                            //     type: 'RENDER_ADDPRODUCT1_FAIL',
+                            //     payload: err.response.data
+                            // })
+                            this.setState({ error: true, errormes: 'Gagal menambahkan produk, refresh kembali dan coba lagi' })
+                        })
+                })
+                .catch(err => {
+                    console.log(err)
+                })
+        }
+        else if (this.state.adafoto === false) {
+            Axios.post(`${URL_API}/add-product1data-nofoto`, body)
+                .then(res => {
+                    // console.log(res.data.data[0].idproduk)
+                    // console.log(res.data)
+                    // dispatch({
+                    //     type: 'RENDER_ADDPRODUCT1',
+                    //     payload: 'Berhasil add produk dengan foto default'
+
+                    // })
+                    // this.fetchData()
+                    this.setState({ berhasil: true, berhasilmes: `Berhasil menambahkan produk dengan default foto, silakan edit produk untuk mengubahnya` })
+                })
+                .catch(err => {
+                    console.log(err)
+                    // dispatch({
+                    //     type: 'RENDER_ADDPRODUCT1_FAIL',
+                    //     payload: err.response.data
+
+                    // })
+                    this.setState({ error: true, errormes: 'Gagal menambahkan produk, refresh kembali dan coba lagi' })
+                })
+        }
+
+        this.setState({ images: '' })
+        console.log(this.state.adafoto)
         console.log(this.props.upload1an)
         console.log(this.props.show)
-        // if (this.props.show) {
-        //     return (
-        //         <Alert variant="success">
-        //             <Alert.Heading>{this.show.upload1an}</Alert.Heading>
-        //             <hr />
-        //             <p className="mb-0">
-        //                 Whenever you need to, be sure to use margin utilities to keep things nice
-        //                 and tidy.
-        //             </p>
-        //         </Alert>
-        //     )
-        // }
-
-        // function AlertDismissibleExample() {
-        // const [show, setShow] = useState(true);
-
-        // return(
-        //     <div>if (this.props.show===true) {
-        //     return (
-        //         <div>
-        //         <Alert variant="success" onClose={!this.props.show} dismissible>
-        //             <Alert.Heading>{this.props.upload1an}</Alert.Heading>
-        //             <p>
-        //                 Change this and that and try again. Duis mollis, est non commodo
-        //                 luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit.
-        //                 Cras mattis consectetur purus sit amet fermentum.
-        //             </p>
-        //         </Alert>
-        //         </div>
-        //     );
-        // }
+        
 
         this.refs.namaobat.value = ''
         this.refs.harga.value = ''
@@ -137,10 +173,6 @@ class AddPage extends React.Component {
         this.refs.manufaktur.value = ''
         this.refs.no_registrasi.value = ''
 
-        //         return <Button onClick={this.props.show}>Show Alert</Button>;
-        //       }
-
-        //       AlertDismissibleExample()
     }
 
     handleChoose = (e) => {
@@ -167,11 +199,14 @@ class AddPage extends React.Component {
             return (
                 <div>
                     <NavBar />
-                    <div style={{ display: 'flex', paddingTop:'100px', marginLeft: '10vw',color:'#343892' }}>
-                                    <h1>Add Products</h1>
+                    <div style={{ display: 'flex', paddingTop: '100px', marginLeft: '10vw', color: '#343892' }}>
+                        <h1>Add Products</h1>
 
-                                    {/* <img style={styles.imgProf} src={`url(${upload1an ? URL_API + upload1an : null})`}/> */}
-                                </div>
+                        {/* <img style={styles.imgProf} src={`url(${upload1an ? URL_API + upload1an : null})`}/> */}
+                    </div>
+                    {/* <Alert variant="success" onClose={() => this.setState({ showmodal: true })} dismissible show={this.state.showmodal===true ? false : this.props.show}>
+                        <Alert.Heading>{this.props.upload1an}</Alert.Heading>
+                    </Alert> */}
                     <div style={{ padding: '45px 50px' }}>
                         <div style={styles.container}>
                             <div style={styles.imageDiv}>
@@ -182,7 +217,7 @@ class AddPage extends React.Component {
                                                 type="file"
                                                 accept="image/*"
                                                 name="IMG"
-                                                onChange={(e) => this.setState({ images: e.target.files[0] })}
+                                                onChange={(e) => this.setState({ images: e.target.files[0], adafoto: true })}
                                             />
                                         </form>
                                     </div>
@@ -398,9 +433,28 @@ class AddPage extends React.Component {
                             Upload
                         </Button>
                     </div>
-                    <Alert variant="success" onClose={!this.props.show} dismissible show={this.props.show}>
-                        <Alert.Heading>{this.props.upload1an}</Alert.Heading>
-                    </Alert>
+                    <Modal show={this.state.error} onHide={() => this.setState({ error: false, errormes: '' })}>
+                            <Modal.Header closeButton>
+                                <Modal.Title>Error!</Modal.Title>
+                            </Modal.Header>
+                            <Modal.Body>{this.state.errormes}</Modal.Body>
+                            <Modal.Footer>
+                                <Button style={{ backgroundColor: '#000051', color: 'white' }} onClick={() => this.setState({ error: false, errormes: '' })}>
+                                    OK
+                                </Button>
+                            </Modal.Footer>
+                        </Modal>
+                        <Modal show={this.state.berhasil} onHide={() => this.setState({ berhasil: false, berhasilmes: '' })}>
+                            <Modal.Header closeButton>
+                                <Modal.Title>Congrats!</Modal.Title>
+                            </Modal.Header>
+                            <Modal.Body>{this.state.berhasilmes}</Modal.Body>
+                            <Modal.Footer>
+                                <Button style={{ backgroundColor: '#000051', color: 'white' }} onClick={() => this.setState({ berhasil: false, berhasilmes: '' })}>
+                                    OK
+                                </Button>
+                            </Modal.Footer>
+                        </Modal>
                 </div>
             )
         }

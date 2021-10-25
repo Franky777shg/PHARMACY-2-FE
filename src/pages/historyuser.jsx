@@ -232,10 +232,22 @@ class HistoryPage extends React.Component {
         console.log('e.target.files', e.target.files)
         this.setState({ images: e.target.files[0] })
     }
-    onRemove = (order_number) => {
+    onCancel = (order_number) => {
         // this.props.deletePhoto(this.props.iduser,order_number)
+        let body = {
+            order_number: order_number
+        }
         // this.fetchData()
         // this.setState({ images: '' })
+        Axios.post(`http://localhost:2000/history/cancelr/${this.props.iduser}`, body)
+        .then(res => {
+            console.log('Berhasil update status transaksi satuan menjadi Cancel')
+            this.setState({arrongoingresep:[] , arrhistoryR: []})
+            this.arrongoingresep()
+            // this.historyTransaction()
+            this.arrhistoryR()
+        })
+        .catch(err => { console.log('Gagal update status stransaksi satuan menjadi Cancel') })
     }
 
     handleComplete1 = (order_number) => {
@@ -246,10 +258,12 @@ class HistoryPage extends React.Component {
         Axios.post(`http://localhost:2000/history/og-tocomplete1/${this.props.iduser}`, body)
             .then(res => {
                 console.log('Berhasil update status transaksi satuan menjadi Complete')
+                this.setState({arrongoing:[] , arrhistory: []})
+                this.arrongoing()
+                // this.historyTransaction()
+                this.arrhistory()
             })
             .catch(err => { console.log('Gagal update status stransaksi satuan menjadi Complete') })
-        // this.arrongoing()
-        this.historyTransaction()
     }
 
     handleCompleteR = (order_number, item) => {
@@ -260,6 +274,9 @@ class HistoryPage extends React.Component {
         Axios.post(`http://localhost:2000/history/og-tocompleter/${this.props.iduser}`, body)
             .then(res => {
                 console.log('Berhasil update status transaksi resep menjadi Complete')
+                this.setState({arrongoingresep:[] , arrhistoryR: []})
+                this.arrongoingresep()
+                this.arrhistoryR()
             })
             .catch(err => { console.log('Gagal update status transaksi resep menjadi Complete') })
     }
@@ -299,7 +316,7 @@ class HistoryPage extends React.Component {
                                 </Nav.Item>
                             </Nav>
                             {this.state.ongoingsatuan === true ? <Accordion defaultActiveKey="0">
-                                {this.state.arrongoing.reverse().map((item, index) => {
+                                {this.state.arrongoing.map((item, index) => {
                                     console.log(item)
                                     console.log(item[0])
                                     console.log(item[0].order_number)
@@ -355,17 +372,11 @@ class HistoryPage extends React.Component {
                                                                 : null}
                                                             {/* <td>{item[0].total_bayar}</td> */}
                                                             {item[0].status === 'Waiting For Payment' ?
-                                                                <td><Button style={{ width: '10vw', marginBottom: '30px' }} variant="primary" onClick={() => this.handleUpload(item[0].order_number, item, item[0].total_bayar)}>Upload Payment Proof</Button>
-                                                                    {/* <Button
-                                                                        className="button"
-                                                                        variant="success"
-                                                                        onClick={this.onRemove(item.order_number)}
-                                                                    >
-                                                                        Remove
-                                                                    </Button> */}
+                                                                <td style={{ display:'flex',justifyContent:'space-around'}}><Button variant="primary" onClick={() => this.handleUpload(item[0].order_number, item, item[0].total_bayar)}>Upload Payment Proof</Button>
+                                                                   
                                                                 </td>
                                                                 : null}
-                                                            {item[0].status === 'Sending Package' ? <td ><Button style={{ width: '10vw', marginBottom: '30px', justifyContent: 'center' }} variant="outline-primary" onClick={() => this.handleComplete1(item[0].order_number)}>Complete</Button></td> : null}
+                                                            {item[0].status === 'Sending Package' ? <td style={{ display:'flex',justifyContent:'space-around'}}><Button style={{ width: '10vw', marginBottom: '30px', justifyContent: 'center' }} variant="outline-primary" onClick={() => this.handleComplete1(item[0].order_number)}>Complete</Button></td> : null}
                                                         </tr>
                                                     </tbody>
                                                 </Table>
@@ -377,7 +388,7 @@ class HistoryPage extends React.Component {
                             </Accordion>
                                 :
                                 <Accordion defaultActiveKey="0">
-                                    {this.state.arrongoingresep.reverse().map((item, index) => {
+                                    {this.state.arrongoingresep.map((item, index) => {
                                         console.log(item)
                                         console.log(item[0])
                                         console.log(item[0].order_number)
@@ -417,13 +428,22 @@ class HistoryPage extends React.Component {
                                                                 <div></div>}
                                                             {item[0].status === 'Waiting For Approval' ? null : <tr><td></td><td colSpan="5">The amount you have to pay: IDR <span style={{ fontWeight: 'bold' }}>{item[0].total_belanja.toLocaleString()}</span></td></tr>}
                                                             <tr>
-                                                                <td></td><td colSpan={item[0].status === 'Waiting For Approval' ? "5" : "4"}>Status: {item[0].status}</td>
+                                                                <td></td><td colSpan={item[0].status === 'Waiting For Approval' ? "4" : item[0].status === 'Waiting For payment' ? "4" : "5"}>Status: {item[0].status}</td>
 
                                                                 {item[0].status === 'Waiting For Payment' ?
-                                                                    <td ><Button style={{ width: '10vw', marginBottom: '30px' }} variant="primary" as={Link} to={`/paymentresep/${this.props.iduser}`}>Upload Payment Proof</Button>
+                                                                    <td style={{ display:'flex',justifyContent:'center'}}><Button variant="primary" as={Link} to={`/paymentresep/${this.props.iduser}`}>Upload Payment Proof</Button>
                                                                     </td>
                                                                     : null}
-                                                                {item[0].status === 'Sending Package' ? <td><Button style={{ width: '10vw', marginBottom: '30px' }} variant="outline-primary" onClick={() => this.handleCompleteR(item[0].order_number, item)}>Complete</Button></td> : null}
+                                                                    
+                                                                    {item[0].status === 'Waiting For Approval' ? <tr style={{ display:'flex',justifyContent:'center'}}> <Button
+                                                                        className="button"
+                                                                        // variant="warning"
+                                                                        style={{backgroundColor: '#343892'}}
+                                                                        onClick= {() => this.onCancel(item[0].order_number)}
+                                                                    >
+                                                                        Cancel
+                                                                    </Button></tr> : null}
+                                                                {item[0].status === 'Sending Package' ? <td style={{ display:'flex',justifyContent:'center'}}><Button style={{ width: '10vw', marginBottom: '30px' }} variant="outline-primary" onClick={() => this.handleCompleteR(item[0].order_number, item)}>Complete</Button></td> : null}
                                                             </tr>
                                                         </tbody>
                                                     </Table>

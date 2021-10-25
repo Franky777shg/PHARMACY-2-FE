@@ -15,7 +15,8 @@ import {
     Image,
     Button,
     Form,
-    FormControl
+    FormControl,
+    FloatingLabel, Alert, Modal
 } from 'react-bootstrap'
 
 const URL_API = 'http://localhost:2000/product'
@@ -26,8 +27,8 @@ class EditSatuanPage extends React.Component {
         this.state = {
             product: null,
             qty: 1,
-            selectValue:'',
-            images:'',
+            selectValue: '',
+            images: '',
             max: null,
             stok: null,
             nama: null,
@@ -46,7 +47,13 @@ class EditSatuanPage extends React.Component {
             kemasan: null,
             manufaktur: null,
             no_registrasi: null,
-            message:''
+            message: '',
+            showmodal: false,
+            adafoto: false,
+            error: false,
+            errormes: '',
+            berhasil: false,
+            berhasilmes: ''
         }
     }
 
@@ -78,7 +85,34 @@ class EditSatuanPage extends React.Component {
                 console.log(err)
             })
     }
-
+    fetchData = () => {
+        let idProduct = this.props.location.pathname.slice(13)
+        Axios.get(`${URL_API}/detail-product/${idProduct}`)
+            .then(res => {
+                this.setState({
+                    product: res.data, max: res.data.stok, stok: res.data.stok,
+                    nama: res.data.nama,
+                    harga: res.data.harga,
+                    satuan: res.data.satuan,
+                    kategori: res.data.kategori,
+                    deskripsi: res.data.deskripsi,
+                    indikasi_umum: res.data.indikasi_umum,
+                    komposisi: res.data.komposisi,
+                    dosis: res.data.dosis,
+                    aturan_pakai: res.data.aturan_pakai,
+                    kontra_indikasi: res.data.kontra_indikasi,
+                    perhatian: res.data.perhatian,
+                    efek_samping: res.data.efek_samping,
+                    segmentasi: res.data.segmentasi,
+                    kemasan: res.data.kemasan,
+                    manufaktur: res.data.manufaktur,
+                    no_registrasi: res.data.no_registrasi
+                })
+            })
+            .catch(err => {
+                console.log(err)
+            })
+    }
     onChangeQty = (e) => {
         let value = +e.target.value
         let maxQty = this.state.product.stok
@@ -104,11 +138,11 @@ class EditSatuanPage extends React.Component {
 
     handleUpload = () => {
         //foto dan data = 2, data aja = 1
-        let data = new FormData()
-        console.log(data)
+        let foto = new FormData()
+        console.log(foto)
         console.log(this.state.images)
-        let message=''
-        data.append('IMG', this.state.images)
+        let message = ''
+        foto.append('IMG', this.state.images)
         // if(this.state.images !==''){
         //     data.append('IMG', this.state.images)
         //     message="2"
@@ -162,19 +196,93 @@ class EditSatuanPage extends React.Component {
             message: this.state.message
         }
         // console.log(data.get('IMG'),body)
-        console.log(this.state.images)  
-        console.log(data)  
-        console.log(data.length)
+        console.log(this.state.images)
+        console.log(foto)
+        console.log(foto.length)
         // console.log(message)
-        this.props.editProduct1(data,body, idproduct)
-        // this.setState({ images: '' })
+        // this.props.editProduct1(foto, body, idproduct, this.state.adafoto)
+        if (this.state.adafoto === true) {
+            Axios.post(`${URL_API}/edit-product1foto/${idproduct}`, foto, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            })
+                .then(res => {
+                    // console.log(res.data.data[0].idproduk)
+                    console.log(res.data)
+                    // const hasil = res.data
+                    // const kirim = { ...data, hasil }
+                    Axios.post(`${URL_API}/edit-product1data/${idproduct}`, body)
+                        .then(res => {
+                            // console.log(res.data.data[0].idproduk)
+                            // console.log(res.data)
+                            // dispatch({
+                            //     type: 'EDITPRODUCT1',
+                            //     payload: 'Berhasil update produk'
+
+                            // })
+                            console.log('Berhasil update produk')
+                            this.fetchData()
+                            this.setState({ berhasil: true, berhasilmes: `Berhasil update produk dengan id ${idproduct}` , images: ''})
+                        })
+                        .catch(err => {
+                            console.log(err)
+                            this.setState({ error: true, errormes: 'Gagal update produk, refresh kembali dan coba lagi', images: '' })
+                            // dispatch({
+                            //     type: 'EDITPRODUCT1_FAIL',
+                            //     payload: err.response.data
+
+                            // })
+                        })
+
+                })
+                .catch(err => {
+                    console.log(err)
+                })
+        }
+        else if (this.state.adafoto === false) {
+            Axios.post(`${URL_API}/edit-product1data/${idproduct}`, body)
+                .then(res => {
+                    // console.log(res.data.data[0].idproduk)
+                    // console.log(res.data)
+                    // dispatch({
+                    //     type: 'EDITPRODUCT1',
+                    //     payload: 'Berhasil update produk'
+
+                    // })
+                    console.log('Berhasil update produk')
+                    this.fetchData()
+                    this.setState({ berhasil: true, berhasilmes: `Berhasil update produk dengan id ${idproduct}` , images: ''})
+                })
+                .catch(err => {
+                    console.log(err)
+                    // dispatch({
+                    //     type: 'EDITPRODUCT1_FAIL',
+                    //     payload: err.response.data
+
+                    // })
+                    this.setState({ error: true, errormes: 'Gagal update produk, refresh kembali dan coba lagi', images: '' })
+                })
+        }
+        this.setState({ images: '' })
     }
 
     // onChangeStock = (e) => {
     //     this.setState({ stok: e.target.value })
     // }
 
-   
+    onRemove = () => {
+        // this.props.deletePhoto(this.props.location.pathname.slice(13))
+        let idproduct = this.props.location.pathname.slice(13)
+        Axios.post(`${URL_API}/defaultphoto-product1/${idproduct}`)
+            .then(res => {
+                this.fetchData()
+                this.setState({ images: '', berhasil: true, berhasilmes: 'Berhasil remove foto produk resep diganti dengan default' })
+            })
+            .catch(err => {
+                this.setState({ error: true, errormes: 'Gagal remove foto produk, refresh dan coba lagi' , images: ''})
+            })
+    }
 
     render() {
         if (this.props.role !== "admin") {
@@ -184,6 +292,9 @@ class EditSatuanPage extends React.Component {
             <div>
                 <NavBar />
                 <div style={{ padding: '100px 50px' }}>
+                    {/* <Alert variant="success" onClose={() => this.setState({ showmodal: true })} dismissible show={this.state.showmodal===true ? false : this.props.show}>
+                        <Alert.Heading>{this.props.upload1an}</Alert.Heading>
+                    </Alert> */}
                     <div style={styles.container}>
                         <div style={styles.imageDiv}>
                             <Image style={styles.image} src={this.state.product ? `http://localhost:2000/${this.state.product.link_foto}` : ""} />
@@ -193,7 +304,7 @@ class EditSatuanPage extends React.Component {
                                         type="file"
                                         accept="image/*"
                                         name="IMG"
-                                        onChange={(e) => this.setState({ images: e.target.files[0], message: '0' })}
+                                        onChange={(e) => this.setState({ images: e.target.files[0], adafoto: true })}
                                     />
                                 </form>
                                 <Button
@@ -204,27 +315,39 @@ class EditSatuanPage extends React.Component {
                                     Remove
                                 </Button>
                             </div>
-                            <h3 style={styles.h3}>Nama Obat<FormControl
-                                // placeholder={this.state.product ? this.state.product.nama : ""}
-                                value={this.state.nama}
-                                onChange={(e) => this.setState({ nama: e.target.value })}
-                                type="text"
-                                ref="namaobat"
-                            /></h3>
-                            <h4 style={styles.h4}>Harga<FormControl
-                                // placeholder={this.state.product ? `Rp ${(this.state.product.harga).toLocaleString()}` : ""}
-                                value={this.state.harga}
-                                onChange={(e) => this.setState({ harga: `Rp ${e.target.value.toLocaleString()}` })}
-                                type="number"
-                                ref="harga"
-                            /></h4>
-                            <h4 style={styles.h4}>Satuan<FormControl
-                                // placeholder={this.state.product ? this.state.product.satuan : ""}
-                                value={this.state.satuan}
-                                onChange={(e) => this.setState({ satuan: e.target.value })}
-                                type="text"
-                                ref="satuan"
-                            /></h4>
+                            <div style={styles.h4}>
+                                <h4 style={{ marginTop: '25px' }}>Nama Obat</h4>
+                                {/* <FloatingLabel
+                                    controlId="floatingInput"
+                                    label="Nama Obat"
+                                    className="mb-1"
+                                >                                    */}
+                                <FormControl
+                                    // placeholder={this.state.product ? this.state.product.nama : ""}
+                                    value={this.state.nama}
+                                    onChange={(e) => this.setState({ nama: e.target.value })}
+                                    type="text"
+                                    ref="namaobat"
+                                    placeholder="namaobat"
+                                />
+                                {/* </FloatingLabel> */}
+                                <h4 style={styles.h4}>Harga</h4>
+                                <FormControl className="mb-1"
+                                    // placeholder={this.state.product ? `Rp ${(this.state.product.harga).toLocaleString()}` : ""}
+                                    value={this.state.harga}
+                                    onChange={(e) => this.setState({ harga: `Rp ${e.target.value.toLocaleString()}` })}
+                                    type="number"
+                                    ref="harga"
+                                />
+                                <h4 style={styles.h4}>Satuan</h4>
+                                <FormControl className="mb-1"
+                                    // placeholder={this.state.product ? this.state.product.satuan : ""}
+                                    value={this.state.satuan}
+                                    onChange={(e) => this.setState({ satuan: e.target.value })}
+                                    type="text"
+                                    ref="satuan"
+                                />
+                            </div>
                             <h4 style={styles.h4}>Stok
                                 {/* <FormControl
                                     placeholder={this.state.product ? `Stok: ${this.state.product.stok}` : ""}
@@ -248,7 +371,7 @@ class EditSatuanPage extends React.Component {
                                         />
                                         <Button variant="outline-primary" onClick={() => this.setState({ stok: this.state.stok + 1 })}>+</Button>
                                     </div>
-                                    <Button style={{ width: '10vw', marginBottom: '30px' }} variant="primary" onClick={this.handleUpload}>Update data</Button>
+                                    <Button style={styles.button} variant="primary" onClick={this.handleUpload} className="d-grid gap-2">Update data</Button>
                                 </div>
                                 :
                                 <div></div>
@@ -259,7 +382,7 @@ class EditSatuanPage extends React.Component {
                             <div style={styles.textDescription}>
                                 <h5 style={{ marginBottom: '2px' }}>Kategori</h5>
                                 {/* <Form.Control style={styles.filterForm} type="text" placeholder="Name" ref="name" /> */}
-                                <Form.Select style={styles.filterForm} ref="category" value={this.state.kategori} onChange={(e) => this.setState({kategori: e.target.value})} >
+                                <Form.Select style={styles.filterForm} ref="category" value={this.state.kategori} onChange={(e) => this.setState({ kategori: e.target.value })} >
                                     <option value="">Category</option>
                                     <option value="Asma">Asma</option>
                                     <option value="Diabetes">Diabetes</option>
@@ -271,24 +394,37 @@ class EditSatuanPage extends React.Component {
                             </div>
                             <div style={styles.textDescription}>
                                 <h5 style={{ marginBottom: '2px' }}>Deskripsi</h5>
-                                <p style={{ textAlign: 'justify' }}><FormControl
-                                    // placeholder={this.state.product ? this.state.product.deskripsi : ""}
-                                    value={this.state.deskripsi}
-                                    onChange={(e) => this.setState({ deskripsi: e.target.value })}
-                                    type="text"
-                                    ref="deskripsi"
-                                    rows="25"
-                                /></p>
+                                <p style={{ textAlign: 'justify' }}>
+                                    {/* <FloatingLabel controlId="floatingTextarea2" label="Deskripsi"> */}
+                                    <FormControl
+                                        // placeholder={this.state.product ? this.state.product.deskripsi : ""}
+                                        as="textarea"
+                                        value={this.state.deskripsi}
+                                        onChange={(e) => this.setState({ deskripsi: e.target.value })}
+                                        type="text"
+                                        ref="deskripsi"
+                                        placeholder="deskripsi"
+                                        // rows="25"
+                                        style={{ height: '100px' }}
+                                    />
+                                    {/* </FloatingLabel> */}
+                                </p>
                             </div>
                             <div style={styles.textDescription}>
                                 <h5 style={{ marginBottom: '2px' }}>Indikasi Umum</h5>
-                                <p style={{ textAlign: 'justify' }}><FormControl
-                                    // placeholder={this.state.product ? this.state.product.indikasi_umum : ""}
-                                    value={this.state.indikasi_umum}
-                                    onChange={(e) => this.setState({ indikasi_umum: e.target.value })}
-                                    type="text"
-                                    ref="indikasi_umum"
-                                /></p>
+                                <p style={{ textAlign: 'justify' }}>
+                                    {/* <FloatingLabel controlId="floatingTextarea2" label="Indikasi Umum"> */}
+                                    <FormControl
+                                        // placeholder={this.state.product ? this.state.product.indikasi_umum : ""}
+                                        as="textarea"
+                                        value={this.state.indikasi_umum}
+                                        onChange={(e) => this.setState({ indikasi_umum: e.target.value })}
+                                        type="text"
+                                        ref="indikasi_umum"
+                                        style={{ height: '55px' }}
+                                    />
+                                    {/* </FloatingLabel> */}
+                                </p>
                             </div>
                             <div style={styles.textDescription}>
                                 <h5 style={{ marginBottom: '2px' }}>Komposisi</h5>
@@ -302,13 +438,19 @@ class EditSatuanPage extends React.Component {
                             </div>
                             <div style={styles.textDescription}>
                                 <h5 style={{ marginBottom: '2px' }}>Dosis</h5>
-                                <p style={{ textAlign: 'justify' }}><FormControl
-                                    // placeholder={this.state.product ? this.state.product.dosis : ""}
-                                    value={this.state.dosis}
-                                    onChange={(e) => this.setState({ dosis: e.target.value })}
-                                    type="text"
-                                    ref="dosis"
-                                /></p>
+                                <p style={{ textAlign: 'justify' }}>
+                                    {/* <FloatingLabel controlId="floatingTextarea2" label="Dosis"> */}
+                                    <FormControl
+                                        // placeholder={this.state.product ? this.state.product.dosis : ""}
+                                        as="textarea"
+                                        value={this.state.dosis}
+                                        onChange={(e) => this.setState({ dosis: e.target.value })}
+                                        type="text"
+                                        ref="dosis"
+                                        style={{ height: '65px' }}
+                                    />
+                                    {/* </FloatingLabel> */}
+                                </p>
                             </div>
                             <div style={styles.textDescription}>
                                 <h5 style={{ marginBottom: '2px' }}>Aturan Pakai</h5>
@@ -332,13 +474,18 @@ class EditSatuanPage extends React.Component {
                             </div>
                             <div style={styles.textDescription}>
                                 <h5 style={{ marginBottom: '2px' }}>Perhatian</h5>
-                                <p style={{ textAlign: 'justify' }}><FormControl
-                                    // placeholder={this.state.product ? this.state.product.perhatian : ""}
-                                    value={this.state.perhatian}
-                                    onChange={(e) => this.setState({ perhatian: e.target.value })}
-                                    type="text"
-                                    ref="perhatian"
-                                /></p>
+                                <p style={{ textAlign: 'justify' }}>
+                                    {/* <FloatingLabel controlId="floatingTextarea2" label="Perhatian"> */}
+                                    <FormControl
+                                        // placeholder={this.state.product ? this.state.product.perhatian : ""}
+                                        as="textarea"
+                                        value={this.state.perhatian}
+                                        onChange={(e) => this.setState({ perhatian: e.target.value })}
+                                        type="text"
+                                        ref="perhatian"
+                                    />
+                                    {/* </FloatingLabel> */}
+                                </p>
                             </div>
                             <div style={styles.textDescription}>
                                 <h5 style={{ marginBottom: '2px' }}>Efek Samping</h5>
@@ -382,15 +529,42 @@ class EditSatuanPage extends React.Component {
                             </div>
                             <div style={styles.textDescription}>
                                 <h5 style={{ marginBottom: '2px' }}>No. Registrasi</h5>
-                                <p style={{ textAlign: 'justify' }}><FormControl
-                                    // placeholder={this.state.product ? this.state.product.no_registrasi : ""}
-                                    value={this.state.no_registrasi}
-                                    onChange={(e) => this.setState({ no_registrasi: e.target.value })}
-                                    type="text"
-                                    ref="no_registrasi"
-                                /></p>
+                                <p style={{ textAlign: 'justify' }}>
+                                    {/* <FloatingLabel controlId="floatingTextarea2" label="No. Registrasi"> */}
+                                    <FormControl
+                                        // placeholder={this.state.product ? this.state.product.no_registrasi : ""}
+                                        as="textarea"
+                                        value={this.state.no_registrasi}
+                                        onChange={(e) => this.setState({ no_registrasi: e.target.value })}
+                                        type="text"
+                                        ref="no_registrasi"
+                                    />
+                                    {/* </FloatingLabel> */}
+                                </p>
                             </div>
                         </div>
+                        <Modal show={this.state.error} onHide={() => this.setState({ error: false, errormes: '' })}>
+                            <Modal.Header closeButton>
+                                <Modal.Title>Error!</Modal.Title>
+                            </Modal.Header>
+                            <Modal.Body>{this.state.errormes}</Modal.Body>
+                            <Modal.Footer>
+                                <Button style={{ backgroundColor: '#000051', color: 'white' }} onClick={() => this.setState({ error: false, errormes: '' })}>
+                                    OK
+                                </Button>
+                            </Modal.Footer>
+                        </Modal>
+                        <Modal show={this.state.berhasil} onHide={() => this.setState({ berhasil: false, berhasilmes: '' })}>
+                            <Modal.Header closeButton>
+                                <Modal.Title>Congrats!</Modal.Title>
+                            </Modal.Header>
+                            <Modal.Body>{this.state.berhasilmes}</Modal.Body>
+                            <Modal.Footer>
+                                <Button style={{ backgroundColor: '#000051', color: 'white' }} onClick={() => this.setState({ berhasil: false, berhasilmes: '' })}>
+                                    OK
+                                </Button>
+                            </Modal.Footer>
+                        </Modal>
                     </div>
                 </div>
             </div>
@@ -409,7 +583,10 @@ const styles = {
         margin: '10px 0 30px'
     },
     h4: {
-        margin: '0 0 10px'
+        margin: '0 0 10px',
+        justifyContent: 'left',
+        alignItems: 'left',
+        textAlign: 'left'
     },
     imageDiv: {
         height: '150vh',
@@ -445,6 +622,15 @@ const styles = {
         borderBottom: '1px solid #80F1B2',
         marginBottom: '1rem',
         color: '#343892'
+    }, button: {
+        backgroundColor: '#343892',
+        border: 'none',
+        marginLeft: 'auto',
+        marginRight: 'auto',
+        fontWeight: 'bold',
+        width: '400px',
+        marginBottom: '30px'
+        // { width: '10vw',  }
     }
 }
 
@@ -455,4 +641,4 @@ const mapStateToProps = (state) => {
     }
 }
 
-export default connect(mapStateToProps, {editProduct1})(EditSatuanPage)
+export default connect(mapStateToProps, { editProduct1 })(EditSatuanPage)
