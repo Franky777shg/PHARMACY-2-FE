@@ -296,7 +296,7 @@ class HistoryPage extends React.Component {
             <div style={{ padding: '1%', minHeight: '100vh' }}>
                 <NavBar />
                 <div style={{ marginTop: '10vh' }} >
-                    <h1>History Page</h1>
+                    <h1>{this.props.username}'s Transaction Page</h1>
                     <Nav justify variant="tabs" defaultActiveKey={this.state.menuongoing === true ? "link-1" : "link-2"} >
                         <Nav.Item>
                             <Nav.Link eventKey="link-1" onClick={this.onGoing}>On Going Transaction</Nav.Link>
