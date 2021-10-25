@@ -14,7 +14,7 @@ import {
     Form,
     InputGroup,
     FormControl,
-    Alert
+    Alert, Modal
 } from 'react-bootstrap'
 import { Link, Redirect } from 'react-router-dom';
 
@@ -31,14 +31,20 @@ class AddPage extends React.Component {
             idEdit: null,
             remove: false,
             products: [],
-            selectValue: ''
+            selectValue: '',
+            showmodal: false,
+            adafoto: false,
+            error: false,
+            errormes: '',
+            berhasil: false,
+            berhasilmes: ''
         }
     }
 
     handleUpload = () => {
-        const data = new FormData()
-        console.log(data)
-        data.append('IMG', this.state.images)
+        const foto = new FormData()
+        console.log(foto)
+        foto.append('IMG', this.state.images)
         console.log(this.refs.namaobat.value)
         // console.log(data.get('IMG'))
         let nama = this.refs.namaobat.value
@@ -47,7 +53,7 @@ class AddPage extends React.Component {
         let kategori = this.refs.category.value
         let stokbotol = +this.refs.stokbotol.value
         let stokml = +this.refs.stokml.value
-        
+
 
         let body = {
             nama,
@@ -57,54 +63,80 @@ class AddPage extends React.Component {
             // link_foto,
             stokml
         }
-        this.props.uploadProductR(data, body)
+        // this.props.uploadProductR(data, this.state.adafoto, body)
+        if (this.state.adafoto === true) {
+            Axios.post(`${URL_API}/add-productrfoto`, foto, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            })
+                .then(res => {
+                    // console.log(res.data.data[0].idproduk)
+                    console.log(res.data)
+                    const hasil = res.data
+                    const kirim = { ...body, hasil }
+                    Axios.post(`${URL_API}/add-productrdata`, kirim)
+                        .then(res => {
+                            console.log(res.data.data[0].idproduk_resep)
+                            // console.log(res.data)
+                            // dispatch({
+                            //     type: 'RENDER_ADDPRODUCTR',
+                            //     payload: res.data.data[0].idproduk_resep
+
+                            // })
+                            this.setState({ berhasil: true, berhasilmes: `Berhasil menambahkan produk racikan` })
+                            // this.fetchData()
+                        })
+                        .catch(err => {
+                            console.log(err)
+                            // dispatch({
+                            //     type: 'RENDER_ADDPRODUCTR_FAIL',
+                            //     payload: err.response.data
+
+                            // })
+                            this.setState({ error: true, errormes: 'Gagal menambahkan produk racikan, refresh kembali dan coba lagi' })
+                        })
+                })
+                .catch(err => {
+                    console.log(err)
+                })
+        }
+        else if (this.state.adafoto === false) {
+            Axios.post(`${URL_API}/add-productrdata-nofoto`, body)
+                .then(res => {
+                    // console.log(res.data.data[0].idproduk_resep)
+                    // console.log(res.data)
+                    // dispatch({
+                    //     type: 'RENDER_ADDPRODUCTR',
+                    //     payload: 'Berhasil add produk resep dengan foto default'
+
+                    // })
+                    this.setState({ berhasil: true, berhasilmes: `Berhasil menambahkan produk racikan dengan default foto, silakan edit produk untuk mengubahnya` })
+                    // this.fetchData()
+                })
+                .catch(err => {
+                    console.log(err)
+                    // dispatch({
+                    //     type: 'RENDER_ADDPRODUCTR_FAIL',
+                    //     payload: err.response.data
+                    // })
+                    this.setState({ error: true, errormes: 'Gagal menambahkan produk racikan, refresh kembali dan coba lagi' })
+                })
+        }
+
         this.setState({ images: '' })
 
         console.log(this.props.uploadr)
         console.log(this.props.show)
-        // if (this.props.show) {
-        //     return (
-        //         <Alert variant="success">
-        //             <Alert.Heading>{this.show.upload1an}</Alert.Heading>
-        //             <hr />
-        //             <p className="mb-0">
-        //                 Whenever you need to, be sure to use margin utilities to keep things nice
-        //                 and tidy.
-        //             </p>
-        //         </Alert>
-        //     )
-        // }
 
-        // function AlertDismissibleExample() {
-        // const [show, setShow] = useState(true);
 
-        // return(
-        //     <div>if (this.props.show===true) {
-        //     return (
-        //         <div>
-        //         <Alert variant="success" onClose={!this.props.show} dismissible>
-        //             <Alert.Heading>{this.props.upload1an}</Alert.Heading>
-        //             <p>
-        //                 Change this and that and try again. Duis mollis, est non commodo
-        //                 luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit.
-        //                 Cras mattis consectetur purus sit amet fermentum.
-        //             </p>
-        //         </Alert>
-        //         </div>
-        //     );
-        // }
-
-        this.refs.namaobat.value =''
-        this.refs.harga.value=''
+        this.refs.namaobat.value = ''
+        this.refs.harga.value = ''
         // const link_foto = res.data
-        this.refs.category.value=''
-        this.refs.stokbotol.value=''
-        this.refs.stokml.value=''
+        this.refs.category.value = ''
+        this.refs.stokbotol.value = ''
+        this.refs.stokml.value = ''
 
-        //         return <Button onClick={this.props.show}>Show Alert</Button>;
-        //       }
-
-        //       AlertDismissibleExample()
     }
 
     handleChoose = (e) => {
@@ -131,16 +163,19 @@ class AddPage extends React.Component {
             return (
                 <div>
                     <NavBar />
-                    <div style={{ display: 'flex', paddingTop:'100px', marginLeft: '10vw',color:'#343892' }}>
-                                    <h1>Add Products</h1>
+                    <div style={{ display: 'flex', paddingTop: '100px', marginLeft: '10vw', color: '#343892' }}>
+                        <h1>Add Products</h1>
 
-                                    {/* <img style={styles.imgProf} src={`url(${upload1an ? URL_API + upload1an : null})`}/> */}
-                                </div>
+                        {/* <img style={styles.imgProf} src={`url(${upload1an ? URL_API + upload1an : null})`}/> */}
+                    </div>
+                    {/* <Alert variant="success" onClose={() => this.setState({ showmodal: true })} dismissible show={this.state.showmodal === true ? false : this.props.show}>
+                        <Alert.Heading>{this.props.uploadr}</Alert.Heading>
+                    </Alert> */}
                     <div style={{ padding: '45px 50px' }}>
-                        
+
                         <div style={styles.container}>
                             <div style={styles.imageDiv}>
-                               
+
                                 <div >
                                     <div style={{ margin: '3vh', marginLeft: '13vw' }}>
                                         <form encType="multipart/form-data">
@@ -148,7 +183,7 @@ class AddPage extends React.Component {
                                                 type="file"
                                                 accept="image/*"
                                                 name="IMG"
-                                                onChange={(e) => this.setState({ images: e.target.files[0] })}
+                                                onChange={(e) => this.setState({ images: e.target.files[0], adafoto: true })}
                                             />
                                         </form>
                                     </div>
@@ -165,10 +200,10 @@ class AddPage extends React.Component {
                                 </Button>
                             </div> */}
                                         <div style={styles.contButton}>
-                                            <Button variant="primary" style={{ background: '#DF2E2E', border: 'none' }} onClick={() => this.setState({ images: '' })}>
+                                            {/* <Button variant="primary" style={{ background: '#DF2E2E', border: 'none' }} onClick={() => this.setState({ images: '' })}>
                                                 <i class="fas fa-trash" style={{ marginRight: '10px' }}></i>
                                                 Remove
-                                            </Button>
+                                            </Button> */}
                                         </div>
                                     </div>
 
@@ -198,7 +233,7 @@ class AddPage extends React.Component {
                                             ref="harga"
                                         /></InputGroup>
                                 </div>
-                                        <div style={styles.textDescription}>
+                                <div style={styles.textDescription}>
                                     <h5 style={{ marginBottom: '2px' }}>Kategori</h5>
                                     {/* <Form.Control style={styles.filterForm} type="text" placeholder="Name" ref="name" /> */}
                                     <Form.Select style={styles.filterForm} ref="category" value={this.state.selectValue} onChange={this.handleChange} >
@@ -231,7 +266,7 @@ class AddPage extends React.Component {
                                             ref="stokml"
                                         /></InputGroup>
                                 </div>
-                                
+
                             </div>
                         </div>
                         <Button
@@ -245,9 +280,28 @@ class AddPage extends React.Component {
                             Upload
                         </Button>
                     </div>
-                    <Alert variant="success" onClose={!this.props.show} dismissible show={this.props.show}>
-                        <Alert.Heading>{this.props.uploadr}</Alert.Heading>
-                    </Alert>
+                    <Modal show={this.state.error} onHide={() => this.setState({ error: false, errormes: '' })}>
+                        <Modal.Header closeButton>
+                            <Modal.Title>Error!</Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body>{this.state.errormes}</Modal.Body>
+                        <Modal.Footer>
+                            <Button style={{ backgroundColor: '#000051', color: 'white' }} onClick={() => this.setState({ error: false, errormes: '' })}>
+                                OK
+                            </Button>
+                        </Modal.Footer>
+                    </Modal>
+                    <Modal show={this.state.berhasil} onHide={() => this.setState({ berhasil: false, berhasilmes: '' })}>
+                        <Modal.Header closeButton>
+                            <Modal.Title>Congrats!</Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body>{this.state.berhasilmes}</Modal.Body>
+                        <Modal.Footer>
+                            <Button style={{ backgroundColor: '#000051', color: 'white' }} onClick={() => this.setState({ berhasil: false, berhasilmes: '' })}>
+                                OK
+                            </Button>
+                        </Modal.Footer>
+                    </Modal>
                 </div>
             )
         }

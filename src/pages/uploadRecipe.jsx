@@ -204,7 +204,9 @@ class UploadResep extends React.Component {
         }
         console.log(newData)
         await this.props.addPayment(newData)
+
         this.fetchData()
+
     }
 
     render() {
