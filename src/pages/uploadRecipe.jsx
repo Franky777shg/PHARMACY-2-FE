@@ -220,7 +220,7 @@ class UploadResep extends React.Component {
                     ?
                     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                         <div style={{ display: 'flex', flexDirection: 'column', }}>
-                        <Button variant="warning" style={{ width: '15vw', marginLeft: '10vw', marginBottom: '10vh' }} onClick={this.rubahState}
+                        <Button variant="warning" style={{ width: '15vw', marginLeft: '10vw', marginBottom: '10vh' }} as={Link} to={`/recipe-awal/${this.props.iduser}`}
                             >Upload New Resep</Button>
                             <Button variant="info" style={{ width: '15vw', marginLeft: '10vw', marginBottom: '10vh' }} onClick={this.cekData}
                             >Cek Data</Button>
