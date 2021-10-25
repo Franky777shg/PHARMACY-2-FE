@@ -541,7 +541,7 @@ class HistoryPage extends React.Component {
                                                                     <tr>
                                                                         <td>{index2 + 1}</td>
                                                                         <td><Image src={`http://localhost:2000/${item2.link_foto}`} rounded style={{ width: '70px' }} /></td>
-                                                                        <td>{item2.nama}</td>
+                                                                        <td>{item2.nama_produk}</td>
                                                                         <td>IDR{item2.harga.toLocaleString()},00</td>
                                                                         <td>{item2.qty_beli}</td>
                                                                         <td>IDR{((item2.harga * item2.qty_beli).toLocaleString())},00</td>
