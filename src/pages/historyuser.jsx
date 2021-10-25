@@ -251,7 +251,7 @@ class HistoryPage extends React.Component {
                 // this.historyTransaction()
                 this.arrhistoryR()
             })
-            .catch(err => { console.log('Gagal update status stransaksi satuan menjadi Cancel') })
+            .catch(err => { console.log('Gagal update status transaksi satuan menjadi Cancel') })
     }
 
     handleComplete1 = (order_number) => {
@@ -267,7 +267,7 @@ class HistoryPage extends React.Component {
                 // this.historyTransaction()
                 this.arrhistory()
             })
-            .catch(err => { console.log('Gagal update status stransaksi satuan menjadi Complete') })
+            .catch(err => { console.log('Gagal update status transaksi satuan menjadi Complete') })
     }
 
     handleCompleteR = (order_number, item) => {
