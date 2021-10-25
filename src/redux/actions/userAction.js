@@ -34,9 +34,9 @@ export const login = (data) => {
                 console.log(err1.response.data)
                 // // console.log(err.response.data)
                 dispatch({
-                        type: 'FAILED_LOGIN',
-                        payload: err1.response.data
-                    })
+                    type: 'FAILED_LOGIN',
+                    payload: err1.response.data
+                })
             })
     }
 }
@@ -240,9 +240,8 @@ export const addResepAct = (newData) => { //OK
 
                 Axios.post(`http://localhost:2000/profile/resepbyid`, data2)
                     .then(res1 => {
-                        console.log(res1.data[0])
-                        console.log(res1.data[0].order_number)
-                        console.log(res1.data[0].image_resep)
+                        // console.log(res1.data[0])
+                        // console.log(res1.data[0].order_number)
                         dispatch({
                             type: 'RESEP',
                             payload: res1.data[0]
@@ -264,10 +263,9 @@ export const addResepAct = (newData) => { //OK
                                 })
                         }
                     })
-
-            })
-            .catch(err => {
-                console.log(err)
+                    .catch(err => {
+                        console.log(err)
+                    })
             })
     }
 }
@@ -323,13 +321,13 @@ export const addPayment = (newData) => { //OK
 
                 Axios.post(`http://localhost:2000/payment/paymentbyid`, data2)
                     .then(res1 => {
-                        console.log(res1.data[0])
-                        console.log(res1.data[0].id_payment_resep)
+                        // console.log(res1.data[0])
+                        // console.log(res1.data[0].id_payment_resep)
                         // console.log(res1.data[0].order_number)
                         // console.log(res1.data[0].image_resep)
                         dispatch({
                             type: 'ADD_DATA',
-                            payload: res.data[0]
+                            payload: res1.data[0]
                         })
                         const token = localStorage.getItem('token')
 
@@ -348,62 +346,6 @@ export const addPayment = (newData) => { //OK
                                 })
                         }
                     })
-            })
-            .catch(err => {
-                console.log(err)
-            })
-    }
-}
-
-export const getIdPay = (id) => {
-    return (dispatch) => {
-        Axios.get(`http://localhost:2000/payment/paymentbyid/${id}`)
-            .then(res => {
-                console.log(res.data[0])
-                // console.log(res.data[0].id_payment_resep)
-                
-                // dispatch({
-                //     type: 'ADD_DATA_PAY',
-                //     payload: res.data[0]
-                // })
-
-            })
-            .catch(err => {
-                console.log(err)
-            })
-
-    }
-}
-
-export const uploadPay = (data, id) => {
-    return (dispatch) => {
-        Axios.post(`http://localhost:2000/payment/imgpayresep/${id}`, data, {
-            headers: {
-                'Content-Type': 'multipart/form-data'
-            }
-        })
-            .then(res => {
-                console.log(res.data)
-                // dispatch({
-                //     type: 'PAY_IMG',
-                //     payload: res.data
-                // })
-                const token = localStorage.getItem('token')
-
-                if (token) {
-                    Axios.post(`${URL_API}/keeplogin`, {}, {
-                        headers: {
-                            'Authorization': `Bearer ${token}`
-                        }
-                    })
-                        .then(res => {
-                            // console.log(res.data[0])
-                            dispatch({
-                                type: 'LOGIN',
-                                payload: res.data[0]
-                            })
-                        })
-                }
             })
             .catch(err => {
                 console.log(err)

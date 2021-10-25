@@ -19,7 +19,8 @@ const INITIAL_STATE = {
     orderNumb: '',
     idPayment: null,
     paymentPic: '',
-    cart: []
+    cart: [],
+    status:''
 }
 
 const userReducer = (state = INITIAL_STATE, action) => {
@@ -75,6 +76,8 @@ const userReducer = (state = INITIAL_STATE, action) => {
                 idResep: action.payload.idresep,
                 resepPic: action.payload.image_resep,
                 orderNumb: action.payload.order_number,
+                status : action.payload.status
+              
             }
         case 'RESEP_IMG':
             return {

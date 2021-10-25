@@ -240,7 +240,7 @@ class ProfilePage extends React.Component {
                         <img style={styles.imgProf} src={profilePic ? `${URL_API}/${profilePic}` : PHOTO.default} />
                     </div>
                     <div >
-                        <div style={{ margin:'3vh', marginLeft:'13vw'}}>
+                        <div style={{ margin:'3vh', marginLeft:'5vw', marginBottom:'0'}}>
                             <form encType="multipart/form-data">
                                 <input
                                     type="file"
@@ -250,7 +250,7 @@ class ProfilePage extends React.Component {
                                 />
                             </form>
                         </div>
-                        <div style={{ display: 'flex', justifyContent: 'space-around', margin:'3vh' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-around', margin:'3vh', marginTop:'1vh' }}>
                             <div>
                                 <Button
                                     variant="primary" style={styles.button}
@@ -346,6 +346,7 @@ const styles = {
     textprof2: {
         width: '30vw',
         backgroundColor: 'rgba(255, 255, 255, .5)',
+        fontWeight:'bold'
     }
 }
 
