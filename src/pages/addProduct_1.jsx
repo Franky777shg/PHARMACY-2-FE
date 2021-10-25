@@ -36,7 +36,7 @@ class AddPage extends React.Component {
             showmodal: false,
             error:false,
             errormes:'',
-            berhasil:true,
+            berhasil:false,
             berhasilmes:''
         }
     }
@@ -234,10 +234,10 @@ class AddPage extends React.Component {
                                 </Button>
                             </div> */}
                                         <div style={styles.contButton}>
-                                            <Button variant="primary" style={{ background: '#DF2E2E', border: 'none' }} onClick={() => this.setState({ images: '' })}>
+                                            {/* <Button variant="primary" style={{ background: '#DF2E2E', border: 'none' }} onClick={() => this.setState({ images: '' })}>
                                                 <i class="fas fa-trash" style={{ marginRight: '10px' }}></i>
                                                 Remove
-                                            </Button>
+                                            </Button> */}
                                         </div>
                                     </div>
 
