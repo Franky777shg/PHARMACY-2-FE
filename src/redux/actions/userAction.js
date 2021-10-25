@@ -353,3 +353,95 @@ export const addPayment = (newData) => { //OK
     }
 }
 
+export const addPayment2 = (newData) => { //OK
+    return (dispatch) => {
+        Axios.post(`http://localhost:2000/payment/newdatapayment`, newData)
+            .then(res => {
+                console.log(res.data)
+                console.log(res.data.order_number)
+
+                let data2 = {
+                    order_number: res.data.order_number
+                }
+                console.log(data2)
+
+                Axios.post(`http://localhost:2000/payment/paymentbyid`, data2)
+                    .then(res1 => {
+                        console.log(res1.data[0])
+                        // console.log(res1.data[0].id_payment_resep)
+                        // console.log(res1.data[0].order_number)
+                        // console.log(res1.data[0].image_resep)
+                        dispatch({
+                            type: 'ADD_DATA2',
+                            payload: res1.data[0]
+                        })
+                        const token = localStorage.getItem('token')
+
+                        if (token) {
+                            Axios.post(`${URL_API}/keeplogin`, {}, {
+                                headers: {
+                                    'Authorization': `Bearer ${token}`
+                                }
+                            })
+                                .then(res => {
+                                    // console.log(res.data[0])
+                                    dispatch({
+                                        type: 'LOGIN',
+                                        payload: res.data[0]
+                                    })
+                                })
+                        }
+                    })
+            })
+            .catch(err => {
+                console.log(err)
+            })
+    }
+}
+
+export const getDataAwal = () => { //OK
+    return (dispatch) => {
+        let token = localStorage.getItem("token")
+        Axios.get(`http://localhost:2000/user/userbyid`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            }
+        })
+            .then(res => {
+                console.log(res.data[0].iduser)
+                let data2 = {
+                    iduser: res.data[0].iduser
+                }
+                console.log(data2)
+                Axios.get(`http://localhost:2000/profile/cekdata`, data2)
+                    .then(res => {
+
+                        console.log(res.data)
+                    })
+                    .catch(err => {
+                        console.log('eror cek Data')
+                    })
+                const token = localStorage.getItem('token')
+
+                if (token) {
+                    Axios.post(`${URL_API}/keeplogin`, {}, {
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    })
+                        .then(res => {
+                            // console.log(res.data[0])
+                            dispatch({
+                                type: 'LOGIN',
+                                payload: res.data[0]
+                            })
+                        })
+                }
+            })
+            .catch(err => {
+                console.log(err)
+            })
+    }
+}
+
+
