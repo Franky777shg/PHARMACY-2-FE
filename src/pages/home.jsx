@@ -801,7 +801,15 @@ const styles = {
     flexDirection: 'row',
     margin: '94px auto 0',
     justifyContent: 'space-between'
-  } 
+  },
+  divForm: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    width: '60vw',
+    margin: '44px auto 0 auto',
+  },
 }
 
 const mapStateToProps = (state) => {

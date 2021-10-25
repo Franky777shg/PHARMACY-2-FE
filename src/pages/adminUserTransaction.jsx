@@ -69,6 +69,7 @@ class AdminPage extends React.Component {
     }
     componentDidMount() {
         this.fetchData2()
+        // this.fetchData()
     }
 
     onNextResep = () => {
@@ -97,11 +98,19 @@ class AdminPage extends React.Component {
                     console.log(err)
                 })
 
+        }  else if (this.state.prevResep === 'ongoing') {
+            Axios.get(`${URL_API}/getTransOROnGoing`, { page: this.state.page + 1 })
+                .then(res => {
+                this.setState({ daftarTransaksi: res.data.slice(0, res.data.length - 1), maxPage: res.data[res.data.length - 1], page: this.state.page + 1 })
+            })
+                .catch(err => {
+                    console.log(err)
+                })
         }
     }
 
     onPrevResep = () => {
-        if (this.state.nextResep === null) {
+        if (this.state.prevResep === null) {
             Axios.post(`${URL_API2}/admin/order-resep`, { page: this.state.page - 1 })
                 .then(res => {
                     this.setState({ daftarTransaksi: res.data.slice(0, res.data.length - 1), maxPage: res.data[res.data.length - 1], page: this.state.page - 1 })
@@ -109,7 +118,7 @@ class AdminPage extends React.Component {
                 .catch(err => {
                     console.log(err)
                 })
-        } else if (this.state.nextResep === 'filter') {
+        } else if (this.state.prevResep === 'filter') {
             let name = this.refs.name.value
             let page = this.state.page - 1
 
@@ -122,6 +131,14 @@ class AdminPage extends React.Component {
                 .then(res => {
                     this.setState({ daftarTransaksi: res.data.slice(0, res.data.length - 1), maxPage: res.data[res.data.length - 1], page: this.state.page - 1 })
                 })
+                .catch(err => {
+                    console.log(err)
+                })
+        } else if (this.state.prevResep === 'ongoing') {
+            Axios.get(`${URL_API}/getTransOROnGoing`, { page: this.state.page - 1 })
+                .then(res => {
+                this.setState({ daftarTransaksi: res.data.slice(0, res.data.length - 1), maxPage: res.data[res.data.length - 1], page: this.state.page - 1 })
+            })
                 .catch(err => {
                     console.log(err)
                 })
@@ -155,19 +172,20 @@ class AdminPage extends React.Component {
                 })
 
         }
+        // this.setState({nextSatuan : null})
 
     }
 
     onPrevSatuan = () => {
-        if (this.state.nextSatuan === null) {
-             Axios.post(`${URL_API2}/admin/order-satuan`, { page: this.state.page - 1 })
-            .then(res => {
-                this.setState({ daftarTransaksi: res.data.slice(0, res.data.length - 1), maxPage: res.data[res.data.length - 1], page: this.state.page - 1 })
-            })
-            .catch(err => {
-                console.log(err)
-            })
-        } else if (this.state.nextSatuan === 'filter') {
+        if (this.state.prevSatuan === null) {
+            Axios.post(`${URL_API2}/admin/order-satuan`, { page: this.state.page - 1 })
+                .then(res => {
+                    this.setState({ daftarTransaksi: res.data.slice(0, res.data.length - 1), maxPage: res.data[res.data.length - 1], page: this.state.page - 1 })
+                })
+                .catch(err => {
+                    console.log(err)
+                })
+        } else if (this.state.prevSatuan === 'filter') {
             let name = this.refs.name.value
             let page = this.state.page - 1
 
@@ -183,16 +201,15 @@ class AdminPage extends React.Component {
                 .catch(err => {
                     console.log(err)
                 })
-
         }
-       
+
     }
 
     onTransaksiObatSatuan = () => {
         Axios.post(`${URL_API2}/admin/order-satuan`, { page: 1 })
             .then(res => {
                 console.log(res.data)
-                this.setState({ daftarTransaksiSatuan: res.data.slice(0, res.data.length - 1), maxPage: res.data[res.data.length - 1] })
+                this.setState({ daftarTransaksi: res.data.slice(0, res.data.length - 1), maxPage: res.data[res.data.length - 1] })
                 this.setState({ transaksiObat: 'satuan', pilihanStatusTransaksi: 'On Going' })
             })
             .catch(err => {
@@ -263,14 +280,17 @@ class AdminPage extends React.Component {
         this.setState({ pilihanStatusTransaksi: 'Cancelled' })
     }
 
-    onOnGoingResep = () => {
-        Axios.get(`${URL_API}/getTransOROnGoing`)
-            .then(res => {
-                this.setState({ daftarTransaksi: res.data })
-                this.setState({ pilihanStatusTransaksi: 'On Going' })
-            })
-            .catch(err => console.log(err))
-    }
+    //ON_GOING_RESEP
+    // onOnGoingResep = () => {
+    //     Axios.get(`${URL_API}/getTransOROnGoing`, { page: 1 })
+    //         .then(res => {
+    //             // this.setState({ daftarTransaksi: res.data })
+    //             this.setState({ daftarTransaksi: res.data.slice(0, res.data.length - 1), maxPage: res.data[res.data.length - 1] })
+    //             this.setState({ pilihanStatusTransaksi: 'On Going' })
+    //             this.setState({ nextResep: 'ongoing', prevResep: 'ongoing' })
+    //         })
+    //         .catch(err => console.log(err))
+    // }
 
     onCompletedResep = () => {
         Axios.get(`${URL_API}/getTransORComplete`)
@@ -532,7 +552,7 @@ class AdminPage extends React.Component {
                     </div>
                     {this.state.transaksiObat === 'satuan' ?
                         <div style={styles.divPilihanStatusTransaksi}>
-                            <div style={{ display: 'flex', flexBasis: '60%', justifyContent: 'space-between', marginRight: '2vw' }}>
+                            {/* <div style={{ display: 'flex', flexBasis: '60%', justifyContent: 'space-between', marginRight: '2vw' }}>
                                 <Button
                                     variant="primary"
                                     disabled={this.state.pilihanStatusTransaksi === 'On Going' ? true : false}
@@ -548,7 +568,7 @@ class AdminPage extends React.Component {
                                     disabled={this.state.pilihanStatusTransaksi === 'Cancelled' ? true : false}
                                     onClick={this.onCancelledSatuan}
                                 >Cancelled Satuan</Button>
-                            </div>
+                            </div> */}
                             <div style={styles.divForm}>
                                 <p style={{ margin: 0, width: '5vw' }}>Filter :</p>
                                 <Form.Control style={styles.filterForm} type="text" placeholder="Name/ Date/ OrderNumb" ref="name" />
@@ -562,7 +582,7 @@ class AdminPage extends React.Component {
                         </div>
                         :
                         <div style={styles.divPilihanStatusTransaksi}>
-                            <div style={{ display: 'flex', flexBasis: '60%', justifyContent: 'space-between', marginRight: '2vw' }}>
+                            {/* <div style={{ display: 'flex', flexBasis: '60%', justifyContent: 'space-between', marginRight: '2vw' }}>
                                 <Button
                                     variant="primary"
                                     disabled={this.state.pilihanStatusTransaksi === 'On Going' ? true : false}
@@ -578,7 +598,7 @@ class AdminPage extends React.Component {
                                     disabled={this.state.pilihanStatusTransaksi === 'Cancelled' ? true : false}
                                     onClick={this.onCancelledResep}
                                 >Cancelled Resep</Button>
-                            </div>
+                            </div> */}
                             <div style={styles.divForm}>
                                 <p style={{ margin: 0, width: '5vw' }}>Filter :</p>
                                 <Form.Control style={styles.filterForm} type="text" placeholder="Name/ Date/ OrderNumb" ref="name" />

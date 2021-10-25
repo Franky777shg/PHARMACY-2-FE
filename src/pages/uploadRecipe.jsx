@@ -17,18 +17,20 @@ class UploadResep extends React.Component {
             recipes: [], //hasil data id
             done: 'Account Confirmation ',
             disabled: false,
+            totalHarga : '',
+            statusNew : '',
 
         }
     }
 
     addResep = () => {
         let newData = {
-            date: `${new Date().getDate()}/${new Date().getMonth()}/${new Date().getFullYear()}`,
+            date: `${new Date().getDate()}/${new Date().getMonth() + 1}/${new Date().getFullYear()}`,
             time: `${new Date().getHours()}:${new Date().getMinutes()}:${new Date().getSeconds()}`,
             order_number: `${Date.now()}`,
             iduser: `${this.props.iduser}`,
             image_resep: ``,
-            status: 'Waiting For Payment Approval',
+            status: 'Waiting For Approval',
         }
         console.log(newData)
         this.props.addResepAct(newData)
@@ -42,16 +44,18 @@ class UploadResep extends React.Component {
             .then(res => {
                 console.log(res.data[0])
                 this.setState({ recipes: res.data[0] })
+                this.setState({statusNew : res.data[0].status})
+                console.log(this.state.statusNew)
 
             })
             .catch(err => {
                 console.log(err)
             })
-
     }
 
     componentDidMount() {
         this.fetchData()
+        this.totalBelanja()
     }
 
     handleChoose = (e) => {
@@ -69,34 +73,68 @@ class UploadResep extends React.Component {
 
         this.props.uploadResep(data, this.props.idResep)
         this.fetchData()
+        this.setState({ done : 'Waiting For Approval Recipe by Admin'})
         console.log(this.props.resep_Image)
         // this.setState({ images: '' })
     }
+
+    totalBelanja = () => {
+        let data2 = {
+            order_number: this.props.order_Numb
+        }
+        console.log(data2)
+        Axios.post(`http://localhost:2000/payment/total-harga`, data2)
+            .then(res => {
+                this.setState({ totalHarga: res.data.Total_Harga })
+                console.log(res.data)
+                console.log(this.state.totalHarga)
+                this.fetchData()
+            })
+            .catch(err => {
+                console.log(err)
+            })
+    }
+
     addPayment = () => {
+        this.fetchData()
+        this.totalBelanja()
+        this.state.statusNew === 'Waiting For Payment' ? this.setState({disabled:false}) : this.setState({disabled:true})
         let newData = {
             order_number: `${this.props.order_Numb}`,
+            iduser : this.props.iduser,
             payment_proof_resep: ``,
-            total_belanja: 100000,
+            total_belanja: parseInt(this.state.totalHarga),
         }
         console.log(newData)
         this.props.addPayment(newData)
-        // this.setState({payments: newData})
-        console.log(this.props.idPayment) //3
-        console.log(this.props.order_numb)
+        // Axios.post(`http://localhost:2000/payment/newdatapayment`, newData)
+        //     .then(res => {
+        //         console.log(res.data)
+        //     })
+        //     .catch(err => {
+        //         console.log(err)
+        //     })
+        // console.log(this.props.idPayment) //3
+        // console.log(this.props.order_numb)
+        // console.log(this.props.status)
     }
 
 
     render() {
-        const { resep_Image, idResep, order_Numb } = this.props
-        // console.log(resep_Image)
-        // console.log(idResep)
-        // console.log(order_Numb)
+        const { resep_Image} = this.props
+        // console.log(this.state.recipes.status)
         return (
             <div style={styles.cont}>
                 <NavBar />
                 <div style={{ display: 'flex', }}>
                     <div style={{ display: 'flex', flexDirection: 'column', marginTop: '8vh' }}>
                         <h1 style={{ display: 'flex', marginLeft: '9vw', marginBottom: '5vh' }} >Upload Recipe</h1>
+                        <InputGroup className="mb-3" style={{ marginTop: '2vh', marginLeft: '5vw' }}>
+                            <InputGroup.Text id="basic-addon1">
+                                <i className="fas fa-user-check">  Status</i>
+                            </InputGroup.Text>
+                            <Button variant="info" style={{ width: '15vw' }} onClick={this.addResep} disabled={this.state.disabled} >{this.state.done}</Button>
+                        </InputGroup>
                         <div style={{ margin: '3vh', marginLeft: '13vw' }}>
                             <form encType="multipart/form-data">
                                 <input
@@ -120,12 +158,6 @@ class UploadResep extends React.Component {
                                 </Button>
                             </div>
                         </div>
-                        <InputGroup className="mb-3" style={{ marginTop: '12vh', marginLeft: '5vw' }}>
-                            <InputGroup.Text id="basic-addon1">
-                                <i className="fas fa-user-check">  Status</i>
-                            </InputGroup.Text>
-                            <Button variant="info" style={{ width: '15vw' }} onClick={this.addResep} disabled={this.state.disabled} >{this.state.done}</Button>
-                        </InputGroup>
                     </div>
                     <Card style={{ width: '20rem', marginTop: '0', marginLeft: '8vw', boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)' }}>
                         <Card.Img variant="top" src={resep_Image ? `${URL_API}/${resep_Image}` : PAY.default} />
@@ -137,7 +169,9 @@ class UploadResep extends React.Component {
                         </Card.Body>
                     </Card>
                 </div>
-                <Button variant="warning" style={{ width: '15vw', marginLeft: '10vw' }} onClick={this.addPayment} as={Link} to={`/paymentresep/${this.props.iduser}`}
+                <Button variant="info" style={{ width: '15vw', marginLeft: '10vw' }} onClick={this.fetchData}
+                >Done Upload</Button>
+                <Button variant="warning" style={{ width: '15vw', marginLeft: '10vw' }} disabled={this.state.disabled} onClick={this.addPayment} as={Link} to={`/paymentresep/${this.props.order_Numb}`}
                 >payment</Button>
             </div>
         )
@@ -168,7 +202,9 @@ const mapStateToProps = (state) => {
         iduser: state.userReducer.id,
         idResep: state.userReducer.idResep,
         order_Numb: state.userReducer.orderNumb,
-        resep_Image: state.userReducer.resepPic
+        resep_Image: state.userReducer.resepPic,
+        status: state.userReducer.status
+        // idPay: state.userReducer.idPayment
     }
 }
 
