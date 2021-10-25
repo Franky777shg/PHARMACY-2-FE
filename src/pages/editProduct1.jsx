@@ -186,7 +186,7 @@ class EditSatuanPage extends React.Component {
                 <div style={{ padding: '100px 50px' }}>
                     <div style={styles.container}>
                         <div style={styles.imageDiv}>
-                            <Image style={styles.image} src={this.state.product ? this.state.product.link_foto : ""} />
+                            <Image style={styles.image} src={this.state.product ? `http://localhost:2000/${this.state.product.link_foto}` : ""} />
                             <div style={styles.buttonProfile}>
                                 <form encType="multipart/form-data">
                                     <input

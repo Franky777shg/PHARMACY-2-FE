@@ -43,9 +43,9 @@ class DetailProductPage extends React.Component {
     }
     onCheckout = () => {
         const {product,qty} = this.state
-        if (!this.props.username){
-            return this.setState({toLogin: true})
-        }
+        // if (!this.props.username){
+        //     return this.setState({toLogin: true})
+        // }
 
         //siapkan data produk yang mau kita push ke dalam cart user yang sedang aktif
         let obj = {
@@ -60,11 +60,152 @@ class DetailProductPage extends React.Component {
             //qty:qty, property:value nya sama,
         }
         console.log(obj)
-        console.log(this.props.iduser)
-        this.props.addCart(this.props.iduser,obj)
+        // console.log(this.props.iduser)
+        // this.props.addCart(this.props.iduser,obj)
+        Axios.get(`http://localhost:2000/transaction/get-cart/${this.props.iduser}`)
+            .then(res => {
+                // console.log(res.data) //hasilnya object lngsg {cart:{idproduk:}}
+                // console.log(res.data.length === undefined)
+                // console.log(res.data.cart.length)
+                // console.log(res.data.cart.length === 0)
+
+                console.log(obj)
+                let tempCart = []
+                let list = []
+                let checkName = false
+
+                if (res.data.cart.length === 0) {
+                    console.log("nul")
+
+                    if (obj.qty > obj.dataproduk.stok) {
+                        //comment klo qty lebih dr stock
+                        obj.qty = obj.dataproduk.stok
+                        console.log(obj.qty)
+                    }
+
+                    tempCart.push({ produkdibeli: obj.dataproduk, qty: obj.qty, iduser: this.props.iduser })
+
+                    // console.log({ cart: tempCart })
+                    Axios.post(`http://localhost:2000/transaction/addnew-cart/${this.props.iduser}`, { cart: tempCart })
+                        .then(res => {
+                            console.log(res.data)
+                            Axios.get(`http://localhost:2000/transaction/get-cart/${this.props.iduser}`)
+                                .then(res1 => {
+                                    console.log(res1.data.cart)
+                                    this.setState({toCart:true})
+                                    // return dispatch({
+                                    //     type: 'CART',
+                                    //     // payload: [res1.data, { produkdibeli: obj.dataproduk, qty: obj.qty, iduser: iduser }]
+                                    //     payload: res1.data.cart
+                                    // })
+                                })
+                        })
+                }
+               else if (res.data.cart.length !== 0) {
+                    //logic extract "name" dari object2 di res.data.cart , save di list unique names & index. 
+                //    console.log(res.data.cart)
+                //    console.log([res.data.cart])
+                    tempCart = res.data.cart
+                    let ii = null
+                    tempCart.forEach((item, index) => {
+                        // console.log(item)
+                        // console.log(item.nama)
+                        // console.log(item[index])
+                        // console.log(item[index].nama)
+                            list.push(item.nama)
+                    })
+                    //compare data.name dengan list of unique names dari res.data.cart
+                    // console.log(list)
+                    // console.log(tempCart)
+                    // console.log(obj.dataproduk.nama)
+
+                    list.forEach((item,index) => {
+                        console.log(item)
+                        if (item === obj.dataproduk.nama) {
+                            //push logic becomes tempCart[i].quantity += data.quantity; tempCart[i].totalPrice = tempCart[i].price * tempCart[i].quantity
+                            // console.log(tempCart[index])
+                            // console.log(tempCart[index].qty_beli) 
+                            // console.log(item[listi[index]])
+                            // console.log(tempCart)
+                            let newQty = tempCart[index].qty_beli + obj.qty
+                            // tempCart[item[0]].qty += data.qty
+                            if (newQty > obj.dataproduk.stok) {
+                                //comment klo qty lebih dr stock
+                                newQty = obj.dataproduk.stok
+                            }
+                            // console.log(obj.dataproduk.stok, newQty)
+                            tempCart[index].qty_beli = newQty
+                            // ii.push(index)
+                            ii = index
+                            checkName = true
+                        }
+                    })
+                    if (checkName ==false) {
+                        if (obj.dataproduk.qty_beli > obj.dataproduk.stok) {
+                            //comment klo qty lebih dr stock
+                            obj.dataproduk.qty_beli = obj.dataproduk.stok
+                        }
+                        tempCart.push({produkdibeli: obj.dataproduk, qty: obj.qty, iduser: this.props.iduser})
+                        console.log({ cart: tempCart })
+                        Axios.patch(`http://localhost:2000/transaction/add-cart/${this.props.iduser}`, { cart: tempCart })
+                            .then(res => {
+                                console.log(res.data)
+                                Axios.get(`http://localhost:2000/transaction/get-cart/${this.props.iduser}`)
+                                    .then(res1 => {
+                                        console.log(res1.data.cart)
+                                        this.setState({toCart:true})
+                                        // return dispatch({
+                                        //     type: 'CART',
+                                        //     // payload: [res1.data, { produkdibeli: obj.dataproduk, qty: obj.qty, iduser: iduser }]
+                                        //     payload: res1.data.cart
+                                        // })
+                                    })
+                            })
+                    }
+                    else if (checkName ==true) {
+                        if (obj.dataproduk.qty_beli > obj.dataproduk.stok) {
+                            //comment klo qty lebih dr stock
+                            obj.dataproduk.qty_beli = obj.dataproduk.stok
+                        }
+                        tempCart.push({index: ii})
+                        // console.log({ cart: tempCart})
+                        Axios.patch(`http://localhost:2000/transaction/addqty-cart/${this.props.iduser}`, { cart: tempCart })
+                            .then(res => {
+                                // console.log(res.data)
+                                Axios.get(`http://localhost:2000/transaction/get-cart/${this.props.iduser}`)
+                                    .then(res1 => {
+                                        console.log(res1.data.cart)
+                                        this.setState({toCart:true})
+                                        // return dispatch({
+                                        //     type: 'CART',
+                                        //     // payload: [res1.data, { produkdibeli: obj.dataproduk, qty: obj.qty, iduser: iduser }]
+                                        //     payload: res1.data.cart
+                                        // })
+                                    })
+                            })
+                    }
+                }
+
+
+
+                //     console.log(tempCart)
+
+                //     Axios.patch(`http://localhost:2000/transaction/add-cart/${iduser}`, { cart: tempCart })
+                //         .then(res => {
+                //             console.log(res.data)
+                //             Axios.get(`http://localhost:2000/transaction/get-cart/${iduser}`)
+                //                 .then(res1 => {
+                //                     console.log(res1.data)
+                //                     return dispatch({
+                //                         type: 'CART',
+                //                         payload: res1.data
+                //                     })
+                //                 })
+                //         })
+            })
         console.log(this.props.cart)
 
-        this.setState({toCart:true})
+        // this.setState({toCart:true})
     }
 
     onChangeQty = (e) => {
@@ -86,7 +227,8 @@ class DetailProductPage extends React.Component {
         }
         else if (this.state.toLogin) {
             return <Redirect to="/login" />
-        }else if (this.state.toCart) {
+        }
+        else if (this.state.toCart) {
             return <Redirect to="/cart" />
         }
         return (

@@ -583,9 +583,9 @@ class HomePage extends React.Component {
   
   render () {
     
-    if (this.state.redirect) {
-      return <Redirect to={this.state.redirect} />
-    }
+    // if (this.state.redirect) {
+    //   return <Redirect to={this.state.redirect} />
+    // }
     // if (this.state.edit) {
     //   return <Redirect to={this.state.edit} />
     // }
@@ -602,9 +602,9 @@ class HomePage extends React.Component {
             {
               this.state.show === "satuan"
               ?
-              <Button variant="success" onClick={() => this.setState({redirect: "/add-product1"})} >Add Obat Satuan</Button> 
+              <Button variant="success" as={Link} to="/add-product1" >Add Obat Satuan</Button> 
               :
-              <Button variant="success" onClick={() => this.setState({redirect: "/add-productr"})}>Add Obat Resep</Button>
+              <Button variant="success" as={Link} to="/add-productr">Add Obat Resep</Button>
             }
           </div>
           {
