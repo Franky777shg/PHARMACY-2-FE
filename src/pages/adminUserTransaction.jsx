@@ -375,7 +375,7 @@ class AdminPage extends React.Component {
         this.state.inputOrder.map((item) => {
             let data = {
                 order_number: this.state.dataOrder.order_number,
-                idproduk: item.idproduk_resep,
+                idproduk_resep: item.idproduk_resep,
                 nama_produk: item.nama,
                 qty_beli: item.qty,
                 harga: item.harga
@@ -833,7 +833,7 @@ class AdminPage extends React.Component {
                             this.state.inputOrder.length === 0 ?
                                 this.getDataOrderResep(this.state.dataOrder.order_number)
                                 :
-                                <Table style={{ marginTop: '20px' }} striped bordered hover>
+                                <Table style={{ marginTop: '20px', width: '40vw' }} striped bordered hover>
                                     <thead>
                                         <tr>
                                             <th>Nama Bahan</th>
