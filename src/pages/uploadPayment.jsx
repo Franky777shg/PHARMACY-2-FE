@@ -3,9 +3,11 @@ import { Card, Button, InputGroup } from 'react-bootstrap'
 import NavBar from '../components/navbar'
 import Axios from 'axios'
 import { connect } from 'react-redux'
-import {uploadPay, getIdPay} from '../redux/actions'
+import { PAY } from '../assets'
+import { Link } from 'react-router-dom'
 
 const URL_API = "http://localhost:2000/payment"
+const URL_IMG = 'http://localhost:2000/'
 
 class UploadPayment extends React.Component {
     constructor(props) {
@@ -13,24 +15,45 @@ class UploadPayment extends React.Component {
         this.state = {
             payments: [],
             disabled: false,
-            images: ''
+            images: '',
+            payImage: '',
+            recipes: [],
+            statusNew: '',
+            disabled: false,
+
         }
     }
 
-    // componentDidMount() {
-    //     this.fetchData()
-    // }
-
-    handleChoose = (e) => {
-        console.log('e.target.files', e.target.files)
-        this.setState({ images: e.target.files[0] })
-    }
-
-    fetchData3 = () => {
-        Axios.get(`http://localhost:2000/payment/allpayment`)
+    fetchData = () => {
+        let data = {
+            order_number: this.props.order_Numb
+        }
+        console.log(data)
+        Axios.post(`${URL_API}/paymentbyid`, data)
             .then(res => {
                 console.log(res.data[0])
                 this.setState({ payments: res.data[0] })
+                console.log(this.state.payments.id_payment_resep)
+
+            })
+            .catch(err => {
+                console.log(err)
+            })
+    }
+    componentDidMount() {
+        this.fetchData()
+        this.fetchDataStatus()
+    }
+
+    fetchDataStatus = () => {
+        Axios.get(`http://localhost:2000/profile/byid/${this.props.idResep}`)
+            .then(res => {
+                console.log(res.data[0])
+                this.setState({ recipes: res.data[0] })
+                // this.setState({statusNew :res.data[0].status})
+                // console.log(this.state.statusNew)
+                // this.setState({statusNew : 'Waiting For Payment Approval'})
+                // console.log(this.state.statusNew)
 
             })
             .catch(err => {
@@ -38,8 +61,9 @@ class UploadPayment extends React.Component {
             })
     }
 
-    componentDidMount() {
-        this.fetchData3()
+    handleChoose = (e) => {
+        console.log('e.target.files', e.target.files)
+        this.setState({ images: e.target.files[0] })
     }
 
     handleUpload = () => {
@@ -48,24 +72,51 @@ class UploadPayment extends React.Component {
 
         data.append('IMG', this.state.images)
         console.log(data.get('IMG')) // masukin data Image ke formData
-
-        this.props.uploadPay(data, this.props.idPayment)
-        // this.props.getIdPay()
-        // this.fetchData()
-        this.fetchData3()
+        Axios.post(`http://localhost:2000/payment/imgpayresep/${this.state.payments.id_payment_resep}`, data, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        })
+            .then(res => {
+                console.log(res.data)
+                this.setState({ payImage: res.data })
+            })
+            .catch(err => {
+                console.log(err)
+            })
+        this.fetchDataStatus()
+        this.fetchData()
         this.setState({ images: '' })
+    }
+
+    statusAprovPay = () => {
+        let data2 = {
+            order_number: this.props.order_Numb
+        }
+        console.log(data2)
+        Axios.post(`http://localhost:2000/payment/update-status`, data2)
+            .then(res => {
+                console.log(res.data)
+                this.setState({ statusNew: res.data })
+                this.setState({ disabled: true })
+
+            })
+            .catch(err => {
+                console.log(err)
+            })
     }
 
 
     render() {
-        console.log(this.props.idPayment)
-        console.log(this.props.orderNumb)
+        // console.log(this.props.order_Numb)
+        // console.log(this.props.status)
+        const { payImage } = this.state
         return (
             <div style={styles.cont}>
                 <NavBar />
                 <div style={{ display: 'flex', }}>
                     <Card style={{ width: '20rem', marginTop: '0', marginLeft: '4vw', boxShadow: '0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)' }}>
-                        <Card.Img variant="top" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAARMAAAC3CAMAAAAGjUrGAAAAdVBMVEXe3t4xMTHi4uIeHh4zMzO8vLwuLi6srKyzs7MYGBjm5uYiIiIrKytYWFhOTk65ubmTk5MmJiaenp7Hx8fW1tY3NzehoaHY2NhDQ0OAgIBhYWGoqKhoaGjOzs6Hh4dGRkYAAAATExN5eXlkZGTt7e10dHSXl5fi/GD7AAAEqklEQVR4nO2cDXfaIBSGw4WgA6xi1MSP6Nqt/f8/cUCsn0m3KlsXfJ+259jTmGOe3gsXAskyAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIgDZRSbr76keyGVFXlcilJ51X2FaLatpOaaR8RUy7LPSvK5liwyklk57G0GUW6lYFIIORfxYHJu7bivTrLKB4lTImIGiz+fmc+++tpugxZa+FjXluuIuDgRTL/1M1DUq3VOZLUYxGS9Yz4hV+qrL+8m1Mi4OLcLFbU6UWvrpMinnsaJc8KYHcT99DTmPvqeop70nxGcCB7difa501sn7sOLszihpgC9xxLl3HVj/XVimOsh3p2QL+KU+3Lf/uWNZ3W5w3qdO+7T62OcUD0Ziedv1WZwR6Qk5mRitfRVreHV7XVoOk5cQ1JufIcRBiyS8SnRbcGSjhN3/a/6UOK7fkOvb2xRUnKy5r7+3A9thRux1LedNR0nlO3YuxEfJ0LY7YPHCfmq4nRs665q1PW+fae9f3n111ScuNTRF0N++dFwn4pRrdrb4IScTC+dMFF3Jg/l1lYFtRZ2CTkZXMVJ1RknamiZa4THrdMB6TjJCn7hxHS0J+TnoprOadg2QZ+QE3oy52GiJx2zQmqi97WdXbcckoyTktTwPHlkVba3oWprxb6LkvztWkoyTvz3kofZauGrWCHtuKUB9Ye9aN9TN1YE315JScaJh5bPMkhxFb7hw7bMKVW24ey0kOEv6qL3ScuJGsytMVIaa0az9tpjNtLiVAkTenN5TEpO/M30wctot/uxzX+2voHqnWVnYeLb4tUs4TjxPyrQOk1AVMyNFBdSBLOj+jR7knLyOyh3SubsGrOrTyQ+khM1dM2vaFHiSlpRHFvkB3Ki1ibMIbQocf2UPNb56Tqhw32N5lf1xsP99rY48QrMwPXJYdlJqk4oq30TUR4P3bqypEtIQE9VsxInWSe1nhfH8R3RK+9InGP+8ElzeKJOqNCu3cwPSrJNWIDwwSIV3/ryZXN0ak5C+KuB8c3m+wIsmq30ByFy5HmabHtCCxuaU2kWfnqRan8L9U8WMtlJqk7UWxMVfmnKRJWqePJK/iBOpAkzLuk5IdoeEsWV7cufrp5vXj9knJS++Qg9zMm/fvOJ5X8JOvHQ6uw2jzSfWRCZpBMqR/pskCc+qkmSd0Khh3my4nIm4HHjJJQlxc787rIfyUnZTI98KixSd+IYyzuVJOeEhpf3AR/eSemq17v3ISTmJMuu1xU8vBMFJ4Hz9ScWTrLLOIETD5xcEzl3RGJOXF/8/du9fE/LSRzCvY/eOxGH3IkiJoU4kUwwfuvC+g5o7Ccv++qEfO40+7wiWqGcO9W2p072ubMIe7vi7Rsd2JA7Pd03+mqkFLKajgfDeKx3fk2cWfXTCS38LU8hLdcxN6KH8TXv6T70LKv8pus7Z5LakGLevkjw/4dye98MbCe8v8+1UOO/8PwTJq1s357QD2i23ZmoT8kJz8np3uXSC1T5V56n1G/CTraohLP2O1IAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA/wu/AITbVU+O0vu/AAAAAElFTkSuQmCC" />
+                        <Card.Img variant="top" src={payImage ? `${URL_IMG}/${payImage}` : PAY.default} />
                         <Card.Body>
                             <Card.Title>Your Payment</Card.Title>
                             <Card.Text>
@@ -102,10 +153,10 @@ class UploadPayment extends React.Component {
                             <InputGroup.Text id="basic-addon1">
                                 <i className="fas fa-hourglass-half"> Status</i>
                             </InputGroup.Text>
-                            <Button variant="info" style={{ width: '15vw' }}>Done Upload Payment</Button>
-
+                            <Button variant="info" style={{ width: '15vw' }} disabled={this.state.disabled} onClick={this.statusAprovPay}>Done Upload Payment</Button>
                         </InputGroup>
-                        <Button disabled={this.state.disabled} variant="warning" style={{ width: '15vw' }} onClick={this.addPayment}>ADD DATA</Button>
+                        <Button variant="warning" style={{ width: '15vw', marginLeft: '10vw' }} as={Link} to={`/transac-proses/${this.props.order_Numb}`}
+                        >payment</Button>
                     </div>
 
                 </div>
@@ -132,10 +183,12 @@ const styles = {
 const mapStateToProps = (state) => {
     return {
         idPayment: state.userReducer.idPayment,
-        orderNumb : state.userReducer.orderNumb,
-        iduser : state.userReducer.iduser,
+        order_Numb: state.userReducer.orderNumb,
+        iduser: state.userReducer.iduser,
+        status: state.userReducer.status,
+        idResep: state.userReducer.idResep,
 
     }
 }
 
-export default connect(mapStateToProps, {uploadPay, getIdPay})(UploadPayment)
+export default connect(mapStateToProps)(UploadPayment)

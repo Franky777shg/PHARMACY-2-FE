@@ -43,6 +43,12 @@ class AdminPage extends React.Component {
             nextResep: null,
             prevResep: null,
             show: "satuan",
+            dataOrderSatuan: null,
+            showModalSatuan: false,
+            totalHargaSatuan: null,
+            statusOrderSatuan: "status",
+            imageBuktiPembayaranSatuan: false,
+            orderNumberSatuan: false,
         }
     }
 
@@ -69,6 +75,7 @@ class AdminPage extends React.Component {
     }
     componentDidMount() {
         this.fetchData2()
+        // this.fetchData()
     }
 
     onNextResep = () => {
@@ -97,11 +104,19 @@ class AdminPage extends React.Component {
                     console.log(err)
                 })
 
+        }  else if (this.state.prevResep === 'ongoing') {
+            Axios.get(`${URL_API}/getTransOROnGoing`, { page: this.state.page + 1 })
+                .then(res => {
+                this.setState({ daftarTransaksi: res.data.slice(0, res.data.length - 1), maxPage: res.data[res.data.length - 1], page: this.state.page + 1 })
+            })
+                .catch(err => {
+                    console.log(err)
+                })
         }
     }
 
     onPrevResep = () => {
-        if (this.state.nextResep === null) {
+        if (this.state.prevResep === null) {
             Axios.post(`${URL_API2}/admin/order-resep`, { page: this.state.page - 1 })
                 .then(res => {
                     this.setState({ daftarTransaksi: res.data.slice(0, res.data.length - 1), maxPage: res.data[res.data.length - 1], page: this.state.page - 1 })
@@ -109,7 +124,7 @@ class AdminPage extends React.Component {
                 .catch(err => {
                     console.log(err)
                 })
-        } else if (this.state.nextResep === 'filter') {
+        } else if (this.state.prevResep === 'filter') {
             let name = this.refs.name.value
             let page = this.state.page - 1
 
@@ -122,6 +137,14 @@ class AdminPage extends React.Component {
                 .then(res => {
                     this.setState({ daftarTransaksi: res.data.slice(0, res.data.length - 1), maxPage: res.data[res.data.length - 1], page: this.state.page - 1 })
                 })
+                .catch(err => {
+                    console.log(err)
+                })
+        } else if (this.state.prevResep === 'ongoing') {
+            Axios.get(`${URL_API}/getTransOROnGoing`, { page: this.state.page - 1 })
+                .then(res => {
+                this.setState({ daftarTransaksi: res.data.slice(0, res.data.length - 1), maxPage: res.data[res.data.length - 1], page: this.state.page - 1 })
+            })
                 .catch(err => {
                     console.log(err)
                 })
@@ -155,19 +178,20 @@ class AdminPage extends React.Component {
                 })
 
         }
+        // this.setState({nextSatuan : null})
 
     }
 
     onPrevSatuan = () => {
-        if (this.state.nextSatuan === null) {
-             Axios.post(`${URL_API2}/admin/order-satuan`, { page: this.state.page - 1 })
-            .then(res => {
-                this.setState({ daftarTransaksi: res.data.slice(0, res.data.length - 1), maxPage: res.data[res.data.length - 1], page: this.state.page - 1 })
-            })
-            .catch(err => {
-                console.log(err)
-            })
-        } else if (this.state.nextSatuan === 'filter') {
+        if (this.state.prevSatuan === null) {
+            Axios.post(`${URL_API2}/admin/order-satuan`, { page: this.state.page - 1 })
+                .then(res => {
+                    this.setState({ daftarTransaksi: res.data.slice(0, res.data.length - 1), maxPage: res.data[res.data.length - 1], page: this.state.page - 1 })
+                })
+                .catch(err => {
+                    console.log(err)
+                })
+        } else if (this.state.prevSatuan === 'filter') {
             let name = this.refs.name.value
             let page = this.state.page - 1
 
@@ -183,16 +207,15 @@ class AdminPage extends React.Component {
                 .catch(err => {
                     console.log(err)
                 })
-
         }
-       
+
     }
 
     onTransaksiObatSatuan = () => {
         Axios.post(`${URL_API2}/admin/order-satuan`, { page: 1 })
             .then(res => {
                 console.log(res.data)
-                this.setState({ daftarTransaksiSatuan: res.data.slice(0, res.data.length - 1), maxPage: res.data[res.data.length - 1] })
+                this.setState({ daftarTransaksi: res.data.slice(0, res.data.length - 1), maxPage: res.data[res.data.length - 1] })
                 this.setState({ transaksiObat: 'satuan', pilihanStatusTransaksi: 'On Going' })
             })
             .catch(err => {
@@ -263,14 +286,17 @@ class AdminPage extends React.Component {
         this.setState({ pilihanStatusTransaksi: 'Cancelled' })
     }
 
-    onOnGoingResep = () => {
-        Axios.get(`${URL_API}/getTransOROnGoing`)
-            .then(res => {
-                this.setState({ daftarTransaksi: res.data })
-                this.setState({ pilihanStatusTransaksi: 'On Going' })
-            })
-            .catch(err => console.log(err))
-    }
+    //ON_GOING_RESEP
+    // onOnGoingResep = () => {
+    //     Axios.get(`${URL_API}/getTransOROnGoing`, { page: 1 })
+    //         .then(res => {
+    //             // this.setState({ daftarTransaksi: res.data })
+    //             this.setState({ daftarTransaksi: res.data.slice(0, res.data.length - 1), maxPage: res.data[res.data.length - 1] })
+    //             this.setState({ pilihanStatusTransaksi: 'On Going' })
+    //             this.setState({ nextResep: 'ongoing', prevResep: 'ongoing' })
+    //         })
+    //         .catch(err => console.log(err))
+    // }
 
     onCompletedResep = () => {
         Axios.get(`${URL_API}/getTransORComplete`)
@@ -369,7 +395,7 @@ class AdminPage extends React.Component {
         this.state.inputOrder.map((item) => {
             let data = {
                 order_number: this.state.dataOrder.order_number,
-                idproduk: item.idproduk_resep,
+                idproduk_resep: item.idproduk_resep,
                 nama_produk: item.nama,
                 qty_beli: item.qty,
                 harga: item.harga
@@ -462,6 +488,7 @@ class AdminPage extends React.Component {
     }
 
     onCloseModalResep = () => {
+        this.onTransaksiObatResep()
         this.setState({
             showModal: false,
         })
@@ -509,6 +536,85 @@ class AdminPage extends React.Component {
             .catch(err => console.log('error update status resep'))
     }
 
+    onDetailTransaksiSatuan = (order_number, status) => {
+        let data = {
+            order_number
+        }
+
+        Axios.post(`${URL_API}/getDataOrderSatuan`, data)
+            .then(res => {
+                this.setState({ dataOrderSatuan: res.data, showModalSatuan: true, statusOrderSatuan: status, imageBuktiPembayaranSatuan: false, orderNumberSatuan: order_number })
+                let totalHarga = 0
+                this.state.dataOrderSatuan.forEach((item) => {
+                    totalHarga = totalHarga + (item.qty_beli * item.harga)
+                })
+                this.setState({ totalHargaSatuan: totalHarga })
+                Axios.post(`${URL_API}/getBuktiPembayaranSatuan`, data)
+                    .then(res => {
+                        this.setState({ imageBuktiPembayaranSatuan: res.data.payment_proof_satuan })
+                    })
+            })
+            .catch(err => console.log(`error get data order satuan`))
+    }
+
+    onCloseModalSatuan = () => {
+        this.setState({
+            showModalSatuan: false,
+            imageBuktiPembayaranSatuan: false
+        })
+    }
+
+    requestReuploadSatuan = () => {
+        let data = {
+            order_number: this.state.orderNumberSatuan,
+            statusBaru: "Waiting For Payment"
+        }
+
+        Axios.post(`${URL_API}/updateStatusSatuan`, data)
+            .then(() => {
+                this.onTransaksiObatSatuan()
+                this.setState({
+                    showModalSatuan: false,
+                    imageBuktiPembayaranSatuan: false
+                })
+            })
+            .catch(err => console.log('gagal ganti status request upload payment proof'))
+    }
+
+    onProcessSatuan = () => {
+        let data = {
+            order_number: this.state.orderNumberSatuan,
+            statusBaru: "Processing"
+        }
+
+        Axios.post(`${URL_API}/updateStatusSatuan`, data)
+            .then(() => {
+                this.onTransaksiObatSatuan()
+                this.setState({
+                    showModalSatuan: false,
+                    imageBuktiPembayaranSatuan: false
+                })
+            })
+            .catch(err => console.log('gagal ganti status processing'))
+    }
+
+    onSendPackageSatuan = () => {
+        let data = {
+            order_number: this.state.orderNumberSatuan,
+            statusBaru: "Sending Package"
+        }
+
+        Axios.post(`${URL_API}/updateStatusSatuan`, data)
+            .then(() => {
+                this.onTransaksiObatSatuan()
+                this.setState({
+                    showModalSatuan: false,
+                    imageBuktiPembayaranSatuan: false
+                })
+            })
+            .catch(err => console.log('gagal ganti status sending package'))
+    }
+
     render() {
         if (this.props.role !== "admin") {
             return <Redirect to="/" />
@@ -532,7 +638,7 @@ class AdminPage extends React.Component {
                     </div>
                     {this.state.transaksiObat === 'satuan' ?
                         <div style={styles.divPilihanStatusTransaksi}>
-                            <div style={{ display: 'flex', flexBasis: '60%', justifyContent: 'space-between', marginRight: '2vw' }}>
+                            {/* <div style={{ display: 'flex', flexBasis: '60%', justifyContent: 'space-between', marginRight: '2vw' }}>
                                 <Button
                                     variant="primary"
                                     disabled={this.state.pilihanStatusTransaksi === 'On Going' ? true : false}
@@ -548,7 +654,7 @@ class AdminPage extends React.Component {
                                     disabled={this.state.pilihanStatusTransaksi === 'Cancelled' ? true : false}
                                     onClick={this.onCancelledSatuan}
                                 >Cancelled Satuan</Button>
-                            </div>
+                            </div> */}
                             <div style={styles.divForm}>
                                 <p style={{ margin: 0, width: '5vw' }}>Filter :</p>
                                 <Form.Control style={styles.filterForm} type="text" placeholder="Name/ Date/ OrderNumb" ref="name" />
@@ -562,7 +668,7 @@ class AdminPage extends React.Component {
                         </div>
                         :
                         <div style={styles.divPilihanStatusTransaksi}>
-                            <div style={{ display: 'flex', flexBasis: '60%', justifyContent: 'space-between', marginRight: '2vw' }}>
+                            {/* <div style={{ display: 'flex', flexBasis: '60%', justifyContent: 'space-between', marginRight: '2vw' }}>
                                 <Button
                                     variant="primary"
                                     disabled={this.state.pilihanStatusTransaksi === 'On Going' ? true : false}
@@ -578,7 +684,7 @@ class AdminPage extends React.Component {
                                     disabled={this.state.pilihanStatusTransaksi === 'Cancelled' ? true : false}
                                     onClick={this.onCancelledResep}
                                 >Cancelled Resep</Button>
-                            </div>
+                            </div> */}
                             <div style={styles.divForm}>
                                 <p style={{ margin: 0, width: '5vw' }}>Filter :</p>
                                 <Form.Control style={styles.filterForm} type="text" placeholder="Name/ Date/ OrderNumb" ref="name" />
@@ -620,7 +726,7 @@ class AdminPage extends React.Component {
                                             <h5 style={{ margin: 0 }}>{`Status : ${item.status}`}</h5>
                                         </div>
                                         <div>
-                                            <Button style={styles.detailTrasaksiButton} variant="outline-light" onClick={() => this.onDetailTransaksi(item.order_number)}>Detail Transaksi</Button>
+                                            <Button style={styles.detailTrasaksiButton} variant="outline-light" onClick={() => this.onDetailTransaksiSatuan(item.order_number, item.status)}>Detail Transaksi</Button>
                                         </div>
                                     </div>
                                 )
@@ -747,7 +853,7 @@ class AdminPage extends React.Component {
                             this.state.inputOrder.length === 0 ?
                                 this.getDataOrderResep(this.state.dataOrder.order_number)
                                 :
-                                <Table style={{ marginTop: '20px' }} striped bordered hover>
+                                <Table style={{ marginTop: '20px', width: '40vw' }} striped bordered hover>
                                     <thead>
                                         <tr>
                                             <th>Nama Bahan</th>
@@ -863,34 +969,39 @@ class AdminPage extends React.Component {
                             this.state.inputOrder.length === 0 ?
                                 this.getDataOrderResep(this.state.dataOrder.order_number)
                                 :
-                                <Table style={{ marginTop: '20px', width: '40vw' }} striped bordered hover>
-                                    <thead>
-                                        <tr>
-                                            <th>Nama Bahan</th>
-                                            <th>Quantity(ml)</th>
-                                            <th>Harga(/ml)</th>
-                                            <th>Total</th>
-                                        </tr>
-                                    </thead>
-                                    {this.state.inputOrder.map((item, index) => {
-                                        return (
-                                            <tbody key={index}>
-                                                <tr>
-                                                    <td>{item.nama_produk}</td>
-                                                    <td>{item.qty_beli}</td>
-                                                    <td>Rp {(item.harga).toLocaleString()}</td>
-                                                    <td>Rp {(item.harga * item.qty_beli).toLocaleString()}</td>
-                                                </tr>
-                                            </tbody>
-                                        )
-                                    })}
-                                    <tfoot>
-                                        <tr>
-                                            <td colSpan="3">Total</td>
-                                            <td>Rp {(this.state.totalHargaResep).toLocaleString()}</td>
-                                        </tr>
-                                    </tfoot>
-                                </Table>
+                                <div>
+                                    <Table style={{ marginTop: '20px', width: '40vw' }} striped bordered hover>
+                                        <thead>
+                                            <tr>
+                                                <th>Nama Bahan</th>
+                                                <th>Quantity(ml)</th>
+                                                <th>Harga(/ml)</th>
+                                                <th>Total</th>
+                                            </tr>
+                                        </thead>
+                                        {this.state.inputOrder.map((item, index) => {
+                                            return (
+                                                <tbody key={index}>
+                                                    <tr>
+                                                        <td>{item.nama_produk}</td>
+                                                        <td>{item.qty_beli}</td>
+                                                        <td>Rp {(item.harga).toLocaleString()}</td>
+                                                        <td>Rp {(item.harga * item.qty_beli).toLocaleString()}</td>
+                                                    </tr>
+                                                </tbody>
+                                            )
+                                        })}
+                                        <tfoot>
+                                            <tr>
+                                                <td colSpan="3">Total</td>
+                                                <td>Rp {(this.state.totalHargaResep).toLocaleString()}</td>
+                                            </tr>
+                                        </tfoot>
+                                    </Table>
+                                    <div style={{ textAlign: 'center', marginTop: '20px' }}>
+                                        <Button variant="success" disabled={true}>Sending Package</Button>
+                                    </div>
+                                </div>
                             :
                             <div></div>
                         }
@@ -927,6 +1038,240 @@ class AdminPage extends React.Component {
                                     </tfoot>
                                 </Table>
                             :
+                            <div></div>
+                        }
+                    </Modal.Body>
+                </Modal>
+                <Modal
+                    show={this.state.showModalSatuan}
+                    onHide={this.onCloseModalSatuan}
+                    fullscreen={true}
+                >
+                    <Modal.Header closeButton>
+                        <Modal.Title>
+                            Detail Transaksi
+                        </Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body style={styles.modalBody}>
+                        {this.state.statusOrderSatuan === "Waiting For Payment" ? 
+                            <div style={styles.table}>
+                                <Table style={styles.table} striped bordered hover variant="light" style={{ backgroundColor: '#000051' }}>
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Nama Obat</th>
+                                            <th>Quantity</th>
+                                            <th>Harga</th>
+                                            <th>Total</th>
+                                        </tr>
+                                    </thead>
+                                    {this.state.dataOrderSatuan ? this.state.dataOrderSatuan.map((item, index) => {
+                                        return (
+                                            <tbody key={index}>
+                                                <tr>
+                                                    <td>{index + 1}</td>
+                                                    <td>{item.nama}</td>
+                                                    <td>{item.qty_beli}</td>
+                                                    <td>Rp {(item.harga).toLocaleString()}</td>
+                                                    <td>Rp {(item.harga * item.qty_beli).toLocaleString()}</td>
+                                                </tr>
+                                            </tbody>
+                                        )
+                                    })
+                                    :
+                                    <div></div>
+                                    }
+                                    <tfoot>
+                                        <tr>
+                                            <td colSpan="4">Total</td>
+                                            <td>Rp {this.state.totalHargaSatuan ? (this.state.totalHargaSatuan).toLocaleString() : null}</td>
+                                        </tr>
+                                    </tfoot>
+                                </Table>
+                            </div>
+                        :
+                        <div></div>
+                        }
+                        {this.state.statusOrderSatuan === "Waiting For Payment Approval" ?
+                            <div>
+                                <div style={styles.table}>
+                                    <Table style={styles.table} striped bordered hover variant="light" style={{ backgroundColor: '#000051' }}>
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Nama Obat</th>
+                                                <th>Quantity</th>
+                                                <th>Harga</th>
+                                                <th>Total</th>
+                                            </tr>
+                                        </thead>
+                                        {this.state.dataOrderSatuan ? this.state.dataOrderSatuan.map((item, index) => {
+                                            return (
+                                                <tbody key={index}>
+                                                    <tr>
+                                                        <td>{index + 1}</td>
+                                                        <td>{item.nama}</td>
+                                                        <td>{item.qty_beli}</td>
+                                                        <td>Rp {(item.harga).toLocaleString()}</td>
+                                                        <td>Rp {(item.harga * item.qty_beli).toLocaleString()}</td>
+                                                    </tr>
+                                                </tbody>
+                                            )
+                                        })
+                                        :
+                                        <div></div>
+                                        }
+                                        <tfoot>
+                                            <tr>
+                                                <td colSpan="4">Total</td>
+                                                <td>Rp {this.state.totalHargaSatuan ? (this.state.totalHargaSatuan).toLocaleString() : null}</td>
+                                            </tr>
+                                        </tfoot>
+                                    </Table>
+                                    <h3 style={{ textDecoration: 'underline', textAlign: 'center' }}>Bukti Pembayaran</h3>
+                                    <Image style={styles.imageBuktiPembayaranResep} src={this.state.imageBuktiPembayaranSatuan ? `http://localhost:2000/${this.state.imageBuktiPembayaranSatuan}` : null} />
+                                    <div style={{ textAlign: 'center', marginTop: '20px' }}>
+                                        <Button variant="success" onClick={this.onProcessSatuan}>Process Order</Button>
+                                        <Button style={{ marginLeft: '20px' }} variant="danger" onClick={this.requestReuploadSatuan}>Request Reupload Payment Proof</Button>
+                                    </div>
+                                </div>
+                            </div>
+                        :
+                            <div></div>
+                        }
+                        {this.state.statusOrderSatuan === "Processing" ?
+                            <div>
+                                <div style={styles.table}>
+                                    <Table style={styles.table} striped bordered hover variant="light" style={{ backgroundColor: '#000051' }}>
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Nama Obat</th>
+                                                <th>Quantity</th>
+                                                <th>Harga</th>
+                                                <th>Total</th>
+                                            </tr>
+                                        </thead>
+                                        {this.state.dataOrderSatuan ? this.state.dataOrderSatuan.map((item, index) => {
+                                            return (
+                                                <tbody key={index}>
+                                                    <tr>
+                                                        <td>{index + 1}</td>
+                                                        <td>{item.nama}</td>
+                                                        <td>{item.qty_beli}</td>
+                                                        <td>Rp {(item.harga).toLocaleString()}</td>
+                                                        <td>Rp {(item.harga * item.qty_beli).toLocaleString()}</td>
+                                                    </tr>
+                                                </tbody>
+                                            )
+                                        })
+                                        :
+                                        <div></div>
+                                        }
+                                        <tfoot>
+                                            <tr>
+                                                <td colSpan="4">Total</td>
+                                                <td>Rp {this.state.totalHargaSatuan ? (this.state.totalHargaSatuan).toLocaleString() : null}</td>
+                                            </tr>
+                                        </tfoot>
+                                    </Table>
+                                    <h3 style={{ textDecoration: 'underline', textAlign: 'center' }}>Bukti Pembayaran</h3>
+                                    <Image style={styles.imageBuktiPembayaranResep} src={this.state.imageBuktiPembayaranSatuan ? `http://localhost:2000/${this.state.imageBuktiPembayaranSatuan}` : null} />
+                                    <div style={{ textAlign: 'center', marginTop: '20px' }}>
+                                        <Button variant="success" onClick={this.onSendPackageSatuan}>Send Package</Button>
+                                    </div>
+                                </div>
+                            </div>
+                        :
+                            <div></div>
+                        }
+                        {this.state.statusOrderSatuan === "Sending Package" ?
+                            <div>
+                                <div style={styles.table}>
+                                    <Table style={styles.table} striped bordered hover variant="light" style={{ backgroundColor: '#000051' }}>
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Nama Obat</th>
+                                                <th>Quantity</th>
+                                                <th>Harga</th>
+                                                <th>Total</th>
+                                            </tr>
+                                        </thead>
+                                        {this.state.dataOrderSatuan ? this.state.dataOrderSatuan.map((item, index) => {
+                                            return (
+                                                <tbody key={index}>
+                                                    <tr>
+                                                        <td>{index + 1}</td>
+                                                        <td>{item.nama}</td>
+                                                        <td>{item.qty_beli}</td>
+                                                        <td>Rp {(item.harga).toLocaleString()}</td>
+                                                        <td>Rp {(item.harga * item.qty_beli).toLocaleString()}</td>
+                                                    </tr>
+                                                </tbody>
+                                            )
+                                        })
+                                        :
+                                        <div></div>
+                                        }
+                                        <tfoot>
+                                            <tr>
+                                                <td colSpan="4">Total</td>
+                                                <td>Rp {this.state.totalHargaSatuan ? (this.state.totalHargaSatuan).toLocaleString() : null}</td>
+                                            </tr>
+                                        </tfoot>
+                                    </Table>
+                                    <h3 style={{ textDecoration: 'underline', textAlign: 'center' }}>Bukti Pembayaran</h3>
+                                    <Image style={styles.imageBuktiPembayaranResep} src={this.state.imageBuktiPembayaranSatuan ? `http://localhost:2000/${this.state.imageBuktiPembayaranSatuan}` : null} />
+                                    <div style={{ textAlign: 'center', marginTop: '20px' }}>
+                                        <Button variant="success" disabled={true}>Sending Package</Button>
+                                    </div>
+                                </div>
+                            </div>
+                        :
+                            <div></div>
+                        }
+                        {this.state.statusOrderSatuan === "Complete" ?
+                            <div>
+                                <div style={styles.table}>
+                                    <Table style={styles.table} striped bordered hover variant="light" style={{ backgroundColor: '#000051' }}>
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Nama Obat</th>
+                                                <th>Quantity</th>
+                                                <th>Harga</th>
+                                                <th>Total</th>
+                                            </tr>
+                                        </thead>
+                                        {this.state.dataOrderSatuan ? this.state.dataOrderSatuan.map((item, index) => {
+                                            return (
+                                                <tbody key={index}>
+                                                    <tr>
+                                                        <td>{index + 1}</td>
+                                                        <td>{item.nama}</td>
+                                                        <td>{item.qty_beli}</td>
+                                                        <td>Rp {(item.harga).toLocaleString()}</td>
+                                                        <td>Rp {(item.harga * item.qty_beli).toLocaleString()}</td>
+                                                    </tr>
+                                                </tbody>
+                                            )
+                                        })
+                                        :
+                                        <div></div>
+                                        }
+                                        <tfoot>
+                                            <tr>
+                                                <td colSpan="4">Total</td>
+                                                <td>Rp {this.state.totalHargaSatuan ? (this.state.totalHargaSatuan).toLocaleString() : null}</td>
+                                            </tr>
+                                        </tfoot>
+                                    </Table>
+                                    <h3 style={{ textDecoration: 'underline', textAlign: 'center' }}>Bukti Pembayaran</h3>
+                                    <Image style={styles.imageBuktiPembayaranResep} src={this.state.imageBuktiPembayaranSatuan ? `http://localhost:2000/${this.state.imageBuktiPembayaranSatuan}` : null} />
+                                </div>
+                            </div>
+                        :
                             <div></div>
                         }
                     </Modal.Body>
@@ -1014,6 +1359,10 @@ const styles = {
     filterForm: {
         width: "17vw",
     },
+    table: {
+        textAlign: 'center',
+        width: '90vw'
+    }
 }
 
 const mapStateToProps = (state) => {

@@ -72,9 +72,8 @@ class NavBar extends React.Component {
                                                         {this.props.username ? `Admin ${this.props.username} Dashboard` : `Admin ${this.props.username} Dashboard`}
                                                     </Dropdown.Toggle>
                                                     <Dropdown.Menu>
-                                                        <Dropdown.Item as={Link} to="/transaction-admin">Transaction</Dropdown.Item>
                                                         <Dropdown.Item as={Link} to="/salesreport">Sales Report</Dropdown.Item>
-                                                        <Dropdown.Item as={Link} to="/admin-trans">User Transaction</Dropdown.Item>
+                                                        <Dropdown.Item as={Link} to="/admin-trans">Transaction</Dropdown.Item>
                                                         <Dropdown.Item as={Link} to="/admin-revenue">Revenue</Dropdown.Item>
                                                         <Dropdown.Item as={Link} to="/" onClick={this.props.logout}>Logout</Dropdown.Item>
                                                     </Dropdown.Menu>
@@ -89,6 +88,7 @@ class NavBar extends React.Component {
                                                         <Dropdown.Item onClick={this.addResep} as={Link} to={`/uploadresep/${this.props.iduser}`}>Recipe Upload</Dropdown.Item>
                                                         {/* <Dropdown.Item onClick={this.addResep} as={Link} to={`/paymentresep/${this.props.iduser}`}>Recipe Payment</Dropdown.Item> */}
                                                         <Dropdown.Item as={Link} to="/history">History Transaction</Dropdown.Item>
+                                                        <Dropdown.Item as={Link} to={`/transac-proses/${this.props.order_Numb}`} >Process-Transaction</Dropdown.Item>
                                                         <Dropdown.Item onClick={this.props.logout} as={Link} to="/">Logout</Dropdown.Item>
                                                     </Dropdown.Menu>
                                                 </>
@@ -161,7 +161,8 @@ const mapStateToProps = (state) => {
         role: state.userReducer.role,
         iduser : state.userReducer.id,
         imageRes: state.userReducer.resepPic,
-        idResep: state.userReducer.idResep
+        idResep: state.userReducer.idResep,
+        order_Numb: state.userReducer.orderNumb,
     }
 }
 export default connect(mapStateToProps, { logout })(NavBar)
