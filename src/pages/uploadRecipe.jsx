@@ -95,7 +95,7 @@ class UploadResep extends React.Component {
             })
     }
 
-    addPayment = () => {
+    addPayment = async () => {
         this.fetchData()
         this.totalBelanja()
         this.state.statusNew === 'Waiting For Payment' ? this.setState({disabled:false}) : this.setState({disabled:true})
@@ -106,7 +106,7 @@ class UploadResep extends React.Component {
             total_belanja: parseInt(this.state.totalHarga),
         }
         console.log(newData)
-        this.props.addPayment(newData)
+        await this.props.addPayment(newData)
         // Axios.post(`http://localhost:2000/payment/newdatapayment`, newData)
         //     .then(res => {
         //         console.log(res.data)
@@ -169,9 +169,10 @@ class UploadResep extends React.Component {
                         </Card.Body>
                     </Card>
                 </div>
-                <Button variant="info" style={{ width: '15vw', marginLeft: '10vw' }} onClick={this.fetchData}
+                <Button variant="info" style={{ width: '15vw', marginLeft: '10vw' }} onClick={this.addPayment}
                 >Done Upload</Button>
-                <Button variant="warning" style={{ width: '15vw', marginLeft: '10vw' }} disabled={this.state.disabled} onClick={this.addPayment} as={Link} to={`/paymentresep/${this.props.order_Numb}`}
+                {/* <Button variant="warning" style={{ width: '15vw', marginLeft: '10vw' }} disabled={this.state.disabled} onClick={this.addPayment} as={Link} to={`/paymentresep/${this.props.order_Numb}`} */}
+                <Button variant="warning" style={{ width: '15vw', marginLeft: '10vw' }} disabled={this.state.disabled} as={Link} to={`/paymentresep/${this.props.order_Numb}`} 
                 >payment</Button>
             </div>
         )

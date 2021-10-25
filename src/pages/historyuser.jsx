@@ -82,12 +82,13 @@ class HistoryPage extends React.Component {
                             console.log(this.state.arrongoingresep)
                             // console.log(this.state.arrongoingresep.products)
                         })
+                        .catch(err => console.log('error ongoing post resep'))
                 })
                 //ambil data transaksi, masukin .products = []
                 //ambil total bayar trs masukin k data transaksi
                 //ambil detail produk
             })
-            .catch(err => console.log('error ongoing'))
+            .catch(err => console.log('error ongoing get resep'))
 
 
         // console.log(this.state.arrongoing)
@@ -215,6 +216,9 @@ class HistoryPage extends React.Component {
                             .then(res2 => {
                                 console.log(res2.data)
                                 console.log('berhasil update status menjadi "Waiting For Payment Approval"')
+                                this.setState({ arrongoing: [], arrhistory: [] })
+                                this.arrongoing()
+                                this.arrhistory()
                             })
                             .catch(err => { console.log('error update status') })
 
@@ -240,14 +244,14 @@ class HistoryPage extends React.Component {
         // this.fetchData()
         // this.setState({ images: '' })
         Axios.post(`http://localhost:2000/history/cancelr/${this.props.iduser}`, body)
-        .then(res => {
-            console.log('Berhasil update status transaksi satuan menjadi Cancel')
-            this.setState({arrongoingresep:[] , arrhistoryR: []})
-            this.arrongoingresep()
-            // this.historyTransaction()
-            this.arrhistoryR()
-        })
-        .catch(err => { console.log('Gagal update status stransaksi satuan menjadi Cancel') })
+            .then(res => {
+                console.log('Berhasil update status transaksi satuan menjadi Cancel')
+                this.setState({ arrongoingresep: [], arrhistoryR: [] })
+                this.arrongoingresep()
+                // this.historyTransaction()
+                this.arrhistoryR()
+            })
+            .catch(err => { console.log('Gagal update status transaksi satuan menjadi Cancel') })
     }
 
     handleComplete1 = (order_number) => {
@@ -258,12 +262,12 @@ class HistoryPage extends React.Component {
         Axios.post(`http://localhost:2000/history/og-tocomplete1/${this.props.iduser}`, body)
             .then(res => {
                 console.log('Berhasil update status transaksi satuan menjadi Complete')
-                this.setState({arrongoing:[] , arrhistory: []})
+                this.setState({ arrongoing: [], arrhistory: [] })
                 this.arrongoing()
                 // this.historyTransaction()
                 this.arrhistory()
             })
-            .catch(err => { console.log('Gagal update status stransaksi satuan menjadi Complete') })
+            .catch(err => { console.log('Gagal update status transaksi satuan menjadi Complete') })
     }
 
     handleCompleteR = (order_number, item) => {
@@ -274,7 +278,7 @@ class HistoryPage extends React.Component {
         Axios.post(`http://localhost:2000/history/og-tocompleter/${this.props.iduser}`, body)
             .then(res => {
                 console.log('Berhasil update status transaksi resep menjadi Complete')
-                this.setState({arrongoingresep:[] , arrhistoryR: []})
+                this.setState({ arrongoingresep: [], arrhistoryR: [] })
                 this.arrongoingresep()
                 this.arrhistoryR()
             })
@@ -372,11 +376,11 @@ class HistoryPage extends React.Component {
                                                                 : null}
                                                             {/* <td>{item[0].total_bayar}</td> */}
                                                             {item[0].status === 'Waiting For Payment' ?
-                                                                <td style={{ display:'flex',justifyContent:'space-around'}}><Button variant="primary" onClick={() => this.handleUpload(item[0].order_number, item, item[0].total_bayar)}>Upload Payment Proof</Button>
-                                                                   
+                                                                <td style={{ display: 'flex', justifyContent: 'space-around' }}><Button variant="primary" onClick={() => this.handleUpload(item[0].order_number, item, item[0].total_bayar)}>Upload Payment Proof</Button>
+
                                                                 </td>
                                                                 : null}
-                                                            {item[0].status === 'Sending Package' ? <td style={{ display:'flex',justifyContent:'space-around'}}><Button style={{ width: '10vw', marginBottom: '30px', justifyContent: 'center' }} variant="outline-primary" onClick={() => this.handleComplete1(item[0].order_number)}>Complete</Button></td> : null}
+                                                            {item[0].status === 'Sending Package' ? <td style={{ display: 'flex', justifyContent: 'space-around' }}><Button style={{ width: '10vw', marginBottom: '30px', justifyContent: 'center' }} variant="outline-primary" onClick={() => this.handleComplete1(item[0].order_number)}>Complete</Button></td> : null}
                                                         </tr>
                                                     </tbody>
                                                 </Table>
@@ -416,7 +420,7 @@ class HistoryPage extends React.Component {
                                                                     <tr>
                                                                         <td>{index2 + 1}</td>
                                                                         <td><Image src={`http://localhost:2000/${item2.link_foto}`} rounded style={{ width: '70px' }} /></td>
-                                                                        <td>{item2.nama}</td>
+                                                                        <td>{item2.nama_produk}</td>
                                                                         <td>IDR{item2.harga.toLocaleString()},00</td>
                                                                         <td>{item2.qty_beli}</td>
                                                                         <td>IDR{((item2.harga * item2.qty_beli).toLocaleString())},00</td>
@@ -428,22 +432,22 @@ class HistoryPage extends React.Component {
                                                                 <div></div>}
                                                             {item[0].status === 'Waiting For Approval' ? null : <tr><td></td><td colSpan="5">The amount you have to pay: IDR <span style={{ fontWeight: 'bold' }}>{item[0].total_belanja.toLocaleString()}</span></td></tr>}
                                                             <tr>
-                                                                <td></td><td colSpan={item[0].status === 'Waiting For Approval' ? "4" : item[0].status === 'Waiting For payment' ? "4" : "5"}>Status: {item[0].status}</td>
+                                                                <td></td><td colSpan={item[0].status === 'Waiting For Approval' ? "4" : item[0].status === 'Waiting For Payment' ? "4" : "5"}>Status: {item[0].status}</td>
 
                                                                 {item[0].status === 'Waiting For Payment' ?
-                                                                    <td style={{ display:'flex',justifyContent:'center'}}><Button variant="primary" as={Link} to={`/paymentresep/${this.props.iduser}`}>Upload Payment Proof</Button>
+                                                                    <td style={{ display: 'flex', justifyContent: 'center' }}><Button variant="primary" as={Link} to={`/paymentresep/${this.props.iduser}`}>Upload Payment Proof</Button>
                                                                     </td>
                                                                     : null}
-                                                                    
-                                                                    {item[0].status === 'Waiting For Approval' ? <tr style={{ display:'flex',justifyContent:'center'}}> <Button
-                                                                        className="button"
-                                                                        // variant="warning"
-                                                                        style={{backgroundColor: '#343892'}}
-                                                                        onClick= {() => this.onCancel(item[0].order_number)}
-                                                                    >
-                                                                        Cancel
-                                                                    </Button></tr> : null}
-                                                                {item[0].status === 'Sending Package' ? <td style={{ display:'flex',justifyContent:'center'}}><Button style={{ width: '10vw', marginBottom: '30px' }} variant="outline-primary" onClick={() => this.handleCompleteR(item[0].order_number, item)}>Complete</Button></td> : null}
+
+                                                                {item[0].status === 'Waiting For Approval' ? <tr style={{ display: 'flex', justifyContent: 'center' }}> <Button
+                                                                    className="button"
+                                                                    // variant="warning"
+                                                                    style={{ backgroundColor: '#343892' }}
+                                                                    onClick={() => this.onCancel(item[0].order_number)}
+                                                                >
+                                                                    Cancel
+                                                                </Button></tr> : null}
+                                                                {item[0].status === 'Sending Package' ? <td style={{ display: 'flex', justifyContent: 'center' }}><Button style={{ width: '10vw', marginBottom: '30px' }} variant="outline-primary" onClick={() => this.handleCompleteR(item[0].order_number, item)}>Complete</Button></td> : null}
                                                             </tr>
                                                         </tbody>
                                                     </Table>
@@ -537,7 +541,7 @@ class HistoryPage extends React.Component {
                                                                     <tr>
                                                                         <td>{index2 + 1}</td>
                                                                         <td><Image src={`http://localhost:2000/${item2.link_foto}`} rounded style={{ width: '70px' }} /></td>
-                                                                        <td>{item2.nama}</td>
+                                                                        <td>{item2.nama_produk}</td>
                                                                         <td>IDR{item2.harga.toLocaleString()},00</td>
                                                                         <td>{item2.qty_beli}</td>
                                                                         <td>IDR{((item2.harga * item2.qty_beli).toLocaleString())},00</td>

@@ -245,10 +245,11 @@ class EditRPage extends React.Component {
                                 </form>
                                 <Button
                                     className="button"
-                                    variant="danger"
+                                    // variant="danger"
+                                    style={{ background: '#DF2E2E', border: 'none' }}
                                     onClick={this.onRemove}
                                 >
-                                    Remove
+                                    <i class="fas fa-trash" style={{ marginRight: '10px' }}></i>Remove
                                 </Button>
                             </div>
 
@@ -268,7 +269,7 @@ class EditRPage extends React.Component {
                                 <h4 style={styles.h4}>Harga<FormControl
                                     // placeholder={this.state.product ? `Rp ${(this.state.product.harga).toLocaleString()}` : ""}
                                     value={this.state.harga}
-                                    onChange={(e) => this.setState({ harga: `Rp ${e.target.value.toLocaleString()}` })}
+                                    onChange={(e) => this.setState({ harga: +e.target.value })}
                                     type="number"
                                     ref="harga"
                                 /></h4>

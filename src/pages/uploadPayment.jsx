@@ -155,8 +155,8 @@ class UploadPayment extends React.Component {
                             </InputGroup.Text>
                             <Button variant="info" style={{ width: '15vw' }} disabled={this.state.disabled} onClick={this.statusAprovPay}>Done Upload Payment</Button>
                         </InputGroup>
-                        <Button variant="warning" style={{ width: '15vw', marginLeft: '10vw' }} as={Link} to={`/transac-proses/${this.props.order_Numb}`}
-                        >payment</Button>
+                        <Button variant="warning" style={{ width: '15vw', marginLeft: '10vw' }} as={Link} to="/history"
+                        >Transaction</Button>
                     </div>
 
                 </div>

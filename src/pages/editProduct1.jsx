@@ -309,10 +309,11 @@ class EditSatuanPage extends React.Component {
                                 </form>
                                 <Button
                                     className="button"
-                                    variant="success"
+                                    // variant="success"
+                                    style={{ background: '#DF2E2E', border: 'none' }}
                                     onClick={this.onRemove}
                                 >
-                                    Remove
+                                   <i class="fas fa-trash" style={{ marginRight: '10px' }}></i> Remove
                                 </Button>
                             </div>
                             <div style={styles.h4}>
@@ -335,7 +336,7 @@ class EditSatuanPage extends React.Component {
                                 <FormControl className="mb-1"
                                     // placeholder={this.state.product ? `Rp ${(this.state.product.harga).toLocaleString()}` : ""}
                                     value={this.state.harga}
-                                    onChange={(e) => this.setState({ harga: `Rp ${e.target.value.toLocaleString()}` })}
+                                    onChange={(e) => this.setState({ harga:+e.target.value})}
                                     type="number"
                                     ref="harga"
                                 />
