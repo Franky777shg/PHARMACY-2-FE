@@ -9,7 +9,7 @@ import { Link } from 'react-router-dom'
 const URL_API = "http://localhost:2000/payment"
 const URL_IMG = 'http://localhost:2000/'
 
-class UploadPayment extends React.Component {
+class UploadPaymentLama extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -25,8 +25,10 @@ class UploadPayment extends React.Component {
     }
 
     fetchData = () => {
+        let idProduct = this.props.location.pathname.slice(20)
+        // console.log(idProduct)
         let data = {
-            order_number: this.props.order_Numb
+            order_number: idProduct
         }
         console.log(data)
         Axios.post(`${URL_API}/paymentbyid`, data)
@@ -50,10 +52,6 @@ class UploadPayment extends React.Component {
             .then(res => {
                 console.log(res.data[0])
                 this.setState({ recipes: res.data[0] })
-                // this.setState({statusNew :res.data[0].status})
-                // console.log(this.state.statusNew)
-                // this.setState({statusNew : 'Waiting For Payment Approval'})
-                // console.log(this.state.statusNew)
 
             })
             .catch(err => {
@@ -90,8 +88,10 @@ class UploadPayment extends React.Component {
     }
 
     statusAprovPay = () => {
+        let idProduct = this.props.location.pathname.slice(20)
+        // console.log(idProduct)
         let data2 = {
-            order_number: this.props.order_Numb
+            order_number: idProduct
         }
         console.log(data2)
         Axios.post(`http://localhost:2000/payment/update-status`, data2)
@@ -109,7 +109,6 @@ class UploadPayment extends React.Component {
 
     render() {
         console.log(this.props.order_Numb)
-        console.log(this.props.idPayment)
         // console.log(this.props.status)
         const { payImage } = this.state
         return (
@@ -156,9 +155,10 @@ class UploadPayment extends React.Component {
                             </InputGroup.Text>
                             <Button variant="info" style={{ width: '15vw' }} disabled={this.state.disabled} onClick={this.statusAprovPay}>Done Upload Payment</Button>
                         </InputGroup>
-                        <Button variant="warning" style={{ width: '15vw', marginLeft: '10vw' }} as={Link} to="/history"
-                        >Transaction</Button>
+                        <Button variant="warning" style={{ width: '15vw', marginLeft: '10vw' }} as={Link} to={`/history`}
+                        >OnGoing Transaction</Button>
                     </div>
+
                 </div>
             </div >
         )
@@ -191,4 +191,4 @@ const mapStateToProps = (state) => {
     }
 }
 
-export default connect(mapStateToProps)(UploadPayment)
+export default connect(mapStateToProps)(UploadPaymentLama)

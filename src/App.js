@@ -27,7 +27,8 @@ import UploadPayment from './pages/uploadPayment';
 import UploadPaymentSatuan from './pages/paymentSatuan';
 import SalesPage from './pages/salesreport';
 import RevenueAdmin from './pages/adminRevenue';
-import TransactionProcess from './pages/transactionProcess';
+import uploadPaymentLama from './pages/uploadPaymentLama';
+import uploadRecipeAwal from './pages/uploadRecipeAwal';
 
 class App extends React.Component {
   componentDidMount() {
@@ -61,7 +62,8 @@ class App extends React.Component {
         <Route path="/admin-trans" component={AdminPage} />
         <Route path="/salesreport" component={SalesPage} />
         <Route path="/admin-revenue" component={RevenueAdmin} />
-        <Route path="/transac-proses/:id" component={TransactionProcess} />
+        <Route path="/uploadpayment-lama/:id" component={uploadPaymentLama}/>
+        <Route path="/recipe-awal/:id" component={uploadRecipeAwal}/>
       </Switch>
     )
   }
