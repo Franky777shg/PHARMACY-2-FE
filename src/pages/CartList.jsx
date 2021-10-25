@@ -501,7 +501,7 @@ class CartPage extends React.Component {
                         </Modal.Body>
                         <Modal.Footer>
                             <Button style={{ backgroundColor: '#000051', color: 'white' }} onClick={this.onOKpass} as={Link} to="/history">
-                                OK
+                                Make transactions
                             </Button>
                         </Modal.Footer>
                     </Modal>
