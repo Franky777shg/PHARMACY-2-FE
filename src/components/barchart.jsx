@@ -21,7 +21,7 @@ class Barchart extends React.Component{
             let data = {
                 month: i
             }
-            await Axios.post("http://localhost:2000/admin/getDataBarChart", data)
+            await Axios.post("https://api-pharmacy-2.purwadhikafs2.com/admin/getDataBarChart", data)
                 .then(res => {
                     let result = res.data["count(date)"]
                     tempArr.push(result)

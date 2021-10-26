@@ -15,7 +15,7 @@ import {
     Table
 } from 'react-bootstrap'
 
-const URL_API = "http://localhost:2000/product"
+const URL_API = "https://api-pharmacy-2.purwadhikafs2.com/product"
 
 class RawMaterialUsagePage extends React.Component {
     constructor(props) {

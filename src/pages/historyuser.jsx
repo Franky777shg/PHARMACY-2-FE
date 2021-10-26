@@ -32,7 +32,7 @@ class HistoryPage extends React.Component {
     }
     arrongoing = () => {
         //get on going buat ambil ordernumber
-        Axios.get(`http://localhost:2000/history/get-ordernumber/${this.props.iduser}`)
+        Axios.get(`https://api-pharmacy-2.purwadhikafs2.com/history/get-ordernumber/${this.props.iduser}`)
             .then(res => {
                 console.log(res.data)
                 let hasil = res.data
@@ -40,7 +40,7 @@ class HistoryPage extends React.Component {
                 hasil.forEach(item => {
                     console.log(item)
                     console.log(item.order_number)
-                    Axios.post(`http://localhost:2000/history/datatransaksi/${this.props.iduser}`, item)
+                    Axios.post(`https://api-pharmacy-2.purwadhikafs2.com/history/datatransaksi/${this.props.iduser}`, item)
                         .then(reshasil => {
                             // this.setState({ arrongoing: reshasil.data })
                             let temp = this.state.arrongoing
@@ -63,7 +63,7 @@ class HistoryPage extends React.Component {
 
     arrongoingresep = () => {
         //get on going buat ambil ordernumber
-        Axios.get(`http://localhost:2000/history/get-ordernumberR/${this.props.iduser}`)
+        Axios.get(`https://api-pharmacy-2.purwadhikafs2.com/history/get-ordernumberR/${this.props.iduser}`)
             .then(res => {
                 console.log(res.data)
                 let hasil = res.data
@@ -71,7 +71,7 @@ class HistoryPage extends React.Component {
                 hasil.forEach(item => {
                     console.log(item)
                     console.log(item.order_number)
-                    Axios.post(`http://localhost:2000/history/datatransaksiR/${this.props.iduser}`, item)
+                    Axios.post(`https://api-pharmacy-2.purwadhikafs2.com/history/datatransaksiR/${this.props.iduser}`, item)
                         .then(reshasil => {
                             // this.setState({ arrongoing: reshasil.data })
                             let temp = this.state.arrongoingresep
@@ -95,7 +95,7 @@ class HistoryPage extends React.Component {
     }
 
     arrhistory = () => {
-        Axios.get(`http://localhost:2000/history/get-history/${this.props.iduser}`)
+        Axios.get(`https://api-pharmacy-2.purwadhikafs2.com/history/get-history/${this.props.iduser}`)
             .then(res => {
                 console.log(res.data)
                 let hasil = res.data
@@ -103,7 +103,7 @@ class HistoryPage extends React.Component {
                 hasil.forEach(item => {
                     console.log(item)
                     console.log(item.order_number)
-                    Axios.post(`http://localhost:2000/history/datahistory1/${this.props.iduser}`, item)
+                    Axios.post(`https://api-pharmacy-2.purwadhikafs2.com/history/datahistory1/${this.props.iduser}`, item)
                         .then(reshasil => {
                             // this.setState({ arrongoing: reshasil.data })
                             let temp = this.state.arrhistory
@@ -118,7 +118,7 @@ class HistoryPage extends React.Component {
     }
 
     arrhistoryR = () => {
-        Axios.get(`http://localhost:2000/history/get-onhistoryr/${this.props.iduser}`)
+        Axios.get(`https://api-pharmacy-2.purwadhikafs2.com/history/get-onhistoryr/${this.props.iduser}`)
             .then(res => {
                 console.log(res.data)
                 let hasil = res.data
@@ -126,7 +126,7 @@ class HistoryPage extends React.Component {
                 hasil.forEach(item => {
                     console.log(item)
                     console.log(item.order_number)
-                    Axios.post(`http://localhost:2000/history/datahistoryr/${this.props.iduser}`, item)
+                    Axios.post(`https://api-pharmacy-2.purwadhikafs2.com/history/datahistoryr/${this.props.iduser}`, item)
                         .then(reshasil => {
                             // this.setState({ arrongoing: reshasil.data })
                             let temp = this.state.arrhistoryR
@@ -142,7 +142,7 @@ class HistoryPage extends React.Component {
 
     componentDidMount() {
         // let idUser = localStorage.getItem('idUser')
-        // Axios.get(`http://localhost:2000/history?username/${idUser}`)
+        // Axios.get(`https://api-pharmacy-2.purwadhikafs2.com/history?username/${idUser}`)
         // .then(res => {
         //     this.setState({arrhistory: res.data})
         // })
@@ -202,17 +202,17 @@ class HistoryPage extends React.Component {
         // console.log(data.get('IMG'),body)
 
         console.log(body)
-        Axios.post(`http://localhost:2000/history/post-pmt/${this.props.iduser}`, body)
+        Axios.post(`https://api-pharmacy-2.purwadhikafs2.com/history/post-pmt/${this.props.iduser}`, body)
             .then(res => {
                 console.log(res.data)
-                Axios.post(`http://localhost:2000/history/upload-pmt/${this.props.iduser}`, foto, {
+                Axios.post(`https://api-pharmacy-2.purwadhikafs2.com/history/upload-pmt/${this.props.iduser}`, foto, {
                     headers: {
                         'Content-Type': 'multipart/form-data'
                     }
                 })
                     .then(res1 => {
                         console.log(res1)
-                        Axios.post(`http://localhost:2000/history/og-wfpa/${this.props.iduser}`, body)
+                        Axios.post(`https://api-pharmacy-2.purwadhikafs2.com/history/og-wfpa/${this.props.iduser}`, body)
                             .then(res2 => {
                                 console.log(res2.data)
                                 console.log('berhasil update status menjadi "Waiting For Payment Approval"')
@@ -243,7 +243,7 @@ class HistoryPage extends React.Component {
         }
         // this.fetchData()
         // this.setState({ images: '' })
-        Axios.post(`http://localhost:2000/history/cancelr/${this.props.iduser}`, body)
+        Axios.post(`https://api-pharmacy-2.purwadhikafs2.com/history/cancelr/${this.props.iduser}`, body)
             .then(res => {
                 console.log('Berhasil update status transaksi satuan menjadi Cancel')
                 this.setState({ arrongoingresep: [], arrhistoryR: [] })
@@ -259,7 +259,7 @@ class HistoryPage extends React.Component {
             order_number: order_number
         }
         // console.log(body)
-        Axios.post(`http://localhost:2000/history/og-tocomplete1/${this.props.iduser}`, body)
+        Axios.post(`https://api-pharmacy-2.purwadhikafs2.com/history/og-tocomplete1/${this.props.iduser}`, body)
             .then(res => {
                 console.log('Berhasil update status transaksi satuan menjadi Complete')
                 this.setState({ arrongoing: [], arrhistory: [] })
@@ -275,7 +275,7 @@ class HistoryPage extends React.Component {
             order_number: order_number,
             item: item
         }
-        Axios.post(`http://localhost:2000/history/og-tocompleter/${this.props.iduser}`, body)
+        Axios.post(`https://api-pharmacy-2.purwadhikafs2.com/history/og-tocompleter/${this.props.iduser}`, body)
             .then(res => {
                 console.log('Berhasil update status transaksi resep menjadi Complete')
                 this.setState({ arrongoingresep: [], arrhistoryR: [] })
@@ -347,7 +347,7 @@ class HistoryPage extends React.Component {
                                                             return (
                                                                 <tr>
                                                                     <td>{index2 + 1}</td>
-                                                                    <td><Image src={`http://localhost:2000/${item2.product_image}`} rounded style={{ width: '70px' }} /></td>
+                                                                    <td><Image src={`https://api-pharmacy-2.purwadhikafs2.com/${item2.product_image}`} rounded style={{ width: '70px' }} /></td>
                                                                     <td>{item2.nama}</td>
                                                                     <td>IDR{item2.harga.toLocaleString()},00</td>
                                                                     <td>{item2.qty_beli}</td>
@@ -419,7 +419,7 @@ class HistoryPage extends React.Component {
                                                                 return (
                                                                     <tr>
                                                                         <td>{index2 + 1}</td>
-                                                                        <td><Image src={`http://localhost:2000/${item2.link_foto}`} rounded style={{ width: '70px' }} /></td>
+                                                                        <td><Image src={`https://api-pharmacy-2.purwadhikafs2.com/${item2.link_foto}`} rounded style={{ width: '70px' }} /></td>
                                                                         <td>{item2.nama_produk}</td>
                                                                         <td>IDR{item2.harga.toLocaleString()},00</td>
                                                                         <td>{item2.qty_beli}</td>
@@ -493,7 +493,7 @@ class HistoryPage extends React.Component {
                                                                 return (
                                                                     <tr>
                                                                         <td>{index2 + 1}</td>
-                                                                        <td><Image src={`http://localhost:2000/${item2.product_image}`} rounded style={{ width: '70px' }} /></td>
+                                                                        <td><Image src={`https://api-pharmacy-2.purwadhikafs2.com/${item2.product_image}`} rounded style={{ width: '70px' }} /></td>
                                                                         <td>{item2.nama}</td>
                                                                         <td>IDR{item2.harga.toLocaleString()},00</td>
                                                                         <td>{item2.qty_beli}</td>
@@ -540,7 +540,7 @@ class HistoryPage extends React.Component {
                                                                 return (
                                                                     <tr>
                                                                         <td>{index2 + 1}</td>
-                                                                        <td><Image src={`http://localhost:2000/${item2.link_foto}`} rounded style={{ width: '70px' }} /></td>
+                                                                        <td><Image src={`https://api-pharmacy-2.purwadhikafs2.com/${item2.link_foto}`} rounded style={{ width: '70px' }} /></td>
                                                                         <td>{item2.nama_produk}</td>
                                                                         <td>IDR{item2.harga.toLocaleString()},00</td>
                                                                         <td>{item2.qty_beli}</td>

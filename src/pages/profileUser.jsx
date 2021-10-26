@@ -10,7 +10,7 @@ import NavBar from '../components/navbar'
 import {uploadFile, deletePhoto} from '../redux/actions'
 import {PHOTO} from '../assets'
 
-const URL_API = 'http://localhost:2000/'
+const URL_API = 'https://api-pharmacy-2.purwadhikafs2.com/'
 
 class ProfilePage extends React.Component {
     constructor(props) {
@@ -27,7 +27,7 @@ class ProfilePage extends React.Component {
 
     fetchData = () => {
         let token = localStorage.getItem("token")
-        Axios.get(`http://localhost:2000/user/userbyid`, {
+        Axios.get(`https://api-pharmacy-2.purwadhikafs2.com/user/userbyid`, {
             headers: {
                 Authorization: `Bearer ${token}`,
             }
@@ -191,7 +191,7 @@ class ProfilePage extends React.Component {
         }
         console.log(body)
 
-        Axios.patch(`http://localhost:2000/user/edituser/${this.props.iduser}`, body)
+        Axios.patch(`https://api-pharmacy-2.purwadhikafs2.com/user/edituser/${this.props.iduser}`, body)
             .then(res => {
                 console.log(res.data)
                 this.setState({ editUser: res.data, idEdit: null })

@@ -29,7 +29,7 @@ class CartPage extends React.Component {
         }
     }
     fetchData = () => {
-        Axios.get(`http://localhost:2000/transaction/get-cart/${this.props.iduser}`)
+        Axios.get(`https://api-pharmacy-2.purwadhikafs2.com/transaction/get-cart/${this.props.iduser}`)
             .then(res => {
                 // console.log(res.data)
                 // console.log(res.data.cart.qty_beli)
@@ -178,7 +178,7 @@ class CartPage extends React.Component {
                         return (
                             <tr key={index}>
                                 <td>{index + 1}</td>
-                                <td><Image src={item.product_image ? `http://localhost:2000/${item.product_image}` : item.product_image} style={{ width: '100px' }} rounded /></td>
+                                <td><Image src={item.product_image ? `https://api-pharmacy-2.purwadhikafs2.com/${item.product_image}` : item.product_image} style={{ width: '100px' }} rounded /></td>
                                 <td>{item.nama}</td>
                                 <td>IDR {item.harga.toLocaleString()}</td>
                                 <td>
@@ -211,7 +211,7 @@ class CartPage extends React.Component {
                     return (
                         <tr key={index}>
                             <td>{index + 1}</td>
-                            <td><Image src={item.product_image ? `http://localhost:2000/${item.product_image}` : item.product_image} style={{ width: '70px' }} rounded /></td>
+                            <td><Image src={item.product_image ? `https://api-pharmacy-2.purwadhikafs2.com/${item.product_image}` : item.product_image} style={{ width: '70px' }} rounded /></td>
                             <td>{item.nama}</td>
                             <td>IDR {item.harga ? item.harga.toLocaleString() : item.harga}</td>
                             <td>{item.qty_beli}</td>
@@ -243,7 +243,7 @@ class CartPage extends React.Component {
         let obj = { order_number: on, idproduk: idprod }
         // this.setState({ indexEdit: index})
         this.setState({ indexEdit: index })
-        Axios.patch(`http://localhost:2000/transaction/get-cartqty/${this.props.iduser}`, obj)
+        Axios.patch(`https://api-pharmacy-2.purwadhikafs2.com/transaction/get-cartqty/${this.props.iduser}`, obj)
             .then(res => {
                 console.log(res.data[0].qty_beli)
                 this.setState({ qty: res.data[0].qty_beli })
@@ -261,7 +261,7 @@ class CartPage extends React.Component {
         // console.log(this.state.qty)
     }
     onChangeQty = (e, idproduk, q) => {
-        Axios.get(`http://localhost:2000/product/detail-product/${idproduk}`)
+        Axios.get(`https://api-pharmacy-2.purwadhikafs2.com/product/detail-product/${idproduk}`)
             .then(res => {
                 console.log(res)
                 console.log(res.data.stok)
@@ -304,7 +304,7 @@ class CartPage extends React.Component {
         }
         let tempArr = this.state.inputOrder
 
-        Axios.get(`http://localhost:2000/transaction/total-cart/${this.props.iduser}`)
+        Axios.get(`https://api-pharmacy-2.purwadhikafs2.com/transaction/total-cart/${this.props.iduser}`)
             .then(res => {
                 // console.log(res.data.carttotal[0].total_bayar)
                 this.setState({ total_bayar: (res.data.carttotal[0].total_bayar).toLocaleString() })
@@ -313,7 +313,7 @@ class CartPage extends React.Component {
             // .catch(err => console.log(err))
 
             .then(result1 => {
-                Axios.get(`http://localhost:2000/transaction/get-cart/${this.props.iduser}`)
+                Axios.get(`https://api-pharmacy-2.purwadhikafs2.com/transaction/get-cart/${this.props.iduser}`)
                     .then(result => {
                         console.log(result.data)
                         // console.log(res.data.cart.qty_beli)
@@ -353,7 +353,7 @@ class CartPage extends React.Component {
             }
             console.log(data)
             console.log(data.idproduk)
-            Axios.get(`http://localhost:2000/product/detail-product/${data.idproduk}`)
+            Axios.get(`https://api-pharmacy-2.purwadhikafs2.com/product/detail-product/${data.idproduk}`)
             .then(res => {
                 // console.log(res)
                 console.log(res.data.stok)
@@ -363,16 +363,16 @@ class CartPage extends React.Component {
                     newstok: newStok
                 }
             console.log(databaru)
-            Axios.patch(`http://localhost:2000/product/updateqty/${data.idproduk}`, databaru)
+            Axios.patch(`https://api-pharmacy-2.purwadhikafs2.com/product/updateqty/${data.idproduk}`, databaru)
                 .then(() => {
                     console.log("berhasil update stock")
-                //     Axios.patch(`http://localhost:2000/updateStokResep`, data2)
+                //     Axios.patch(`https://api-pharmacy-2.purwadhikafs2.com/updateStokResep`, data2)
                 //         .then(() => {
                 //             let data3 = {
                 //                 statusBaru: 'Waiting For Payment',
                 //                 order_number: this.state.dataOrder.order_number
                 //             }
-                //             Axios.post(`http://localhost:2000/updateStatusResep`, data3)
+                //             Axios.post(`https://api-pharmacy-2.purwadhikafs2.com/updateStatusResep`, data3)
                 //                 .then(() => {
                 //                     this.onTransaksiObatResep()
                 //                     this.setState({ showModal: false })

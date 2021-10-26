@@ -3,7 +3,7 @@ import Axios from 'axios'
 export const addCart = (iduser, obj) => {
     return (dispatch) => {
         //1. cek cart di id user, mskin product yg di add user
-        Axios.get(`http://localhost:2000/transaction/get-cart/${iduser}`)
+        Axios.get(`https://api-pharmacy-2.purwadhikafs2.com/transaction/get-cart/${iduser}`)
             .then(res => {
                 // console.log(res.data) //hasilnya object lngsg {cart:{idproduk:}}
                 // console.log(res.data.length === undefined)
@@ -27,10 +27,10 @@ export const addCart = (iduser, obj) => {
                     tempCart.push({ produkdibeli: obj.dataproduk, qty: obj.qty, iduser: iduser })
 
                     // console.log({ cart: tempCart })
-                    Axios.post(`http://localhost:2000/transaction/addnew-cart/${iduser}`, { cart: tempCart })
+                    Axios.post(`https://api-pharmacy-2.purwadhikafs2.com/transaction/addnew-cart/${iduser}`, { cart: tempCart })
                         .then(res => {
                             console.log(res.data)
-                            Axios.get(`http://localhost:2000/transaction/get-cart/${iduser}`)
+                            Axios.get(`https://api-pharmacy-2.purwadhikafs2.com/transaction/get-cart/${iduser}`)
                                 .then(res1 => {
                                     // console.log(res1.data.cart)
                                     return dispatch({
@@ -87,10 +87,10 @@ export const addCart = (iduser, obj) => {
                         }
                         tempCart.push({produkdibeli: obj.dataproduk, qty: obj.qty, iduser: iduser})
                         console.log({ cart: tempCart })
-                        Axios.patch(`http://localhost:2000/transaction/add-cart/${iduser}`, { cart: tempCart })
+                        Axios.patch(`https://api-pharmacy-2.purwadhikafs2.com/transaction/add-cart/${iduser}`, { cart: tempCart })
                             .then(res => {
                                 console.log(res.data)
-                                Axios.get(`http://localhost:2000/transaction/get-cart/${iduser}`)
+                                Axios.get(`https://api-pharmacy-2.purwadhikafs2.com/transaction/get-cart/${iduser}`)
                                     .then(res1 => {
                                         console.log(res1.data.cart)
                                         return dispatch({
@@ -108,10 +108,10 @@ export const addCart = (iduser, obj) => {
                         }
                         tempCart.push({index: ii})
                         // console.log({ cart: tempCart})
-                        Axios.patch(`http://localhost:2000/transaction/addqty-cart/${iduser}`, { cart: tempCart })
+                        Axios.patch(`https://api-pharmacy-2.purwadhikafs2.com/transaction/addqty-cart/${iduser}`, { cart: tempCart })
                             .then(res => {
                                 // console.log(res.data)
-                                Axios.get(`http://localhost:2000/transaction/get-cart/${iduser}`)
+                                Axios.get(`https://api-pharmacy-2.purwadhikafs2.com/transaction/get-cart/${iduser}`)
                                     .then(res1 => {
                                         console.log(res1.data.cart)
                                         return dispatch({
@@ -128,10 +128,10 @@ export const addCart = (iduser, obj) => {
 
                 //     console.log(tempCart)
 
-                //     Axios.patch(`http://localhost:2000/transaction/add-cart/${iduser}`, { cart: tempCart })
+                //     Axios.patch(`https://api-pharmacy-2.purwadhikafs2.com/transaction/add-cart/${iduser}`, { cart: tempCart })
                 //         .then(res => {
                 //             console.log(res.data)
-                //             Axios.get(`http://localhost:2000/transaction/get-cart/${iduser}`)
+                //             Axios.get(`https://api-pharmacy-2.purwadhikafs2.com/transaction/get-cart/${iduser}`)
                 //                 .then(res1 => {
                 //                     console.log(res1.data)
                 //                     return dispatch({
@@ -148,16 +148,16 @@ export const addCart = (iduser, obj) => {
 export const delCart = (iduser, idProdCart, ordernumber) => {
     console.log(iduser, idProdCart,ordernumber)
     return (dispatch) => {
-        // Axios.get(` http://localhost:2000/get-cart/${iduser}`)
+        // Axios.get(` https://api-pharmacy-2.purwadhikafs2.com/get-cart/${iduser}`)
         //     .then(res => {
         //         let tempCart = res.data.cart
 
         //         tempCart.splice(idProdCart, 1)
         //         console.log(tempCart)
-                Axios.patch(`http://localhost:2000/transaction/delrow-cart/${idProdCart}`, ordernumber)
+                Axios.patch(`https://api-pharmacy-2.purwadhikafs2.com/transaction/delrow-cart/${idProdCart}`, ordernumber)
                     .then(res => {
                         console.log(res.data)
-                        Axios.get(`http://localhost:2000/transaction/get-cart/${iduser}`)
+                        Axios.get(`https://api-pharmacy-2.purwadhikafs2.com/transaction/get-cart/${iduser}`)
                             .then(res => {
                                 console.log(res.data)
                                 return dispatch({
@@ -174,7 +174,7 @@ export const delCart = (iduser, idProdCart, ordernumber) => {
 export const saveCart = (iduser, qtyUpdate, ProdCart) => {
     return (dispatch) => {
         console.log(ProdCart)
-        // Axios.get(`http://localhost:2000/transaction/get-cart/${iduser}`)
+        // Axios.get(`https://api-pharmacy-2.purwadhikafs2.com/transaction/get-cart/${iduser}`)
         //     .then(res => {
         //         //tempCart untuk menampung data cart yg sekarang
         //         let tempCart = res.data.cart
@@ -189,12 +189,12 @@ export const saveCart = (iduser, qtyUpdate, ProdCart) => {
         //         tempCart.splice(idProdCart, 1, tempProd)
 
                 //kita patch data cart di user dengan yang terbaru
-                Axios.patch(`http://localhost:2000/transaction/saveqty-cart/${iduser}`, ProdCart)
+                Axios.patch(`https://api-pharmacy-2.purwadhikafs2.com/transaction/saveqty-cart/${iduser}`, ProdCart)
                     .then(res => {
                         console.log(res.data)
                         //karena data base sudah terupdate maka kita perlu menyesuaikan data update di database
                         //dengan yang ada di redux
-                        Axios.get(`http://localhost:2000/transaction/get-cart/${iduser}`)
+                        Axios.get(`https://api-pharmacy-2.purwadhikafs2.com/transaction/get-cart/${iduser}`)
                             .then(res1 => {
                                 return dispatch({
                                     type: 'CART',
@@ -210,11 +210,11 @@ export const onCheckout = (iduser, dataTrans) => {
     return (dispatch) => {
         console.log(dataTrans)
         //untuk mencatat data history ke dalam database dan ganti status jd waiting for payment
-        Axios.post(`http://localhost:2000/history/og-wfp/${iduser}`, dataTrans)
+        Axios.post(`https://api-pharmacy-2.purwadhikafs2.com/history/og-wfp/${iduser}`, dataTrans)
             .then(res => {
                 // let idUser = localStorage.getItem('idUser')
                 console.log(res.data)
-                Axios.get(`http://localhost:2000/transaction/get-ongoing/${iduser}`)
+                Axios.get(`https://api-pharmacy-2.purwadhikafs2.com/transaction/get-ongoing/${iduser}`)
                     .then(res => {
                         return dispatch({
                             type: 'GET_ONGOING',
@@ -225,10 +225,10 @@ export const onCheckout = (iduser, dataTrans) => {
             })
             // .then(res => {
             //     //untuk mengosongkan cart user
-            //     Axios.patch(`http://localhost:2000/transaction/update-produkqty/${iduser}`, { cart: [] })
+            //     Axios.patch(`https://api-pharmacy-2.purwadhikafs2.com/transaction/update-produkqty/${iduser}`, { cart: [] })
             //         .then(res => {
             //             //untuk update data stock di redux
-            //             Axios.patch(`http://localhost:2000/transaction/${iduser}`)
+            //             Axios.patch(`https://api-pharmacy-2.purwadhikafs2.com/transaction/${iduser}`)
             //                 .then(res => {
             //                     return dispatch({
             //                         type: 'LOGIN',

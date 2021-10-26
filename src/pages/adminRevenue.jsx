@@ -5,7 +5,7 @@ import { Table, Button, InputGroup, Form } from 'react-bootstrap'
 // Import Components
 import NavBar from '../components/navbar'
 
-const URL_API = "http://localhost:2000/admin"
+const URL_API = "https://api-pharmacy-2.purwadhikafs2.com/admin"
 //As Admin see Revenue (hasil) by filter Date, user, item --> total penghasilan
 
 class RevenueAdmin extends React.Component {

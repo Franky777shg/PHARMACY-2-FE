@@ -16,7 +16,7 @@
 
 
     // getDataById = (order_number) => {
-    //     Axios.get(`http://localhost:2000/profile/resepbyid`, order_number)
+    //     Axios.get(`https://api-pharmacy-2.purwadhikafs2.com/profile/resepbyid`, order_number)
     //         .then(res => {
     //             console.log(res.data) //[0] isi object id 2
     //             console.log(res,)
@@ -40,7 +40,7 @@
 
 
 
-      // Axios.post(`http://localhost:2000/profile/newdata`, newData)
+      // Axios.post(`https://api-pharmacy-2.purwadhikafs2.com/profile/newdata`, newData)
         //     .then(res => {
         //         // console.log(res.data)
         //         this.setState({ recipes: res.data })
@@ -54,7 +54,7 @@
 
 
         dataAllPayment = () => {
-          Axios.get(`http://localhost:2000/payment/allpayment`)
+          Axios.get(`https://api-pharmacy-2.purwadhikafs2.com/payment/allpayment`)
               .then(res => {
                   console.log(res.data)
                   this.setState({ payments: res.data })
@@ -65,7 +65,7 @@
       }
   
 //axios upload foto resep
-        // Axios.post(`http://localhost:2000/profile/resep/${this.props.idResep}`, data, {
+        // Axios.post(`https://api-pharmacy-2.purwadhikafs2.com/profile/resep/${this.props.idResep}`, data, {
         //     headers: {
         //         'Content-Type': 'multipart/form-data'
         //     }

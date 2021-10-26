@@ -3,7 +3,7 @@ import Axios from 'axios'
 export const getHistory = (iduser) => {
     return (dispatch) => {
         // let iduser = localStorage.getItem('iduser')
-        Axios.get(`http://localhost:2000/history/get-history/${iduser}`)
+        Axios.get(`https://api-pharmacy-2.purwadhikafs2.com/history/get-history/${iduser}`)
             .then(res => {
                 console.log(res.data)
                 return dispatch({
@@ -18,7 +18,7 @@ export const getHistory = (iduser) => {
 export const getonGoing = (iduser) => {
     return (dispatch) => {
         // let iduser = localStorage.getItem('iduser')
-        Axios.get(`http://localhost:2000/history/get-ongoing/${iduser}`)
+        Axios.get(`https://api-pharmacy-2.purwadhikafs2.com/history/get-ongoing/${iduser}`)
             .then(res => {
                 console.log(res.data)
                 return dispatch({
@@ -38,20 +38,20 @@ export const upload_payment = (iduser, foto, body) => {
     return (dispatch) => {
         // let iduser = localStorage.getItem('iduser')
 
-        Axios.post(`http://localhost:2000/history/post-pmt/${iduser}`, body)
+        Axios.post(`https://api-pharmacy-2.purwadhikafs2.com/history/post-pmt/${iduser}`, body)
             .then(res => {
                 console.log(res.data)
-                Axios.post(`http://localhost:2000/history/upload-pmt/${iduser}`, foto, {
+                Axios.post(`https://api-pharmacy-2.purwadhikafs2.com/history/upload-pmt/${iduser}`, foto, {
                     headers: {
                         'Content-Type': 'multipart/form-data'
                     }
                 })
                     .then(res1 => {
                         console.log(res1)
-                        Axios.post(`http://localhost:2000/history/og-wfpa/${iduser}`, body)
+                        Axios.post(`https://api-pharmacy-2.purwadhikafs2.com/history/og-wfpa/${iduser}`, body)
                             .then(res2 => {
                                 console.log(res2.data)
-                                Axios.get(`http://localhost:2000/history/get-ongoing/${iduser}`)
+                                Axios.get(`https://api-pharmacy-2.purwadhikafs2.com/history/get-ongoing/${iduser}`)
                                     .then(res3 => {
                                         return dispatch({
                                             type: 'UPLOAD_PMT',
@@ -71,7 +71,7 @@ export const upload_payment = (iduser, foto, body) => {
 export const total_payment = (iduser, order_number) => {
     return (dispatch) => {
         // let iduser = localStorage.getItem('iduser')
-        Axios.post(`http://localhost:2000/history/get-totalbayar/${iduser}`, order_number)
+        Axios.post(`https://api-pharmacy-2.purwadhikafs2.com/history/get-totalbayar/${iduser}`, order_number)
             .then(res => {
                 console.log(res.data)
                 return dispatch({
@@ -87,7 +87,7 @@ export const total_payment = (iduser, order_number) => {
 // export const deletePhoto = (data) => {
 //     return (dispatch) => {
 //         let token = localStorage.getItem("token")
-//         Axios.patch(`http://localhost:2000/profile/delete`, data, {
+//         Axios.patch(`https://api-pharmacy-2.purwadhikafs2.com/profile/delete`, data, {
 //             headers: {
 //                 Authorization: `Bearer ${token}`,
 //             }

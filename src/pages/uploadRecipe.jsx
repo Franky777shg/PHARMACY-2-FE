@@ -7,7 +7,7 @@ import { PAY } from '../assets'
 import { Link } from 'react-router-dom'
 import { uploadResep, addResepAct, addPayment, addPayment2, getDataAwal } from '../redux/actions' //getDataResep
 
-const URL_API = 'http://localhost:2000/'
+const URL_API = 'https://api-pharmacy-2.purwadhikafs2.com/'
 
 class UploadResep extends React.Component {
     constructor(props) {
@@ -33,7 +33,7 @@ class UploadResep extends React.Component {
             iduser: this.props.iduser
         }
         console.log(data2)
-        await Axios.post(`http://localhost:2000/profile/cekdata`, data2)
+        await Axios.post(`https://api-pharmacy-2.purwadhikafs2.com/profile/cekdata`, data2)
             .then(res => {
                 this.setState({ dataRecipe: res.data })
                 console.log(res.data)
@@ -48,7 +48,7 @@ class UploadResep extends React.Component {
             iduser: this.props.iduser
         }
         console.log(data2)
-        Axios.post(`http://localhost:2000/profile/cekdatapay`, data2)
+        Axios.post(`https://api-pharmacy-2.purwadhikafs2.com/profile/cekdatapay`, data2)
             .then(res => {
                 this.setState({ dataRecipe: res.data })
                 console.log(res.data)
@@ -84,7 +84,7 @@ class UploadResep extends React.Component {
     }
 
     fetchData = () => {
-        Axios.get(`http://localhost:2000/profile/byid/${this.props.idResep}`)
+        Axios.get(`https://api-pharmacy-2.purwadhikafs2.com/profile/byid/${this.props.idResep}`)
             .then(res => {
                 console.log(res.data[0])
                 this.setState({ recipes: res.data[0] })
@@ -98,7 +98,7 @@ class UploadResep extends React.Component {
     }
 
     fetchDataLama = () => {
-        Axios.get(`http://localhost:2000/profile/byid/${this.state.dataRecipe.idresep}`)
+        Axios.get(`https://api-pharmacy-2.purwadhikafs2.com/profile/byid/${this.state.dataRecipe.idresep}`)
             .then(res => {
                 console.log(res.data[0])
                 this.setState({ dataRecipe: res.data[0] })
@@ -137,7 +137,7 @@ class UploadResep extends React.Component {
             order_number: this.props.order_Numb
         }
         console.log(data2)
-        Axios.post(`http://localhost:2000/payment/total-harga`, data2)
+        Axios.post(`https://api-pharmacy-2.purwadhikafs2.com/payment/total-harga`, data2)
             .then(res => {
                 this.setState({ totalHarga: res.data.Total_Harga })
                 console.log(res.data)
@@ -162,7 +162,7 @@ class UploadResep extends React.Component {
             order_number: this.state.dataRecipe.order_number
         }
         console.log(data2)
-        Axios.post(`http://localhost:2000/payment/total-harga`, data2)
+        Axios.post(`https://api-pharmacy-2.purwadhikafs2.com/payment/total-harga`, data2)
             .then(res => {
                 this.setState({ totalHargaLama: res.data.Total_Harga })
                 console.log(res.data)

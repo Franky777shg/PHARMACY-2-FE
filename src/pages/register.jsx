@@ -95,7 +95,7 @@ class RegisterPage extends React.Component {
     }
     console.log(newData)
 
-    Axios.post(`http://localhost:2000/user/addUser`, newData)
+    Axios.post(`https://api-pharmacy-2.purwadhikafs2.com/user/addUser`, newData)
       .then(res => {
         console.log(res.data)
         this.setState({ users: res.data })

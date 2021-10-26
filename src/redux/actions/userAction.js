@@ -1,6 +1,6 @@
 import Axios from 'axios';
 
-const URL_API = 'http://localhost:2000/user'
+const URL_API = 'https://api-pharmacy-2.purwadhikafs2.com/user'
 
 export const login = (data) => {
     return (dispatch) => {
@@ -159,7 +159,7 @@ export const verification = (token) => {
 export const uploadFile = (data) => {
     return (dispatch) => {
         let token = localStorage.getItem("token")
-        Axios.post(`http://localhost:2000/profile/upload`, data, {
+        Axios.post(`https://api-pharmacy-2.purwadhikafs2.com/profile/upload`, data, {
             headers: {
                 Authorization: `Bearer ${token}`,
                 'Content-Type': 'multipart/form-data'
@@ -194,7 +194,7 @@ export const uploadFile = (data) => {
 export const deletePhoto = (data) => {
     return (dispatch) => {
         let token = localStorage.getItem("token")
-        Axios.patch(`http://localhost:2000/profile/delete`, data, {
+        Axios.patch(`https://api-pharmacy-2.purwadhikafs2.com/profile/delete`, data, {
             headers: {
                 Authorization: `Bearer ${token}`,
             }
@@ -227,7 +227,7 @@ export const deletePhoto = (data) => {
 
 export const addResepAct = (newData) => { //OK
     return (dispatch) => {
-        Axios.post(`http://localhost:2000/profile/newdata`, newData)
+        Axios.post(`https://api-pharmacy-2.purwadhikafs2.com/profile/newdata`, newData)
             .then(res => {
                 console.log(res.data)
                 console.log(res.data.date)
@@ -238,7 +238,7 @@ export const addResepAct = (newData) => { //OK
                 }
                 console.log(data2)
 
-                Axios.post(`http://localhost:2000/profile/resepbyid`, data2)
+                Axios.post(`https://api-pharmacy-2.purwadhikafs2.com/profile/resepbyid`, data2)
                     .then(res1 => {
                         // console.log(res1.data[0])
                         // console.log(res1.data[0].order_number)
@@ -273,7 +273,7 @@ export const addResepAct = (newData) => { //OK
 
 export const uploadResep = (data, id) => {
     return (dispatch) => {
-        Axios.post(`http://localhost:2000/profile/resep/${id}`, data, {
+        Axios.post(`https://api-pharmacy-2.purwadhikafs2.com/profile/resep/${id}`, data, {
             headers: {
                 'Content-Type': 'multipart/form-data'
             }
@@ -309,7 +309,7 @@ export const uploadResep = (data, id) => {
 
 export const addPayment = (newData) => { //OK
     return (dispatch) => {
-        Axios.post(`http://localhost:2000/payment/newdatapayment`, newData)
+        Axios.post(`https://api-pharmacy-2.purwadhikafs2.com/payment/newdatapayment`, newData)
             .then(res => {
                 console.log(res.data)
                 console.log(res.data.order_number)
@@ -319,7 +319,7 @@ export const addPayment = (newData) => { //OK
                 }
                 console.log(data2)
 
-                Axios.post(`http://localhost:2000/payment/paymentbyid`, data2)
+                Axios.post(`https://api-pharmacy-2.purwadhikafs2.com/payment/paymentbyid`, data2)
                     .then(res1 => {
                         // console.log(res1.data[0])
                         // console.log(res1.data[0].id_payment_resep)
@@ -355,7 +355,7 @@ export const addPayment = (newData) => { //OK
 
 export const addPayment2 = (newData) => { //OK
     return (dispatch) => {
-        Axios.post(`http://localhost:2000/payment/newdatapayment`, newData)
+        Axios.post(`https://api-pharmacy-2.purwadhikafs2.com/payment/newdatapayment`, newData)
             .then(res => {
                 console.log(res.data)
                 console.log(res.data.order_number)
@@ -365,7 +365,7 @@ export const addPayment2 = (newData) => { //OK
                 }
                 console.log(data2)
 
-                Axios.post(`http://localhost:2000/payment/paymentbyid`, data2)
+                Axios.post(`https://api-pharmacy-2.purwadhikafs2.com/payment/paymentbyid`, data2)
                     .then(res1 => {
                         console.log(res1.data[0])
                         // console.log(res1.data[0].id_payment_resep)
@@ -402,7 +402,7 @@ export const addPayment2 = (newData) => { //OK
 export const getDataAwal = () => { //OK
     return (dispatch) => {
         let token = localStorage.getItem("token")
-        Axios.get(`http://localhost:2000/user/userbyid`, {
+        Axios.get(`https://api-pharmacy-2.purwadhikafs2.com/user/userbyid`, {
             headers: {
                 Authorization: `Bearer ${token}`,
             }
@@ -413,7 +413,7 @@ export const getDataAwal = () => { //OK
                     iduser: res.data[0].iduser
                 }
                 console.log(data2)
-                Axios.get(`http://localhost:2000/profile/cekdata`, data2)
+                Axios.get(`https://api-pharmacy-2.purwadhikafs2.com/profile/cekdata`, data2)
                     .then(res => {
 
                         console.log(res.data)

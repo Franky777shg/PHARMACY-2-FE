@@ -6,8 +6,8 @@ import { connect } from 'react-redux'
 import { PAY } from '../assets'
 import { Link } from 'react-router-dom'
 
-const URL_API = "http://localhost:2000/payment"
-const URL_IMG = 'http://localhost:2000/'
+const URL_API = "https://api-pharmacy-2.purwadhikafs2.com/payment"
+const URL_IMG = 'https://api-pharmacy-2.purwadhikafs2.com/'
 
 class UploadPaymentLama extends React.Component {
     constructor(props) {
@@ -48,7 +48,7 @@ class UploadPaymentLama extends React.Component {
     }
 
     fetchDataStatus = () => {
-        Axios.get(`http://localhost:2000/profile/byid/${this.props.idResep}`)
+        Axios.get(`https://api-pharmacy-2.purwadhikafs2.com/profile/byid/${this.props.idResep}`)
             .then(res => {
                 console.log(res.data[0])
                 this.setState({ recipes: res.data[0] })
@@ -70,7 +70,7 @@ class UploadPaymentLama extends React.Component {
 
         data.append('IMG', this.state.images)
         console.log(data.get('IMG')) // masukin data Image ke formData
-        Axios.post(`http://localhost:2000/payment/imgpayresep/${this.state.payments.id_payment_resep}`, data, {
+        Axios.post(`https://api-pharmacy-2.purwadhikafs2.com/payment/imgpayresep/${this.state.payments.id_payment_resep}`, data, {
             headers: {
                 'Content-Type': 'multipart/form-data'
             }
@@ -94,7 +94,7 @@ class UploadPaymentLama extends React.Component {
             order_number: idProduct
         }
         console.log(data2)
-        Axios.post(`http://localhost:2000/payment/update-status`, data2)
+        Axios.post(`https://api-pharmacy-2.purwadhikafs2.com/payment/update-status`, data2)
             .then(res => {
                 console.log(res.data)
                 this.setState({ statusNew: res.data })

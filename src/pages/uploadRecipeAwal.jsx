@@ -7,7 +7,7 @@ import { PAY } from '../assets'
 import { Link } from 'react-router-dom'
 import { uploadResep, addResepAct, addPayment } from '../redux/actions' //getDataResep
 
-const URL_API = 'http://localhost:2000/'
+const URL_API = 'https://api-pharmacy-2.purwadhikafs2.com/'
 
 class UploadResepAwal extends React.Component {
     constructor(props) {
@@ -40,7 +40,7 @@ class UploadResepAwal extends React.Component {
     }
 
     fetchData = () => {
-        Axios.get(`http://localhost:2000/profile/byid/${this.props.idResep}`)
+        Axios.get(`https://api-pharmacy-2.purwadhikafs2.com/profile/byid/${this.props.idResep}`)
             .then(res => {
                 console.log(res.data[0])
                 this.setState({ recipes: res.data[0] })
@@ -83,7 +83,7 @@ class UploadResepAwal extends React.Component {
             order_number: this.props.order_Numb
         }
         console.log(data2)
-        Axios.post(`http://localhost:2000/payment/total-harga`, data2)
+        Axios.post(`https://api-pharmacy-2.purwadhikafs2.com/payment/total-harga`, data2)
             .then(res => {
                 this.setState({ totalHarga: res.data.Total_Harga })
                 console.log(res.data)

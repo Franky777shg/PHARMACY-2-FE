@@ -11,7 +11,7 @@ import {
 } from 'react-bootstrap'
 import Axios from 'axios';
 
-const URL_API = "http://localhost:2000/admin"
+const URL_API = "https://api-pharmacy-2.purwadhikafs2.com/admin"
 
 
 class SalesPage extends React.Component {
@@ -249,7 +249,7 @@ class SalesPage extends React.Component {
                                                                     if (item.order_number === item1.order_number) {
                                                                         return (
                                                                             <tr key={index1 + 10000}>
-                                                                                <td><Image style={{ width: '10vw' }} src={"http://localhost:2000/" + item1.product_image} /></td>
+                                                                                <td><Image style={{ width: '10vw' }} src={"https://api-pharmacy-2.purwadhikafs2.com/" + item1.product_image} /></td>
                                                                                 <td>{item1.nama}</td>
                                                                                 <td>{item1.qty_beli}</td>
                                                                             </tr>

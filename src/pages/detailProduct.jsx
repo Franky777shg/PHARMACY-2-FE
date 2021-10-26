@@ -17,7 +17,7 @@ import {
     Form
 } from 'react-bootstrap'
 import { addCart } from '../redux/actions'
-const URL_API = 'http://localhost:2000/product'
+const URL_API = 'https://api-pharmacy-2.purwadhikafs2.com/product'
 
 class DetailProductPage extends React.Component {
     constructor(props) {
@@ -62,7 +62,7 @@ class DetailProductPage extends React.Component {
         console.log(obj)
         // console.log(this.props.iduser)
         // this.props.addCart(this.props.iduser,obj)
-        Axios.get(`http://localhost:2000/transaction/get-cart/${this.props.iduser}`)
+        Axios.get(`https://api-pharmacy-2.purwadhikafs2.com/transaction/get-cart/${this.props.iduser}`)
             .then(res => {
                 // console.log(res.data) //hasilnya object lngsg {cart:{idproduk:}}
                 // console.log(res.data.length === undefined)
@@ -86,10 +86,10 @@ class DetailProductPage extends React.Component {
                     tempCart.push({ produkdibeli: obj.dataproduk, qty: obj.qty, iduser: this.props.iduser })
 
                     // console.log({ cart: tempCart })
-                    Axios.post(`http://localhost:2000/transaction/addnew-cart/${this.props.iduser}`, { cart: tempCart })
+                    Axios.post(`https://api-pharmacy-2.purwadhikafs2.com/transaction/addnew-cart/${this.props.iduser}`, { cart: tempCart })
                         .then(res => {
                             console.log(res.data)
-                            Axios.get(`http://localhost:2000/transaction/get-cart/${this.props.iduser}`)
+                            Axios.get(`https://api-pharmacy-2.purwadhikafs2.com/transaction/get-cart/${this.props.iduser}`)
                                 .then(res1 => {
                                     console.log(res1.data.cart)
                                     this.setState({toCart:true})
@@ -147,10 +147,10 @@ class DetailProductPage extends React.Component {
                         }
                         tempCart.push({produkdibeli: obj.dataproduk, qty: obj.qty, iduser: this.props.iduser})
                         console.log({ cart: tempCart })
-                        Axios.patch(`http://localhost:2000/transaction/add-cart/${this.props.iduser}`, { cart: tempCart })
+                        Axios.patch(`https://api-pharmacy-2.purwadhikafs2.com/transaction/add-cart/${this.props.iduser}`, { cart: tempCart })
                             .then(res => {
                                 console.log(res.data)
-                                Axios.get(`http://localhost:2000/transaction/get-cart/${this.props.iduser}`)
+                                Axios.get(`https://api-pharmacy-2.purwadhikafs2.com/transaction/get-cart/${this.props.iduser}`)
                                     .then(res1 => {
                                         console.log(res1.data.cart)
                                         this.setState({toCart:true})
@@ -169,10 +169,10 @@ class DetailProductPage extends React.Component {
                         }
                         tempCart.push({index: ii})
                         // console.log({ cart: tempCart})
-                        Axios.patch(`http://localhost:2000/transaction/addqty-cart/${this.props.iduser}`, { cart: tempCart })
+                        Axios.patch(`https://api-pharmacy-2.purwadhikafs2.com/transaction/addqty-cart/${this.props.iduser}`, { cart: tempCart })
                             .then(res => {
                                 // console.log(res.data)
-                                Axios.get(`http://localhost:2000/transaction/get-cart/${this.props.iduser}`)
+                                Axios.get(`https://api-pharmacy-2.purwadhikafs2.com/transaction/get-cart/${this.props.iduser}`)
                                     .then(res1 => {
                                         console.log(res1.data.cart)
                                         this.setState({toCart:true})
@@ -190,10 +190,10 @@ class DetailProductPage extends React.Component {
 
                 //     console.log(tempCart)
 
-                //     Axios.patch(`http://localhost:2000/transaction/add-cart/${iduser}`, { cart: tempCart })
+                //     Axios.patch(`https://api-pharmacy-2.purwadhikafs2.com/transaction/add-cart/${iduser}`, { cart: tempCart })
                 //         .then(res => {
                 //             console.log(res.data)
-                //             Axios.get(`http://localhost:2000/transaction/get-cart/${iduser}`)
+                //             Axios.get(`https://api-pharmacy-2.purwadhikafs2.com/transaction/get-cart/${iduser}`)
                 //                 .then(res1 => {
                 //                     console.log(res1.data)
                 //                     return dispatch({
@@ -237,7 +237,7 @@ class DetailProductPage extends React.Component {
                 <div style={{ padding: '100px 50px' }}>
                     <div style={styles.container}>
                         <div style={styles.imageDiv}>
-                            <Image style={styles.image} src={this.state.product ? "http://localhost:2000/" + this.state.product.link_foto : ""} />
+                            <Image style={styles.image} src={this.state.product ? "https://api-pharmacy-2.purwadhikafs2.com/" + this.state.product.link_foto : ""} />
                             <h3 style={styles.h3}>{this.state.product ? this.state.product.nama : ""}</h3>
                             <h4 style={styles.h4}>{this.state.product ? `Rp ${(this.state.product.harga).toLocaleString()}` : ""}</h4>
                             <h4 style={styles.h4}>{this.state.product ? this.state.product.satuan : ""}</h4>

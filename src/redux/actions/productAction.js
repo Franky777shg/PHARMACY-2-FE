@@ -1,7 +1,7 @@
 import Axios from 'axios';
 import { AccordionCollapse } from 'react-bootstrap';
 
-const URL_API = 'http://localhost:2000/product'
+const URL_API = 'https://api-pharmacy-2.purwadhikafs2.com/product'
 
 export const uploadProduct1 = (foto, adafoto, dataawal) => {
     return (dispatch) => {
@@ -423,7 +423,7 @@ export const editProductR = (foto, data, idproduct, adafoto) => {
 export const deletePhoto = (remove, id) => {
     return (dispatch) => {
         let token = localStorage.getItem("token")
-        Axios.patch(`http://localhost:2000/product/delete`, remove, {
+        Axios.patch(`https://api-pharmacy-2.purwadhikafs2.com/product/delete`, remove, {
             headers: {
                 Authorization: `Bearer ${token}`,
             }

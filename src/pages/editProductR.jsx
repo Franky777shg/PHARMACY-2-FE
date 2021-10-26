@@ -18,7 +18,7 @@ import {
     FormControl, Modal
 } from 'react-bootstrap'
 
-const URL_API = 'http://localhost:2000/product'
+const URL_API = 'https://api-pharmacy-2.purwadhikafs2.com/product'
 
 class EditRPage extends React.Component {
     constructor(props) {
@@ -233,7 +233,7 @@ class EditRPage extends React.Component {
                 <div style={{ padding: '100px 50px' }}>
                     <div style={styles.container}>
                         <div style={styles.imageDiv}>
-                            <Image style={styles.image} src={this.state.product ? `http://localhost:2000/${this.state.product.link_foto}` : ""} />
+                            <Image style={styles.image} src={this.state.product ? `https://api-pharmacy-2.purwadhikafs2.com/${this.state.product.link_foto}` : ""} />
                             <div style={styles.buttonProfile}>
                                 <form encType="multipart/form-data">
                                     <input

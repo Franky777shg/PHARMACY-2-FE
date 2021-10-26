@@ -18,7 +18,7 @@ import {
 } from 'react-bootstrap'
 import { Link, Redirect } from 'react-router-dom';
 
-const URL_API = 'http://localhost:2000/product'
+const URL_API = 'https://api-pharmacy-2.purwadhikafs2.com/product'
 
 class AddPage extends React.Component {
     constructor(props) {

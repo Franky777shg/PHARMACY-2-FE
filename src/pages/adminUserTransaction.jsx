@@ -19,8 +19,8 @@ import { connect } from 'react-redux'
 // React Router DOM
 import { Redirect } from 'react-router-dom'
 
-const URL_API = "http://localhost:2000/transaction"
-const URL_API2 = "http://localhost:2000"
+const URL_API = "https://api-pharmacy-2.purwadhikafs2.com/transaction"
+const URL_API2 = "https://api-pharmacy-2.purwadhikafs2.com"
 
 class AdminPage extends React.Component {
     constructor(props) {
@@ -702,7 +702,7 @@ class AdminPage extends React.Component {
                             if (this.state.transaksiObat === 'resep') {
                                 return (
                                     <div style={styles.transaction} key={index}>
-                                        <Image style={styles.imageTransaction} src={"http://localhost:2000/" + item.image_resep} />
+                                        <Image style={styles.imageTransaction} src={"https://api-pharmacy-2.purwadhikafs2.com/" + item.image_resep} />
                                         <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
                                             <h5>{`Date : ${item.date}, ${item.time}`}</h5>
                                             <h5>{`Order Number : ${item.order_number}`}</h5>
@@ -748,7 +748,7 @@ class AdminPage extends React.Component {
                         </Modal.Title>
                     </Modal.Header>
                     <Modal.Body style={styles.modalBody}>
-                        <Image style={styles.imageDetailProduk} src={this.state.dataOrder ? "http://localhost:2000/" + this.state.dataOrder.image_resep : null} />
+                        <Image style={styles.imageDetailProduk} src={this.state.dataOrder ? "https://api-pharmacy-2.purwadhikafs2.com/" + this.state.dataOrder.image_resep : null} />
                         {this.state.dataOrder && this.state.dataOrder.status === "Waiting For Approval" ?
                             <div style={styles.divCariBahan}>
                                 <h3 style={{ margin: '20px 0 20px' }}>Cari Bahan:</h3>
@@ -918,7 +918,7 @@ class AdminPage extends React.Component {
                                         </tfoot>
                                     </Table>
                                     <h3 style={{ textDecoration: 'underline', textAlign: 'center' }}>Bukti Pembayaran</h3>
-                                    <Image style={styles.imageBuktiPembayaranResep} src={`http://localhost:2000/${this.state.imageBuktiPembayaranResep}`} />
+                                    <Image style={styles.imageBuktiPembayaranResep} src={`https://api-pharmacy-2.purwadhikafs2.com/${this.state.imageBuktiPembayaranResep}`} />
                                     <div style={{ textAlign: 'center', marginTop: '20px' }}>
                                         <Button variant="success" onClick={this.onProsesOrderResep}>Process Order</Button>
                                         <Button style={{ marginLeft: '20px' }} variant="danger" onClick={this.onRequestReuploadBuktiPembayaranResep}>Request Reupload Payment Proof</Button>
@@ -1129,7 +1129,7 @@ class AdminPage extends React.Component {
                                         </tfoot>
                                     </Table>
                                     <h3 style={{ textDecoration: 'underline', textAlign: 'center' }}>Bukti Pembayaran</h3>
-                                    <Image style={styles.imageBuktiPembayaranResep} src={this.state.imageBuktiPembayaranSatuan ? `http://localhost:2000/${this.state.imageBuktiPembayaranSatuan}` : null} />
+                                    <Image style={styles.imageBuktiPembayaranResep} src={this.state.imageBuktiPembayaranSatuan ? `https://api-pharmacy-2.purwadhikafs2.com/${this.state.imageBuktiPembayaranSatuan}` : null} />
                                     <div style={{ textAlign: 'center', marginTop: '20px' }}>
                                         <Button variant="success" onClick={this.onProcessSatuan}>Process Order</Button>
                                         <Button style={{ marginLeft: '20px' }} variant="danger" onClick={this.requestReuploadSatuan}>Request Reupload Payment Proof</Button>
@@ -1176,7 +1176,7 @@ class AdminPage extends React.Component {
                                         </tfoot>
                                     </Table>
                                     <h3 style={{ textDecoration: 'underline', textAlign: 'center' }}>Bukti Pembayaran</h3>
-                                    <Image style={styles.imageBuktiPembayaranResep} src={this.state.imageBuktiPembayaranSatuan ? `http://localhost:2000/${this.state.imageBuktiPembayaranSatuan}` : null} />
+                                    <Image style={styles.imageBuktiPembayaranResep} src={this.state.imageBuktiPembayaranSatuan ? `https://api-pharmacy-2.purwadhikafs2.com/${this.state.imageBuktiPembayaranSatuan}` : null} />
                                     <div style={{ textAlign: 'center', marginTop: '20px' }}>
                                         <Button variant="success" onClick={this.onSendPackageSatuan}>Send Package</Button>
                                     </div>
@@ -1222,7 +1222,7 @@ class AdminPage extends React.Component {
                                         </tfoot>
                                     </Table>
                                     <h3 style={{ textDecoration: 'underline', textAlign: 'center' }}>Bukti Pembayaran</h3>
-                                    <Image style={styles.imageBuktiPembayaranResep} src={this.state.imageBuktiPembayaranSatuan ? `http://localhost:2000/${this.state.imageBuktiPembayaranSatuan}` : null} />
+                                    <Image style={styles.imageBuktiPembayaranResep} src={this.state.imageBuktiPembayaranSatuan ? `https://api-pharmacy-2.purwadhikafs2.com/${this.state.imageBuktiPembayaranSatuan}` : null} />
                                     <div style={{ textAlign: 'center', marginTop: '20px' }}>
                                         <Button variant="success" disabled={true}>Sending Package</Button>
                                     </div>
@@ -1268,7 +1268,7 @@ class AdminPage extends React.Component {
                                         </tfoot>
                                     </Table>
                                     <h3 style={{ textDecoration: 'underline', textAlign: 'center' }}>Bukti Pembayaran</h3>
-                                    <Image style={styles.imageBuktiPembayaranResep} src={this.state.imageBuktiPembayaranSatuan ? `http://localhost:2000/${this.state.imageBuktiPembayaranSatuan}` : null} />
+                                    <Image style={styles.imageBuktiPembayaranResep} src={this.state.imageBuktiPembayaranSatuan ? `https://api-pharmacy-2.purwadhikafs2.com/${this.state.imageBuktiPembayaranSatuan}` : null} />
                                 </div>
                             </div>
                         :

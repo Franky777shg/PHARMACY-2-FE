@@ -20,7 +20,7 @@ import {
 import { Link, Redirect } from 'react-router-dom';
 
 // URL API
-const URL_API = "http://localhost:2000"
+const URL_API = "https://api-pharmacy-2.purwadhikafs2.com"
 
 class HomePage extends React.Component {
   constructor(props) {
